@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="common/css/sf.css" rel="stylesheet" type="text/css" />
+<title>Table of contents</title>
+<link href="common/jquery-ui/jquery-ui.css" rel="stylesheet">
+<script src="common/jquery-ui/external/jquery/jquery.js"></script>
+<script src="common/jquery-ui/jquery-ui.js"></script>
+<script src="common/toggleproofs.js"></script>
+<link href="common/css/secf.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<body><script>
+$( function() {
+    var icons = {
+      header: "ui-icon-circle-arrow-e",
+      activeHeader: "ui-icon-circle-arrow-s"
+    };
+
+    $("#accordion").accordion({
+      collapsible : true,
+      active : false,
+      icons : icons,
+      heightStyle : 'content'
+    });
+
+    // Enable navigation links in section headers
+    $('#accordion').each(function() {
+      this.addEventListener('click', ev => {
+        if ($(ev.target).closest('a').length > 0) ev.stopPropagation();
+      }, {capture: true});
+    });
+  } );
+</script>
+
+
+<div id="page">
+
+<div id="header">
+<div id='logoinheader'><a href='https://softwarefoundations.cis.upenn.edu'>
+<img src='common/media/image/sf_logo_sm.png' alt='Software Foundations Logo'></a></div>
+<div class='booktitleinheader'><a href='index.html'>Volume 7: Security Foundations</a></div>
+<ul id='menu'>
+   <li class='section_name'><a href='toc.html'>Table of Contents</a></li>
+   <li class='section_name'><a href='coqindex.html'>Index</a></li>
+</ul>
+</div>
+</div>
+
+<div id="main">
+
+<div id="toc">
+<div id="accordion">
+<h2><a href="Noninterference.html">Defining Secrecy and Secure Multi-Execution &nbsp;&nbsp; (<i>Noninterference</i>)</a></h2>
+<div>
+<ul class="doclist">
+<li><a href="Noninterference.html#lab1">Naive attempt at defining secrecy</a>
+
+</li>
+<li><a href="Noninterference.html#lab2">Noninterference for pure functions</a>
+
+</li>
+<li><a href="Noninterference.html#lab3">A too strong secrecy definition</a>
+
+</li>
+<li><a href="Noninterference.html#lab4">Noninterferent implies splittable</a>
+
+</li>
+<li><a href="Noninterference.html#lab5">Secure Multi-Execution (SME)</a>
+
+</li>
+<li><a href="Noninterference.html#lab6">Noninterference for state transformers</a>
+
+</li>
+<li><a href="Noninterference.html#lab7">SME for state transformers</a>
+
+</li>
+<li><a href="Noninterference.html#lab8">Noninterference for Imp programs without loops</a>
+
+</li>
+<li><a href="Noninterference.html#lab9">SME for Imp programs without loops</a>
+
+</li>
+<li><a href="Noninterference.html#lab10">Noninterference for Imp programs with loops</a>
+
+</li>
+<li><a href="Noninterference.html#lab11">SME for Imp programs with loops</a>
+
+</li>
+<li><a href="Noninterference.html#lab12">Termination-Sensitive Noninterference</a>
+
+</li>
+</ul>
+</div>
+<h2><a href="StaticIFC.html">Information Flow Control Type Systems &nbsp;&nbsp; (<i>StaticIFC</i>)</a></h2>
+<div>
+<ul class="doclist">
+<li><a href="StaticIFC.html#lab13">Noninterference</a>
+
+</li>
+<li><a href="StaticIFC.html#lab14">Type system for noninterference of expressions</a>
+<div>
+<ul class="doclist">
+<li><a href="StaticIFC.html#lab15">Combining labels</a>
+
+</li>
+</ul>
+</div>
+
+</li>
+<li><a href="StaticIFC.html#lab16">Restrictive type system prohibiting branching on secrets</a>
+<div>
+<ul class="doclist">
+<li><a href="StaticIFC.html#lab17">Secure program that is <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span>:</a>
+
+</li>
+<li><a href="StaticIFC.html#lab18">Explicit flow prevented by <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span>:</a>
+
+</li>
+<li><a href="StaticIFC.html#lab19">Implicit flow prevented by <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span>:</a>
+
+</li>
+<li><a href="StaticIFC.html#lab20"><span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span> too strong for noninterference</a>
+
+</li>
+</ul>
+</div>
+
+</li>
+<li><a href="StaticIFC.html#lab21">IFC type system allowing branching on secrets</a>
+<div>
+<ul class="doclist">
+<li><a href="StaticIFC.html#lab22">Dealing with unsynchronized executions running different code</a>
+
+</li>
+<li><a href="StaticIFC.html#lab23">We show that <span class="inlinecode"><span class="id" title="var">well_typed</span></span> commands are <span class="inlinecode"><span class="id" title="var">noninterferent</span></span>.</a>
+
+</li>
+</ul>
+</div>
+
+</li>
+<li><a href="StaticIFC.html#lab24">Type system for termination-sensitive noninterference</a>
+<div>
+<ul class="doclist">
+<li><a href="StaticIFC.html#lab25">We just need to update the while rule of <span class="inlinecode"><span class="id" title="var">well_typed</span></span>:</a>
+
+</li>
+<li><a href="StaticIFC.html#lab26">We prove that <span class="inlinecode"><span class="id" title="var">ts_well_typed</span></span> enforces TSNI.</a>
+
+</li>
+</ul>
+</div>
+
+</li>
+<li><a href="StaticIFC.html#lab27">Program counter security</a>
+<div>
+<ul class="doclist">
+<li><a href="StaticIFC.html#lab28">Instrumented semantics with branches</a>
+
+</li>
+<li><a href="StaticIFC.html#lab29">Program counter security definition</a>
+
+</li>
+</ul>
+</div>
+
+</li>
+</ul>
+</div>
+<h2><a href="SpecCT.html">Speculative Constant-Time &nbsp;&nbsp; (<i>SpecCT</i>)</a></h2>
+<div>
+<ul class="doclist">
+<li><a href="SpecCT.html#lab30">Cryptographic constant-time</a>
+<div>
+<ul class="doclist">
+<li><a href="SpecCT.html#lab31">Constant-time conditional</a>
+
+</li>
+<li><a href="SpecCT.html#lab32">Typing Constant-time Conditionals</a>
+
+</li>
+<li><a href="SpecCT.html#lab33">Now back to adding arrays</a>
+
+</li>
+<li><a href="SpecCT.html#lab34">Observations</a>
+
+</li>
+<li><a href="SpecCT.html#lab35">Constant-time security definition</a>
+
+</li>
+<li><a href="SpecCT.html#lab36">Example pc secure program that is not constant-time secure</a>
+
+</li>
+<li><a href="SpecCT.html#lab37">Type system for cryptographic constant-time programming</a>
+
+</li>
+<li><a href="SpecCT.html#lab38">Final theorems: noninterference and constant-time security</a>
+
+</li>
+</ul>
+</div>
+
+</li>
+<li><a href="SpecCT.html#lab39">Speculative constant-time</a>
+<div>
+<ul class="doclist">
+<li><a href="SpecCT.html#lab40">Speculative constant-time security definition</a>
+
+</li>
+<li><a href="SpecCT.html#lab41">Example constant-time program that is insecure under speculative execution.</a>
+
+</li>
+</ul>
+</div>
+
+</li>
+<li><a href="SpecCT.html#lab42">Speculative constant-time interpreter</a>
+<div>
+<ul class="doclist">
+<li><a href="SpecCT.html#lab43">Funtions for execution of com instructions</a>
+
+</li>
+<li><a href="SpecCT.html#lab44">The speculative constant-time interpreter</a>
+
+</li>
+<li><a href="SpecCT.html#lab45">Soundness of the interpreter</a>
+
+</li>
+</ul>
+</div>
+
+</li>
+</ul>
+</div>
+<h2><a href="RelHoare.html">Relational Hoare Logic &nbsp;&nbsp; (<i>RelHoare</i>)</a></h2>
+<div>
+<ul class="doclist">
+<li><a href="RelHoare.html#lab46">Relational Assertions</a>
+<div>
+<ul class="doclist">
+<li><a href="RelHoare.html#lab47">Notations for Relational Assertions</a>
+
+</li>
+</ul>
+</div>
+
+</li>
+<li><a href="RelHoare.html#lab48">Relational Judgments, Informally</a>
+
+</li>
+<li><a href="RelHoare.html#lab49">Relational Judgments, Formally</a>
+
+</li>
+<li><a href="RelHoare.html#lab50">Proof Rules</a>
+<div>
+<ul class="doclist">
+<li><a href="RelHoare.html#lab51">Skip</a>
+
+</li>
+<li><a href="RelHoare.html#lab52">Consequence</a>
+
+</li>
+<li><a href="RelHoare.html#lab53">Assignment</a>
+
+</li>
+<li><a href="RelHoare.html#lab54">Sequencing</a>
+
+</li>
+<li><a href="RelHoare.html#lab55">Alignment: Skip Consuming and Padding</a>
+
+</li>
+<li><a href="RelHoare.html#lab56">Conditionals</a>
+
+</li>
+<li><a href="RelHoare.html#lab57">While Loops</a>
+
+</li>
+</ul>
+</div>
+
+</li>
+<li><a href="RelHoare.html#lab58">To Know More</a>
+
+</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+</body>
+</html>
