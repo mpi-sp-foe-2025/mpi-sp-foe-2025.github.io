@@ -1,0 +1,1187 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="common/css/sf.css" rel="stylesheet" type="text/css" />
+<title>RecordSub: Subtyping with Records</title>
+<link href="common/jquery-ui/jquery-ui.css" rel="stylesheet">
+<script src="common/jquery-ui/external/jquery/jquery.js"></script>
+<script src="common/jquery-ui/jquery-ui.js"></script>
+<script src="common/toggleproofs.js"></script>
+<link href="common/css/plf.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="common/slides.js"></script>
+<link href="common/css/slides.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+<div id='logoinheader'><a href='https://softwarefoundations.cis.upenn.edu'>
+<img src='common/media/image/sf_logo_sm.png' alt='Software Foundations Logo'></a></div>
+<div class='booktitleinheader'><a href='index.html'>Volume 2: Programming Language Foundations</a></div>
+<ul id='menu'>
+   <li class='section_name'><a href='toc.html'>Table of Contents</a></li>
+   <li class='section_name'><a href='coqindex.html'>Index</a></li>
+   <li class='section_name'><a href='deps.html'>Roadmap</a></li>
+</ul>
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">RecordSub<span class="subtitle">Subtyping with Records</span></h1>
+
+
+<div class="doc">
+
+<div class="paragraph"> </div>
+
+ In this chapter, we combine two significant extensions of the pure
+    STLC -- records (from chapter <a href="Records.html"><span class="inlineref">Records</span></a>) and subtyping (from
+    chapter <a href="Sub.html"><span class="inlineref">Sub</span></a>) -- and explore their interactions.  Most of the
+    concepts have already been discussed in those chapters, so the
+    presentation here is somewhat terse.  We just comment where things
+    are nonstandard. 
+</div>
+<div class="code">
+<hr class='doublespaceincode'/>
+<span class="id" title="keyword">Module</span> <span class="id" title="var">RecordSub</span>.<br/>
+</div>
+
+<div class="doc">
+<a id="lab465"></a><h1 class="section">Core Definitions</h1>
+
+</div>
+
+<div class="doc">
+<a id="lab466"></a><h3 class="section">Syntax</h3>
+
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">ty</span> : <span class="id" title="keyword">Type</span> :=<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;proper&nbsp;types&nbsp;*)</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">Ty_Top</span>   : <span class="id" title="var">ty</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">Ty_Base</span>  : <span class="id" title="var">string</span> → <span class="id" title="var">ty</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">Ty_Arrow</span> : <span class="id" title="var">ty</span> → <span class="id" title="var">ty</span> → <span class="id" title="var">ty</span><br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;record&nbsp;types&nbsp;*)</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">Ty_RNil</span> : <span class="id" title="var">ty</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">Ty_RCons</span> : <span class="id" title="var">string</span> → <span class="id" title="var">ty</span> → <span class="id" title="var">ty</span> → <span class="id" title="var">ty</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">tm</span> : <span class="id" title="keyword">Type</span> :=<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;proper&nbsp;terms&nbsp;*)</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">tm_var</span> : <span class="id" title="var">string</span> → <span class="id" title="var">tm</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">tm_app</span> : <span class="id" title="var">tm</span> → <span class="id" title="var">tm</span> → <span class="id" title="var">tm</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">tm_abs</span> : <span class="id" title="var">string</span> → <span class="id" title="var">ty</span> → <span class="id" title="var">tm</span> → <span class="id" title="var">tm</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">tm_rproj</span> : <span class="id" title="var">tm</span> → <span class="id" title="var">string</span> → <span class="id" title="var">tm</span><br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;record&nbsp;terms&nbsp;*)</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">tm_rnil</span> :  <span class="id" title="var">tm</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">tm_rcons</span> : <span class="id" title="var">string</span> → <span class="id" title="var">tm</span> → <span class="id" title="var">tm</span> → <span class="id" title="var">tm</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="var">Declare</span> <span class="id" title="var">Custom</span> <span class="id" title="var">Entry</span> <span class="id" title="var">stlc</span>.<br/>
+<span class="id" title="var">Declare</span> <span class="id" title="var">Custom</span> <span class="id" title="var">Entry</span> <span class="id" title="var">stlc_ty</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Notation</span> &quot;&lt;{ e }&gt;" := <span class="id" title="var">e</span> (<span class="id" title="var">e</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 99).<br/>
+<span class="id" title="keyword">Notation</span> &quot;&lt;<span style='letter-spacing:-.4em;'>{</span>{ e <span style='letter-spacing:-.4em;'>}</span>}&gt;" := <span class="id" title="var">e</span> (<span class="id" title="var">e</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc_ty</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 99).<br/>
+<span class="id" title="keyword">Notation</span> &quot;( x )" := <span class="id" title="var">x</span> (<span class="id" title="keyword">in</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc</span>, <span class="id" title="var">x</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 99).<br/>
+<span class="id" title="keyword">Notation</span> &quot;( x )" := <span class="id" title="var">x</span> (<span class="id" title="keyword">in</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc_ty</span>, <span class="id" title="var">x</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 99).<br/>
+<span class="id" title="keyword">Notation</span> &quot;x" := <span class="id" title="var">x</span> (<span class="id" title="keyword">in</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 0, <span class="id" title="var">x</span> <span class="id" title="keyword">constr</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 0).<br/>
+<span class="id" title="keyword">Notation</span> &quot;x" := <span class="id" title="var">x</span> (<span class="id" title="keyword">in</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc_ty</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 0, <span class="id" title="var">x</span> <span class="id" title="keyword">constr</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 0).<br/>
+<span class="id" title="keyword">Notation</span> &quot;S <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> T" := (<span class="id" title="var">Ty_Arrow</span> <span class="id" title="var">S</span> <span class="id" title="var">T</span>) (<span class="id" title="keyword">in</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc_ty</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50, <span class="id" title="tactic">right</span> <span class="id" title="keyword">associativity</span>).<br/>
+<span class="id" title="keyword">Notation</span> &quot;x y" := (<span class="id" title="var">tm_app</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span>) (<span class="id" title="keyword">in</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 1, <span class="id" title="tactic">left</span> <span class="id" title="keyword">associativity</span>).<br/>
+<span class="id" title="keyword">Notation</span> &quot;\ x : t , y" :=<br/>
+&nbsp;&nbsp;(<span class="id" title="var">tm_abs</span> <span class="id" title="var">x</span> <span class="id" title="var">t</span> <span class="id" title="var">y</span>) (<span class="id" title="keyword">in</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 90, <span class="id" title="var">x</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 99,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">t</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc_ty</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 99,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">y</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 99,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">left</span> <span class="id" title="keyword">associativity</span>).<br/>
+<span class="id" title="keyword">Coercion</span> <span class="id" title="var">tm_var</span> : <span class="id" title="var">string</span> &gt;<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">tm</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Notation</span> &quot;{ x }" := <span class="id" title="var">x</span> (<span class="id" title="keyword">in</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 1, <span class="id" title="var">x</span> <span class="id" title="keyword">constr</span>).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Notation</span> &quot;'Base' x" := (<span class="id" title="var">Ty_Base</span> <span class="id" title="var">x</span>) (<span class="id" title="keyword">in</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc_ty</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 0).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Notation</span> &quot;  l ':' t<sub>1</sub>  '::' t<sub>2</sub>" := (<span class="id" title="var">Ty_RCons</span> <span class="id" title="var">l</span> <span class="id" title="var">t<sub>1</sub></span> <span class="id" title="var">t<sub>2</sub></span>) (<span class="id" title="keyword">in</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc_ty</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 3, <span class="id" title="tactic">right</span> <span class="id" title="keyword">associativity</span>).<br/>
+<span class="id" title="keyword">Notation</span> &quot; l := e<sub>1</sub> '::' e<sub>2</sub>" := (<span class="id" title="var">tm_rcons</span> <span class="id" title="var">l</span> <span class="id" title="var">e<sub>1</sub></span> <span class="id" title="var">e<sub>2</sub></span>) (<span class="id" title="keyword">in</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 3, <span class="id" title="tactic">right</span> <span class="id" title="keyword">associativity</span>).<br/>
+<span class="id" title="keyword">Notation</span> &quot;'nil'" := (<span class="id" title="var">Ty_RNil</span>) (<span class="id" title="keyword">in</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc_ty</span>).<br/>
+<span class="id" title="keyword">Notation</span> &quot;'nil'" := (<span class="id" title="var">tm_rnil</span>) (<span class="id" title="keyword">in</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc</span>).<br/>
+<span class="id" title="keyword">Notation</span> &quot;o <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> l" := (<span class="id" title="var">tm_rproj</span> <span class="id" title="var">o</span> <span class="id" title="var">l</span>) (<span class="id" title="keyword">in</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 0).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Notation</span> &quot;'Top'" := (<span class="id" title="var">Ty_Top</span>) (<span class="id" title="keyword">in</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc_ty</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 0).<br/>
+</div>
+
+<div class="doc">
+<a id="lab467"></a><h3 class="section">Well-Formedness</h3>
+
+<div class="paragraph"> </div>
+
+ The syntax of terms and types is a bit too loose, in the sense
+    that it admits things like a record type whose final "tail" is
+    <span class="inlinecode"><span class="id" title="var">Top</span></span> or some arrow type rather than <span class="inlinecode"><span class="id" title="var">Nil</span></span>.  To avoid such cases,
+    it is useful to assume that all the record types and terms that we
+    see will obey some simple well-formedness conditions. 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">record_ty</span> : <span class="id" title="var">ty</span> → <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">RTnil</span> :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">record_ty</span> &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">nil</span> <span style='letter-spacing:-.4em;'>}</span>}&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">RTcons</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">i</span> <span class="id" title="var">T<sub>1</sub></span> <span class="id" title="var">T<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">record_ty</span> &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">i</span> : <span class="id" title="var">T<sub>1</sub></span> :: <span class="id" title="var">T<sub>2</sub></span> <span style='letter-spacing:-.4em;'>}</span>}&gt;.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">record_tm</span> : <span class="id" title="var">tm</span> → <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">rtnil</span> :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">record_tm</span> &lt;{ <span class="id" title="var">nil</span> }&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">rtcons</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">i</span> <span class="id" title="var">t<sub>1</sub></span> <span class="id" title="var">t<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">record_tm</span> &lt;{ <span class="id" title="var">i</span> := <span class="id" title="var">t<sub>1</sub></span> :: <span class="id" title="var">t<sub>2</sub></span> }&gt;.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">well_formed_ty</span> : <span class="id" title="var">ty</span> → <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;|  <span class="id" title="var">wfTop</span> :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">Top</span> <span style='letter-spacing:-.4em;'>}</span>}&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">wfBase</span> : <span class="id" title="keyword">∀</span> (<span class="id" title="var">i</span> : <span class="id" title="var">string</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">Base</span> <span class="id" title="var">i</span> <span style='letter-spacing:-.4em;'>}</span>}&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">wfArrow</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">T<sub>1</sub></span> <span class="id" title="var">T<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> <span class="id" title="var">T<sub>1</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> <span class="id" title="var">T<sub>2</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">T<sub>1</sub></span> → <span class="id" title="var">T<sub>2</sub></span> <span style='letter-spacing:-.4em;'>}</span>}&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">wfRNil</span> :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">nil</span> <span style='letter-spacing:-.4em;'>}</span>}&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">wfRCons</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">i</span> <span class="id" title="var">T<sub>1</sub></span> <span class="id" title="var">T<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> <span class="id" title="var">T<sub>1</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> <span class="id" title="var">T<sub>2</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">record_ty</span> <span class="id" title="var">T<sub>2</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">i</span> : <span class="id" title="var">T<sub>1</sub></span> :: <span class="id" title="var">T<sub>2</sub></span> <span style='letter-spacing:-.4em;'>}</span>}&gt;.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Hint Constructors</span> <span class="id" title="var">record_ty</span> <span class="id" title="var">record_tm</span> <span class="id" title="var">well_formed_ty</span> : <span class="id" title="var">core</span>.<br/>
+</div>
+
+<div class="doc">
+<a id="lab468"></a><h3 class="section">Substitution</h3>
+
+<div class="paragraph"> </div>
+
+ Substitution and reduction are as before. 
+</div>
+<div class="code">
+<hr class='doublespaceincode'/>
+<span class="id" title="keyword">Fixpoint</span> <span class="id" title="tactic">subst</span> (<span class="id" title="var">x</span> : <span class="id" title="var">string</span>) (<span class="id" title="var">s</span> : <span class="id" title="var">tm</span>) (<span class="id" title="var">t</span> : <span class="id" title="var">tm</span>) : <span class="id" title="var">tm</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">t</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">tm_var</span> <span class="id" title="var">y</span> ⇒<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">if</span> <span class="id" title="var">String.eqb</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="keyword">then</span> <span class="id" title="var">s</span> <span class="id" title="keyword">else</span> <span class="id" title="var">t</span><br/>
+&nbsp;&nbsp;| &lt;{\<span class="id" title="var">y</span>:<span class="id" title="var">T</span>, <span class="id" title="var">t<sub>1</sub></span>}&gt; ⇒<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">if</span> <span class="id" title="var">String.eqb</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="keyword">then</span> <span class="id" title="var">t</span> <span class="id" title="keyword">else</span> &lt;{\<span class="id" title="var">y</span>:<span class="id" title="var">T</span>, [<span class="id" title="var">x</span>:=<span class="id" title="var">s</span>] <span class="id" title="var">t<sub>1</sub></span>}&gt;<br/>
+&nbsp;&nbsp;| &lt;{<span class="id" title="var">t<sub>1</sub></span> <span class="id" title="var">t<sub>2</sub></span>}&gt; ⇒<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;{([<span class="id" title="var">x</span>:=<span class="id" title="var">s</span>] <span class="id" title="var">t<sub>1</sub></span>) ([<span class="id" title="var">x</span>:=<span class="id" title="var">s</span>] <span class="id" title="var">t<sub>2</sub></span>)}&gt;<br/>
+&nbsp;&nbsp;| &lt;{ <span class="id" title="var">t<sub>1</sub></span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">i</span> }&gt; ⇒<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;{ ( [<span class="id" title="var">x</span> := <span class="id" title="var">s</span>] <span class="id" title="var">t<sub>1</sub></span>) <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">i</span> }&gt;<br/>
+&nbsp;&nbsp;| &lt;{ <span class="id" title="var">nil</span> }&gt; ⇒<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;{ <span class="id" title="var">nil</span> }&gt;<br/>
+&nbsp;&nbsp;| &lt;{ <span class="id" title="var">i</span> := <span class="id" title="var">t<sub>1</sub></span> :: <span class="id" title="var">tr</span> }&gt; ⇒<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;{ <span class="id" title="var">i</span> :=  [<span class="id" title="var">x</span> := <span class="id" title="var">s</span>] <span class="id" title="var">t<sub>1</sub></span> :: ( [<span class="id" title="var">x</span> := <span class="id" title="var">s</span>] <span class="id" title="var">tr</span>) }&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span><br/>
+<br/>
+<span class="id" title="keyword">where</span> &quot;'[' x ':=' s ']' t" := (<span class="id" title="tactic">subst</span> <span class="id" title="var">x</span> <span class="id" title="var">s</span> <span class="id" title="var">t</span>) (<span class="id" title="keyword">in</span> <span class="id" title="var">custom</span> <span class="id" title="var">stlc</span>).<br/>
+</div>
+
+<div class="doc">
+<a id="lab469"></a><h3 class="section">Reduction</h3>
+
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">value</span> : <span class="id" title="var">tm</span> → <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">v_abs</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">x</span> <span class="id" title="var">T<sub>2</sub></span> <span class="id" title="var">t<sub>1</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">value</span>  &lt;{ \ <span class="id" title="var">x</span> : <span class="id" title="var">T<sub>2</sub></span>, <span class="id" title="var">t<sub>1</sub></span> }&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">v_rnil</span> : <span class="id" title="var">value</span> &lt;{ <span class="id" title="var">nil</span> }&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">v_rcons</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">i</span> <span class="id" title="var">v<sub>1</sub></span> <span class="id" title="var">vr</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">value</span> <span class="id" title="var">v<sub>1</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">value</span> <span class="id" title="var">vr</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">value</span> &lt;{ <span class="id" title="var">i</span> := <span class="id" title="var">v<sub>1</sub></span> :: <span class="id" title="var">vr</span> }&gt;.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Hint Constructors</span> <span class="id" title="var">value</span> : <span class="id" title="var">core</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Fixpoint</span> <span class="id" title="var">Tlookup</span> (<span class="id" title="var">i</span>:<span class="id" title="var">string</span>) (<span class="id" title="var">Tr</span>:<span class="id" title="var">ty</span>) : <span class="id" title="var">option</span> <span class="id" title="var">ty</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">Tr</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">i'</span> : <span class="id" title="var">T</span> :: <span class="id" title="var">Tr'</span> <span style='letter-spacing:-.4em;'>}</span>}&gt; ⇒<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">if</span> <span class="id" title="var">String.eqb</span> <span class="id" title="var">i</span> <span class="id" title="var">i'</span> <span class="id" title="keyword">then</span> <span class="id" title="var">Some</span> <span class="id" title="var">T</span> <span class="id" title="keyword">else</span> <span class="id" title="var">Tlookup</span> <span class="id" title="var">i</span> <span class="id" title="var">Tr'</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">_</span> ⇒ <span class="id" title="var">None</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Fixpoint</span> <span class="id" title="var">tlookup</span> (<span class="id" title="var">i</span>:<span class="id" title="var">string</span>) (<span class="id" title="var">tr</span>:<span class="id" title="var">tm</span>) : <span class="id" title="var">option</span> <span class="id" title="var">tm</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">tr</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| &lt;{ <span class="id" title="var">i'</span> := <span class="id" title="var">t</span> :: <span class="id" title="var">tr'</span> }&gt; ⇒<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">if</span> <span class="id" title="var">String.eqb</span> <span class="id" title="var">i</span> <span class="id" title="var">i'</span> <span class="id" title="keyword">then</span> <span class="id" title="var">Some</span> <span class="id" title="var">t</span> <span class="id" title="keyword">else</span> <span class="id" title="var">tlookup</span> <span class="id" title="var">i</span> <span class="id" title="var">tr'</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">_</span> ⇒ <span class="id" title="var">None</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/><hr class='doublespaceincode'/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">step</span> : <span class="id" title="var">tm</span> → <span class="id" title="var">tm</span> → <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">ST_AppAbs</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">x</span> <span class="id" title="var">T<sub>2</sub></span> <span class="id" title="var">t<sub>1</sub></span> <span class="id" title="var">v<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">value</span> <span class="id" title="var">v<sub>2</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;{(\<span class="id" title="var">x</span>:<span class="id" title="var">T<sub>2</sub></span>, <span class="id" title="var">t<sub>1</sub></span>) <span class="id" title="var">v<sub>2</sub></span>}&gt; <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> &lt;{ [<span class="id" title="var">x</span>:=<span class="id" title="var">v<sub>2</sub></span>]<span class="id" title="var">t<sub>1</sub></span> }&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">ST_App1</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">t<sub>1</sub></span> <span class="id" title="var">t<sub>1</sub>'</span> <span class="id" title="var">t<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">t<sub>1</sub></span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">t<sub>1</sub>'</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;{<span class="id" title="var">t<sub>1</sub></span> <span class="id" title="var">t<sub>2</sub></span>}&gt; <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> &lt;{<span class="id" title="var">t<sub>1</sub>'</span> <span class="id" title="var">t<sub>2</sub></span>}&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">ST_App2</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">v<sub>1</sub></span> <span class="id" title="var">t<sub>2</sub></span> <span class="id" title="var">t<sub>2</sub>'</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">value</span> <span class="id" title="var">v<sub>1</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">t<sub>2</sub></span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">t<sub>2</sub>'</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;{<span class="id" title="var">v<sub>1</sub></span> <span class="id" title="var">t<sub>2</sub></span>}&gt; <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> &lt;{<span class="id" title="var">v<sub>1</sub></span>  <span class="id" title="var">t<sub>2</sub>'</span>}&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">ST_Proj1</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">t<sub>1</sub></span> <span class="id" title="var">t<sub>1</sub>'</span> <span class="id" title="var">i</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">t<sub>1</sub></span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">t<sub>1</sub>'</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;{ <span class="id" title="var">t<sub>1</sub></span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">i</span> }&gt; <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> &lt;{ <span class="id" title="var">t<sub>1</sub>'</span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">i</span> }&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">ST_ProjRcd</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">tr</span> <span class="id" title="var">i</span> <span class="id" title="var">vi</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">value</span> <span class="id" title="var">tr</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">tlookup</span> <span class="id" title="var">i</span> <span class="id" title="var">tr</span> = <span class="id" title="var">Some</span> <span class="id" title="var">vi</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;{ <span class="id" title="var">tr</span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">i</span> }&gt; <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">vi</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">ST_Rcd_Head</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">i</span> <span class="id" title="var">t<sub>1</sub></span> <span class="id" title="var">t<sub>1</sub>'</span> <span class="id" title="var">tr<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">t<sub>1</sub></span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">t<sub>1</sub>'</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;{ <span class="id" title="var">i</span> := <span class="id" title="var">t<sub>1</sub></span> :: <span class="id" title="var">tr<sub>2</sub></span> }&gt; <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> &lt;{ <span class="id" title="var">i</span> := <span class="id" title="var">t<sub>1</sub>'</span> :: <span class="id" title="var">tr<sub>2</sub></span> }&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">ST_Rcd_Tail</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">i</span> <span class="id" title="var">v<sub>1</sub></span> <span class="id" title="var">tr<sub>2</sub></span> <span class="id" title="var">tr<sub>2</sub>'</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">value</span> <span class="id" title="var">v<sub>1</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">tr<sub>2</sub></span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">tr<sub>2</sub>'</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;{ <span class="id" title="var">i</span> := <span class="id" title="var">v<sub>1</sub></span> :: <span class="id" title="var">tr<sub>2</sub></span> }&gt; <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> &lt;{ <span class="id" title="var">i</span> := <span class="id" title="var">v<sub>1</sub></span> :: <span class="id" title="var">tr<sub>2</sub>'</span> }&gt;<br/>
+<br/>
+<span class="id" title="keyword">where</span> &quot;t '<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>' t'" := (<span class="id" title="var">step</span> <span class="id" title="var">t</span> <span class="id" title="var">t'</span>).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Hint Constructors</span> <span class="id" title="var">step</span> : <span class="id" title="var">core</span>.<br/>
+</div>
+
+<div class="doc">
+<a id="lab470"></a><h1 class="section">Subtyping</h1>
+
+<div class="paragraph"> </div>
+
+ Now we come to the interesting part, where the features we've
+    added start to interact.  We begin by defining the subtyping
+    relation and developing some of its important technical
+    properties. 
+</div>
+
+<div class="doc">
+<a id="lab471"></a><h2 class="section">Definition</h2>
+
+<div class="paragraph"> </div>
+
+ The definition of subtyping is essentially just what we sketched
+    in the discussion of record subtyping in chapter <a href="Sub.html"><span class="inlineref">Sub</span></a>, but we
+    need to add well-formedness side conditions to some of the rules.
+    Also, we replace the "n-ary" width, depth, and permutation
+    subtyping rules by binary rules that deal with just the first
+    field. 
+</div>
+<div class="code">
+<hr class='doublespaceincode'/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">subtype</span> : <span class="id" title="var">ty</span> → <span class="id" title="var">ty</span> → <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Subtyping&nbsp;between&nbsp;proper&nbsp;types&nbsp;*)</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">S_Refl</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">T</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> <span class="id" title="var">T</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">T</span> &lt;: <span class="id" title="var">T</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">S_Trans</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">S</span> <span class="id" title="var">U</span> <span class="id" title="var">T</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">S</span> &lt;: <span class="id" title="var">U</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">U</span> &lt;: <span class="id" title="var">T</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">S</span> &lt;: <span class="id" title="var">T</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">S_Top</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">S</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> <span class="id" title="var">S</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">S</span> &lt;: &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">Top</span> <span style='letter-spacing:-.4em;'>}</span>}&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">S_Arrow</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">S<sub>1</sub></span> <span class="id" title="var">S<sub>2</sub></span> <span class="id" title="var">T<sub>1</sub></span> <span class="id" title="var">T<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">T<sub>1</sub></span> &lt;: <span class="id" title="var">S<sub>1</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">S<sub>2</sub></span> &lt;: <span class="id" title="var">T<sub>2</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">S<sub>1</sub></span> → <span class="id" title="var">S<sub>2</sub></span> <span style='letter-spacing:-.4em;'>}</span>}&gt; &lt;: &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">T<sub>1</sub></span> → <span class="id" title="var">T<sub>2</sub></span> <span style='letter-spacing:-.4em;'>}</span>}&gt;<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Subtyping&nbsp;between&nbsp;record&nbsp;types&nbsp;*)</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">S_RcdWidth</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">i</span> <span class="id" title="var">T<sub>1</sub></span> <span class="id" title="var">T<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">i</span> : <span class="id" title="var">T<sub>1</sub></span> :: <span class="id" title="var">T<sub>2</sub></span> <span style='letter-spacing:-.4em;'>}</span>}&gt; →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">i</span> : <span class="id" title="var">T<sub>1</sub></span> :: <span class="id" title="var">T<sub>2</sub></span> <span style='letter-spacing:-.4em;'>}</span>}&gt; &lt;: &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">nil</span> <span style='letter-spacing:-.4em;'>}</span>}&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">S_RcdDepth</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">i</span> <span class="id" title="var">S<sub>1</sub></span> <span class="id" title="var">T<sub>1</sub></span> <span class="id" title="var">Sr<sub>2</sub></span> <span class="id" title="var">Tr<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">S<sub>1</sub></span> &lt;: <span class="id" title="var">T<sub>1</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Sr<sub>2</sub></span> &lt;: <span class="id" title="var">Tr<sub>2</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">record_ty</span> <span class="id" title="var">Sr<sub>2</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">record_ty</span> <span class="id" title="var">Tr<sub>2</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">i</span> : <span class="id" title="var">S<sub>1</sub></span> :: <span class="id" title="var">Sr<sub>2</sub></span> <span style='letter-spacing:-.4em;'>}</span>}&gt; &lt;: &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">i</span> : <span class="id" title="var">T<sub>1</sub></span> :: <span class="id" title="var">Tr<sub>2</sub></span> <span style='letter-spacing:-.4em;'>}</span>}&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">S_RcdPerm</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">i<sub>1</sub></span> <span class="id" title="var">i<sub>2</sub></span> <span class="id" title="var">T<sub>1</sub></span> <span class="id" title="var">T<sub>2</sub></span> <span class="id" title="var">Tr<sub>3</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">i<sub>1</sub></span> : <span class="id" title="var">T<sub>1</sub></span> :: <span class="id" title="var">i<sub>2</sub></span> : <span class="id" title="var">T<sub>2</sub></span> :: <span class="id" title="var">Tr<sub>3</sub></span> <span style='letter-spacing:-.4em;'>}</span>}&gt; →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">i<sub>1</sub></span> ≠ <span class="id" title="var">i<sub>2</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">i<sub>1</sub></span> : <span class="id" title="var">T<sub>1</sub></span> :: <span class="id" title="var">i<sub>2</sub></span> : <span class="id" title="var">T<sub>2</sub></span> :: <span class="id" title="var">Tr<sub>3</sub></span> <span style='letter-spacing:-.4em;'>}</span>}&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;: &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">i<sub>2</sub></span> : <span class="id" title="var">T<sub>2</sub></span> :: <span class="id" title="var">i<sub>1</sub></span> : <span class="id" title="var">T<sub>1</sub></span> :: <span class="id" title="var">Tr<sub>3</sub></span> <span style='letter-spacing:-.4em;'>}</span>}&gt;<br/>
+<br/>
+<span class="id" title="keyword">where</span> &quot;T '&lt;:' U" := (<span class="id" title="var">subtype</span> <span class="id" title="var">T</span> <span class="id" title="var">U</span>).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Hint Constructors</span> <span class="id" title="var">subtype</span> : <span class="id" title="var">core</span>.<br/>
+</div>
+
+<div class="doc">
+<a id="lab472"></a><h2 class="section">Examples</h2>
+
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Module</span> <span class="id" title="var">Examples</span>.<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">string_scope</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Notation</span> <span class="id" title="var">x</span> := "x".<br/>
+<span class="id" title="keyword">Notation</span> <span class="id" title="var">y</span> := "y".<br/>
+<span class="id" title="keyword">Notation</span> <span class="id" title="var">z</span> := "z".<br/>
+<span class="id" title="keyword">Notation</span> <span class="id" title="var">j</span> := "j".<br/>
+<span class="id" title="keyword">Notation</span> <span class="id" title="var">k</span> := "k".<br/>
+<span class="id" title="keyword">Notation</span> <span class="id" title="var">i</span> := "i".<br/>
+<span class="id" title="keyword">Notation</span> <span class="id" title="var">A</span> := &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">Base</span> "A" <span style='letter-spacing:-.4em;'>}</span>}&gt;.<br/>
+<span class="id" title="keyword">Notation</span> <span class="id" title="var">B</span> := &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">Base</span> "B" <span style='letter-spacing:-.4em;'>}</span>}&gt;.<br/>
+<span class="id" title="keyword">Notation</span> <span class="id" title="var">C</span> := &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">Base</span> "C" <span style='letter-spacing:-.4em;'>}</span>}&gt;.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">TRcd_j</span>  :=<br/>
+&nbsp;&nbsp;&lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">j</span>  : (<span class="id" title="var">B</span> → <span class="id" title="var">B</span>) :: <span class="id" title="var">nil</span> <span style='letter-spacing:-.4em;'>}</span>}&gt;. <span class="comment">(*&nbsp;{j:B<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>B}&nbsp;*)</span><br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">TRcd_kj</span> :=<br/>
+&nbsp;&nbsp;&lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">k</span> : (<span class="id" title="var">A</span> → <span class="id" title="var">A</span>) :: <span class="id" title="var">TRcd_j</span> <span style='letter-spacing:-.4em;'>}</span>}&gt;. <span class="comment">(*&nbsp;{k:C<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>C,j:B<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>B}&nbsp;*)</span><br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Example</span> <span class="id" title="var">subtyping_example_0</span> :<br/>
+&nbsp;&nbsp;&lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">C</span> → <span class="id" title="var">TRcd_kj</span> <span style='letter-spacing:-.4em;'>}</span>}&gt; &lt;: &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">C</span> → <span class="id" title="var">nil</span> <span style='letter-spacing:-.4em;'>}</span>}&gt;.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">S_Arrow</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">S_Refl</span>. <span class="id" title="tactic">auto</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">TRcd_kj</span>, <span class="id" title="var">TRcd_j</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">S_RcdWidth</span>; <span class="id" title="tactic">auto</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<div class="doc">
+The following facts are mostly easy to prove in Coq.  To get full
+    benefit, make sure you also understand how to prove them on
+    paper! 
+<div class="paragraph"> </div>
+
+<a id="lab473"></a><h4 class="section">Exercise: 2 stars, standard (subtyping_example_1)</h4>
+
+</div>
+<div class="code">
+<span class="id" title="keyword">Example</span> <span class="id" title="var">subtyping_example_1</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">TRcd_kj</span> &lt;: <span class="id" title="var">TRcd_j</span>.<br/>
+<span class="comment">(*&nbsp;{k:A<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>A,j:B<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>B}&nbsp;&lt;:&nbsp;{j:B<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>B}&nbsp;*)</span><br/>
+<span class="id" title="keyword">Proof</span> <span class="id" title="keyword">with</span> <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;FILL&nbsp;IN&nbsp;HERE&nbsp;*)</span> <span class="id" title="var">Admitted</span>.<br/>
+<font size=-2>&#9744;</font>
+</div>
+
+<div class="doc"> 
+<div class="paragraph"> </div>
+
+<a id="lab474"></a><h4 class="section">Exercise: 1 star, standard (subtyping_example_2)</h4>
+
+</div>
+<div class="code">
+<span class="id" title="keyword">Example</span> <span class="id" title="var">subtyping_example_2</span> :<br/>
+&nbsp;&nbsp;&lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">Top</span> → <span class="id" title="var">TRcd_kj</span> <span style='letter-spacing:-.4em;'>}</span>}&gt; &lt;:<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span style='letter-spacing:-.4em;'>{</span>{ (<span class="id" title="var">C</span> → <span class="id" title="var">C</span>) → <span class="id" title="var">TRcd_j</span> <span style='letter-spacing:-.4em;'>}</span>}&gt;.<br/>
+<span class="id" title="keyword">Proof</span> <span class="id" title="keyword">with</span> <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;FILL&nbsp;IN&nbsp;HERE&nbsp;*)</span> <span class="id" title="var">Admitted</span>.<br/>
+<font size=-2>&#9744;</font>
+</div>
+
+<div class="doc"> 
+<div class="paragraph"> </div>
+
+<a id="lab475"></a><h4 class="section">Exercise: 1 star, standard (subtyping_example_3)</h4>
+
+</div>
+<div class="code">
+<span class="id" title="keyword">Example</span> <span class="id" title="var">subtyping_example_3</span> :<br/>
+&nbsp;&nbsp;&lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">nil</span> → (<span class="id" title="var">j</span> : <span class="id" title="var">A</span> :: <span class="id" title="var">nil</span>) <span style='letter-spacing:-.4em;'>}</span>}&gt; &lt;:<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span style='letter-spacing:-.4em;'>{</span>{ (<span class="id" title="var">k</span> : <span class="id" title="var">B</span> :: <span class="id" title="var">nil</span>) → <span class="id" title="var">nil</span> <span style='letter-spacing:-.4em;'>}</span>}&gt;.<br/>
+<span class="comment">(*&nbsp;{}<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>{j:A}&nbsp;&lt;:&nbsp;{k:B}<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>{}&nbsp;*)</span><br/>
+<span class="id" title="keyword">Proof</span> <span class="id" title="keyword">with</span> <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;FILL&nbsp;IN&nbsp;HERE&nbsp;*)</span> <span class="id" title="var">Admitted</span>.<br/>
+<font size=-2>&#9744;</font>
+</div>
+
+<div class="doc"> 
+<div class="paragraph"> </div>
+
+<a id="lab476"></a><h4 class="section">Exercise: 2 stars, standard (subtyping_example_4)</h4>
+
+</div>
+<div class="code">
+<span class="id" title="keyword">Example</span> <span class="id" title="var">subtyping_example_4</span> :<br/>
+&nbsp;&nbsp;&lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">x</span> : <span class="id" title="var">A</span> :: <span class="id" title="var">y</span> : <span class="id" title="var">B</span> :: <span class="id" title="var">z</span> : <span class="id" title="var">C</span> :: <span class="id" title="var">nil</span> <span style='letter-spacing:-.4em;'>}</span>}&gt; &lt;:<br/>
+&nbsp;&nbsp;&lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">z</span> : <span class="id" title="var">C</span> :: <span class="id" title="var">y</span> : <span class="id" title="var">B</span> :: <span class="id" title="var">x</span> : <span class="id" title="var">A</span> :: <span class="id" title="var">nil</span> <span style='letter-spacing:-.4em;'>}</span>}&gt;.<br/>
+<span class="id" title="keyword">Proof</span> <span class="id" title="keyword">with</span> <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;FILL&nbsp;IN&nbsp;HERE&nbsp;*)</span> <span class="id" title="var">Admitted</span>.<br/>
+<font size=-2>&#9744;</font>
+</div>
+
+<div class="code">
+
+<span class="id" title="keyword">End</span> <span class="id" title="var">Examples</span>.<br/>
+</div>
+
+<div class="doc">
+<a id="lab477"></a><h2 class="section">Properties of Subtyping</h2>
+
+<div class="paragraph"> </div>
+
+<a id="lab478"></a><h3 class="section">Well-Formedness</h3>
+
+<div class="paragraph"> </div>
+
+ To get started proving things about subtyping, we need a couple of
+    technical lemmas that intuitively (1) allow us to extract the
+    well-formedness assumptions embedded in subtyping derivations
+    and (2) record the fact that fields of well-formed record types
+    are themselves well-formed types.  
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">subtype__wf</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">S</span> <span class="id" title="var">T</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">subtype</span> <span class="id" title="var">S</span> <span class="id" title="var">T</span> →<br/>
+&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> <span class="id" title="var">T</span> ∧ <span class="id" title="var">well_formed_ty</span> <span class="id" title="var">S</span>.<br/>
+<div class="togglescript" id="proofcontrol1" onclick="toggleDisplay('proof1');toggleDisplay('proofcontrol1')"><span class="show"></span></div>
+<div class="proofscript" id="proof1" onclick="toggleDisplay('proof1');toggleDisplay('proofcontrol1')">
+<span class="id" title="keyword">Proof</span> <span class="id" title="keyword">with</span> <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">S</span> <span class="id" title="var">T</span> <span class="id" title="var">Hsub</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">Hsub</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">intros</span>; <span class="id" title="tactic">try</span> (<span class="id" title="tactic">destruct</span> <span class="id" title="var">IHHsub1</span>; <span class="id" title="tactic">destruct</span> <span class="id" title="var">IHHsub2</span>)...<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;S_RcdPerm&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">split</span>... <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">subst</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H<sub>5</sub></span>... <span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">wf_rcd_lookup</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">i</span> <span class="id" title="var">T</span> <span class="id" title="var">Ti</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> <span class="id" title="var">T</span> →<br/>
+&nbsp;&nbsp;<span class="id" title="var">Tlookup</span> <span class="id" title="var">i</span> <span class="id" title="var">T</span> = <span class="id" title="var">Some</span> <span class="id" title="var">Ti</span> →<br/>
+&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> <span class="id" title="var">Ti</span>.<br/>
+<div class="togglescript" id="proofcontrol2" onclick="toggleDisplay('proof2');toggleDisplay('proofcontrol2')"><span class="show"></span></div>
+<div class="proofscript" id="proof2" onclick="toggleDisplay('proof2');toggleDisplay('proofcontrol2')">
+<span class="id" title="keyword">Proof</span> <span class="id" title="keyword">with</span> <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">i</span> <span class="id" title="var">T</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">T</span>; <span class="id" title="tactic">intros</span>; <span class="id" title="tactic">try</span> <span class="id" title="var">solve_by_invert</span>.<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;RCons&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">subst</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">Tlookup</span> <span class="id" title="keyword">in</span> <span class="id" title="var">H<sub>0</sub></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">String.eqb</span> <span class="id" title="var">i</span> <span class="id" title="var">s</span>)... <span class="id" title="tactic">inversion</span> <span class="id" title="var">H<sub>0</sub></span>; <span class="id" title="tactic">subst</span>... <span class="id" title="keyword">Qed</span>.<br/>
+</div>
+</div>
+
+<div class="doc">
+<a id="lab479"></a><h3 class="section">Field Lookup</h3>
+
+<div class="paragraph"> </div>
+
+ The record matching lemmas get a little more complicated in the
+    presence of subtyping, for two reasons.  First, record types no
+    longer necessarily describe the exact structure of the
+    corresponding terms.  And second, reasoning by induction on typing
+    derivations becomes harder in general, because typing is no longer
+    syntax directed. 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">rcd_types_match</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">S</span> <span class="id" title="var">T</span> <span class="id" title="var">i</span> <span class="id" title="var">Ti</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">subtype</span> <span class="id" title="var">S</span> <span class="id" title="var">T</span> →<br/>
+&nbsp;&nbsp;<span class="id" title="var">Tlookup</span> <span class="id" title="var">i</span> <span class="id" title="var">T</span> = <span class="id" title="var">Some</span> <span class="id" title="var">Ti</span> →<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">Si</span>, <span class="id" title="var">Tlookup</span> <span class="id" title="var">i</span> <span class="id" title="var">S</span> = <span class="id" title="var">Some</span> <span class="id" title="var">Si</span> ∧ <span class="id" title="var">subtype</span> <span class="id" title="var">Si</span> <span class="id" title="var">Ti</span>.<br/>
+<div class="togglescript" id="proofcontrol3" onclick="toggleDisplay('proof3');toggleDisplay('proofcontrol3')"><span class="show"></span></div>
+<div class="proofscript" id="proof3" onclick="toggleDisplay('proof3');toggleDisplay('proofcontrol3')">
+<span class="id" title="keyword">Proof</span> <span class="id" title="keyword">with</span> (<span class="id" title="tactic">eauto</span> <span class="id" title="keyword">using</span> <span class="id" title="var">wf_rcd_lookup</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">S</span> <span class="id" title="var">T</span> <span class="id" title="var">i</span> <span class="id" title="var">Ti</span> <span class="id" title="var">Hsub</span> <span class="id" title="var">Hget</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">Ti</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">Hsub</span>; <span class="id" title="tactic">intros</span> <span class="id" title="var">Ti</span> <span class="id" title="var">Hget</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> <span class="id" title="var">solve_by_invert</span>.<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;S_Refl&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">Ti</span>...<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;S_Trans&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">IHHsub2</span> <span class="id" title="var">Ti</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">Ui</span> <span class="id" title="var">Hui</span>]... <span class="id" title="tactic">destruct</span> <span class="id" title="var">Hui</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">IHHsub1</span> <span class="id" title="var">Ui</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">Si</span> <span class="id" title="var">Hsi</span>]... <span class="id" title="tactic">destruct</span> <span class="id" title="var">Hsi</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">Si</span>...<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;S_RcdDepth&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rename</span> <span class="id" title="var">i<sub>0</sub></span> <span class="id" title="var">into</span> <span class="id" title="var">k</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">Tlookup</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">Tlookup</span> <span class="id" title="keyword">in</span> <span class="id" title="var">Hget</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">String.eqb</span> <span class="id" title="var">i</span> <span class="id" title="var">k</span>)...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="comment">(*&nbsp;i&nbsp;=&nbsp;k&nbsp;--&nbsp;we're&nbsp;looking&nbsp;up&nbsp;the&nbsp;first&nbsp;field&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">Hget</span>. <span class="id" title="tactic">subst</span>. <span class="id" title="tactic">∃</span> <span class="id" title="var">S<sub>1</sub></span>...<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;S_RcdPerm&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">Ti</span>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="comment">(*&nbsp;lookup&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">Tlookup</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">Tlookup</span> <span class="id" title="keyword">in</span> <span class="id" title="var">Hget</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">eqb_spec</span> <span class="id" title="var">i</span> <span class="id" title="var">i<sub>1</sub></span>)...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="comment">(*&nbsp;i&nbsp;=&nbsp;i<sub>1</sub>&nbsp;--&nbsp;we're&nbsp;looking&nbsp;up&nbsp;the&nbsp;first&nbsp;field&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">eqb_spec</span> <span class="id" title="var">i</span> <span class="id" title="var">i<sub>2</sub></span>)...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;i&nbsp;=&nbsp;i<sub>2</sub>&nbsp;--&nbsp;contradictory&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">H<sub>0</sub></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">subst</span>...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="comment">(*&nbsp;subtype&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">subst</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H<sub>5</sub></span>. <span class="id" title="tactic">subst</span>... <span class="id" title="keyword">Qed</span>.<br/>
+</div>
+</div>
+
+<div class="doc">
+<a id="lab480"></a><h4 class="section">Exercise: 3 stars, standard (rcd_types_match_informal)</h4>
+ Write a careful informal proof of the <span class="inlinecode"><span class="id" title="var">rcd_types_match</span></span>
+    lemma. 
+</div>
+<div class="code">
+
+<span class="comment">(*&nbsp;FILL&nbsp;IN&nbsp;HERE&nbsp;*)</span><br/>
+<font size=-2>&#9744;</font>
+</div>
+
+<div class="doc"> 
+<div class="paragraph"> </div>
+
+<a id="lab481"></a><h3 class="section">Inversion Lemmas</h3>
+
+<div class="paragraph"> </div>
+
+<a id="lab482"></a><h4 class="section">Exercise: 3 stars, standard, optional (sub_inversion_arrow)</h4>
+
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">sub_inversion_arrow</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">U</span> <span class="id" title="var">V<sub>1</sub></span> <span class="id" title="var">V<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">U</span> &lt;: &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">V<sub>1</sub></span> → <span class="id" title="var">V<sub>2</sub></span> <span style='letter-spacing:-.4em;'>}</span>}&gt; →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">U<sub>1</sub></span> <span class="id" title="var">U<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">U</span>= &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">U<sub>1</sub></span> → <span class="id" title="var">U<sub>2</sub></span> <span style='letter-spacing:-.4em;'>}</span>}&gt; ) ∧ (<span class="id" title="var">V<sub>1</sub></span> &lt;: <span class="id" title="var">U<sub>1</sub></span>) ∧ (<span class="id" title="var">U<sub>2</sub></span> &lt;: <span class="id" title="var">V<sub>2</sub></span>).<br/>
+<div class="togglescript" id="proofcontrol4" onclick="toggleDisplay('proof4');toggleDisplay('proofcontrol4')"><span class="show"></span></div>
+<div class="proofscript" id="proof4" onclick="toggleDisplay('proof4');toggleDisplay('proofcontrol4')">
+<span class="id" title="keyword">Proof</span> <span class="id" title="keyword">with</span> <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">U</span> <span class="id" title="var">V<sub>1</sub></span> <span class="id" title="var">V<sub>2</sub></span> <span class="id" title="var">Hs</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">remember</span> &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">V<sub>1</sub></span> → <span class="id" title="var">V<sub>2</sub></span> <span style='letter-spacing:-.4em;'>}</span>}&gt; <span class="id" title="keyword">as</span> <span class="id" title="var">V</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">V<sub>2</sub></span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">V<sub>1</sub></span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;FILL&nbsp;IN&nbsp;HERE&nbsp;*)</span> <span class="id" title="var">Admitted</span>.<br/>
+<font size=-2>&#9744;</font>
+</div>
+
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab483"></a><h1 class="section">Typing</h1>
+
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Definition</span> <span class="id" title="keyword">context</span> := <span class="id" title="var">partial_map</span> <span class="id" title="var">ty</span>.<br/><hr class='doublespaceincode'/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">has_type</span> : <span class="id" title="keyword">context</span> → <span class="id" title="var">tm</span> → <span class="id" title="var">ty</span> → <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">T_Var</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">Gamma</span> (<span class="id" title="var">x</span> : <span class="id" title="var">string</span>) <span class="id" title="var">T</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="id" title="var">x</span> = <span class="id" title="var">Some</span> <span class="id" title="var">T</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> <span class="id" title="var">T</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">x</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">T_Abs</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">x</span> <span class="id" title="var">T<sub>11</sub></span> <span class="id" title="var">T<sub>12</sub></span> <span class="id" title="var">t<sub>12</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">well_formed_ty</span> <span class="id" title="var">T<sub>11</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">x</span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>&#x22A2;</span><span style='font-size:90%;'>&gt;</span></span></span></span> <span class="id" title="var">T<sub>11</sub></span>; <span class="id" title="var">Gamma</span>) <span class="nowrap">&vert;--</span> <span class="id" title="var">t<sub>12</sub></span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T<sub>12</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="nowrap">&vert;--</span> (\ <span class="id" title="var">x</span> : <span class="id" title="var">T<sub>11</sub></span>, <span class="id" title="var">t<sub>12</sub></span>) \<span class="id" title="keyword">in</span> (<span class="id" title="var">T<sub>11</sub></span> → <span class="id" title="var">T<sub>12</sub></span>)<br/>
+&nbsp;&nbsp;| <span class="id" title="var">T_App</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">T<sub>1</sub></span> <span class="id" title="var">T<sub>2</sub></span> <span class="id" title="var">Gamma</span> <span class="id" title="var">t<sub>1</sub></span> <span class="id" title="var">t<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">t<sub>1</sub></span> \<span class="id" title="keyword">in</span> (<span class="id" title="var">T<sub>1</sub></span> → <span class="id" title="var">T<sub>2</sub></span>) →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">t<sub>2</sub></span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T<sub>1</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">t<sub>1</sub></span> <span class="id" title="var">t<sub>2</sub></span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T<sub>2</sub></span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">T_Proj</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">i</span> <span class="id" title="var">t</span> <span class="id" title="var">T</span> <span class="id" title="var">Ti</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">t</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Tlookup</span> <span class="id" title="var">i</span> <span class="id" title="var">T</span> = <span class="id" title="var">Some</span> <span class="id" title="var">Ti</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">t</span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">i</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">Ti</span><br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Subsumption&nbsp;*)</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">T_Sub</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">t</span> <span class="id" title="var">S</span> <span class="id" title="var">T</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">t</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">S</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">subtype</span> <span class="id" title="var">S</span> <span class="id" title="var">T</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">t</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T</span><br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Rules&nbsp;for&nbsp;record&nbsp;terms&nbsp;*)</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">T_RNil</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">Gamma</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">nil</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">nil</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">T_RCons</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">i</span> <span class="id" title="var">t</span> <span class="id" title="var">T</span> <span class="id" title="var">tr</span> <span class="id" title="var">Tr</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">t</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">tr</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">Tr</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">record_ty</span> <span class="id" title="var">Tr</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">record_tm</span> <span class="id" title="var">tr</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">i</span> := <span class="id" title="var">t</span> :: <span class="id" title="var">tr</span> \<span class="id" title="keyword">in</span> (<span class="id" title="var">i</span> : <span class="id" title="var">T</span> :: <span class="id" title="var">Tr</span>)<br/>
+<br/>
+<span class="id" title="keyword">where</span> &quot;Gamma '<span class="nowrap">&vert;--</span>' t '&#x2208;' T" := (<span class="id" title="var">has_type</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">t</span> <span class="id" title="var">T</span>).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Hint Constructors</span> <span class="id" title="var">has_type</span> : <span class="id" title="var">core</span>.<br/>
+</div>
+
+<div class="doc">
+<a id="lab484"></a><h2 class="section">Typing Examples</h2>
+
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Module</span> <span class="id" title="var">Examples2</span>.<br/>
+<span class="id" title="keyword">Import</span> <span class="id" title="var">Examples</span>.<br/>
+</div>
+
+<div class="doc">
+<a id="lab485"></a><h4 class="section">Exercise: 1 star, standard (typing_example_0)</h4>
+
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">trcd_kj</span> :=<br/>
+&nbsp;&nbsp;&lt;{ <span class="id" title="var">k</span> := (\<span class="id" title="var">z</span> : <span class="id" title="var">A</span>, <span class="id" title="var">z</span>) :: <span class="id" title="var">j</span> := (\<span class="id" title="var">z</span> : <span class="id" title="var">B</span>, <span class="id" title="var">z</span>) :: <span class="id" title="var">nil</span> }&gt;.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Example</span> <span class="id" title="var">typing_example_0</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">empty</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">trcd_kj</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">TRcd_kj</span>.<br/>
+<span class="comment">(*&nbsp;empty&nbsp;<span class="nowrap">&vert;--</span>&nbsp;{k=(\z:A.z),&nbsp;j=(\z:B.z)}&nbsp;:&nbsp;{k:A<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>A,j:B<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>B}&nbsp;*)</span><br/>
+<div class="togglescript" id="proofcontrol5" onclick="toggleDisplay('proof5');toggleDisplay('proofcontrol5')"><span class="show"></span></div>
+<div class="proofscript" id="proof5" onclick="toggleDisplay('proof5');toggleDisplay('proofcontrol5')">
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;FILL&nbsp;IN&nbsp;HERE&nbsp;*)</span> <span class="id" title="var">Admitted</span>.<br/>
+<font size=-2>&#9744;</font>
+</div>
+
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab486"></a><h4 class="section">Exercise: 2 stars, standard (typing_example_1)</h4>
+
+</div>
+<div class="code">
+<span class="id" title="keyword">Example</span> <span class="id" title="var">typing_example_1</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">empty</span> <span class="nowrap">&vert;--</span> (\<span class="id" title="var">x</span> : <span class="id" title="var">TRcd_j</span>, <span class="id" title="var">x</span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">j</span>) <span class="id" title="var">trcd_kj</span> \<span class="id" title="keyword">in</span> (<span class="id" title="var">B</span> → <span class="id" title="var">B</span>).<br/>
+<span class="comment">(*&nbsp;empty&nbsp;<span class="nowrap">&vert;--</span>&nbsp;(\x:{k:A<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>A,j:B<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>B},&nbsp;x.j)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{k=(\z:A,z),&nbsp;j=(\z:B,z)}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;B<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>B&nbsp;*)</span><br/>
+<div class="togglescript" id="proofcontrol6" onclick="toggleDisplay('proof6');toggleDisplay('proofcontrol6')"><span class="show"></span></div>
+<div class="proofscript" id="proof6" onclick="toggleDisplay('proof6');toggleDisplay('proofcontrol6')">
+<span class="id" title="keyword">Proof</span> <span class="id" title="keyword">with</span> <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;FILL&nbsp;IN&nbsp;HERE&nbsp;*)</span> <span class="id" title="var">Admitted</span>.<br/>
+<font size=-2>&#9744;</font>
+</div>
+
+
+<br/>
+</div>
+
+<div class="doc">
+<a id="lab487"></a><h4 class="section">Exercise: 2 stars, standard, optional (typing_example_2)</h4>
+
+</div>
+<div class="code">
+<span class="id" title="keyword">Example</span> <span class="id" title="var">typing_example_2</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">empty</span> <span class="nowrap">&vert;--</span> (\ <span class="id" title="var">z</span> : (<span class="id" title="var">C</span> → <span class="id" title="var">C</span>) → <span class="id" title="var">TRcd_j</span>, (<span class="id" title="var">z</span> (\ <span class="id" title="var">x</span> : <span class="id" title="var">C</span>, <span class="id" title="var">x</span>) ) <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">j</span> )<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;( \<span class="id" title="var">z</span> : (<span class="id" title="var">C</span> → <span class="id" title="var">C</span>), <span class="id" title="var">trcd_kj</span> ) \<span class="id" title="keyword">in</span> (<span class="id" title="var">B</span> → <span class="id" title="var">B</span>).<br/>
+<span class="comment">(*&nbsp;empty&nbsp;<span class="nowrap">&vert;--</span>&nbsp;(\z:(C<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>C)<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>{j:B<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>B},&nbsp;(z&nbsp;(\x:C,x)).j)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(\z:C<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>C,&nbsp;{k=(\z:A,z),&nbsp;j=(\z:B,z)})<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;B<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>B&nbsp;*)</span><br/>
+<div class="togglescript" id="proofcontrol7" onclick="toggleDisplay('proof7');toggleDisplay('proofcontrol7')"><span class="show"></span></div>
+<div class="proofscript" id="proof7" onclick="toggleDisplay('proof7');toggleDisplay('proofcontrol7')">
+<span class="id" title="keyword">Proof</span> <span class="id" title="keyword">with</span> <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;FILL&nbsp;IN&nbsp;HERE&nbsp;*)</span> <span class="id" title="var">Admitted</span>.<br/>
+<font size=-2>&#9744;</font>
+</div>
+
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Examples2</span>.<br/>
+</div>
+
+<div class="doc">
+<a id="lab488"></a><h2 class="section">Properties of Typing</h2>
+
+<div class="paragraph"> </div>
+
+<a id="lab489"></a><h3 class="section">Well-Formedness</h3>
+
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">has_type__wf</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">t</span> <span class="id" title="var">T</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">has_type</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">t</span> <span class="id" title="var">T</span> → <span class="id" title="var">well_formed_ty</span> <span class="id" title="var">T</span>.<br/>
+<div class="togglescript" id="proofcontrol8" onclick="toggleDisplay('proof8');toggleDisplay('proofcontrol8')"><span class="show"></span></div>
+<div class="proofscript" id="proof8" onclick="toggleDisplay('proof8');toggleDisplay('proofcontrol8')">
+<span class="id" title="keyword">Proof</span> <span class="id" title="keyword">with</span> <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">t</span> <span class="id" title="var">T</span> <span class="id" title="var">Htyp</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">Htyp</span>...<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;T_App&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">IHHtyp1</span>...<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;T_Proj&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">wf_rcd_lookup</span>...<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;T_Sub&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">subtype__wf</span> <span class="id" title="keyword">in</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span>...<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">step_preserves_record_tm</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">tr</span> <span class="id" title="var">tr'</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">record_tm</span> <span class="id" title="var">tr</span> →<br/>
+&nbsp;&nbsp;<span class="id" title="var">tr</span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">tr'</span> →<br/>
+&nbsp;&nbsp;<span class="id" title="var">record_tm</span> <span class="id" title="var">tr'</span>.<br/>
+<div class="togglescript" id="proofcontrol9" onclick="toggleDisplay('proof9');toggleDisplay('proofcontrol9')"><span class="show"></span></div>
+<div class="proofscript" id="proof9" onclick="toggleDisplay('proof9');toggleDisplay('proofcontrol9')">
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">tr</span> <span class="id" title="var">tr'</span> <span class="id" title="var">Hrt</span> <span class="id" title="var">Hstp</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">Hrt</span>; <span class="id" title="tactic">subst</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">Hstp</span>; <span class="id" title="tactic">subst</span>; <span class="id" title="tactic">eauto</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+</div>
+
+<div class="doc">
+<a id="lab490"></a><h3 class="section">Field Lookup</h3>
+
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">lookup_field_in_value</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">v</span> <span class="id" title="var">T</span> <span class="id" title="var">i</span> <span class="id" title="var">Ti</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">value</span> <span class="id" title="var">v</span> →<br/>
+&nbsp;&nbsp;<span class="id" title="var">empty</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">v</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T</span> →<br/>
+&nbsp;&nbsp;<span class="id" title="var">Tlookup</span> <span class="id" title="var">i</span> <span class="id" title="var">T</span> = <span class="id" title="var">Some</span> <span class="id" title="var">Ti</span> →<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">vi</span>, <span class="id" title="var">tlookup</span> <span class="id" title="var">i</span> <span class="id" title="var">v</span> = <span class="id" title="var">Some</span> <span class="id" title="var">vi</span> ∧ <span class="id" title="var">empty</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">vi</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">Ti</span>.<br/>
+<div class="togglescript" id="proofcontrol10" onclick="toggleDisplay('proof10');toggleDisplay('proofcontrol10')"><span class="show"></span></div>
+<div class="proofscript" id="proof10" onclick="toggleDisplay('proof10');toggleDisplay('proofcontrol10')">
+<span class="id" title="keyword">Proof</span> <span class="id" title="keyword">with</span> <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">remember</span> <span class="id" title="var">empty</span> <span class="id" title="keyword">as</span> <span class="id" title="var">Gamma</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">t</span> <span class="id" title="var">T</span> <span class="id" title="var">i</span> <span class="id" title="var">Ti</span> <span class="id" title="var">Hval</span> <span class="id" title="var">Htyp</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">Ti</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">Htyp</span>; <span class="id" title="tactic">intros</span>; <span class="id" title="tactic">subst</span>; <span class="id" title="tactic">try</span> <span class="id" title="var">solve_by_invert</span>.<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;T_Sub&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> (<span class="id" title="var">rcd_types_match</span> <span class="id" title="var">S</span>) <span class="id" title="keyword">in</span> <span class="id" title="var">H<sub>0</sub></span>...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">H<sub>0</sub></span> <span class="id" title="keyword">as</span> [<span class="id" title="var">Si</span> [<span class="id" title="var">HgetSi</span> <span class="id" title="var">Hsub</span>]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">IHHtyp</span> <span class="id" title="keyword">in</span> <span class="id" title="var">HgetSi</span>...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">HgetSi</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">vi</span> [<span class="id" title="var">Hget</span> <span class="id" title="var">Htyvi</span>]]...<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;T_RCons&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">simpl</span> <span class="id" title="keyword">in</span> <span class="id" title="var">H<sub>0</sub></span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">simpl</span> <span class="id" title="keyword">in</span> <span class="id" title="var">H<sub>1</sub></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">String.eqb</span> <span class="id" title="var">i</span> <span class="id" title="var">i<sub>0</sub></span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="comment">(*&nbsp;i&nbsp;is&nbsp;first&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">injection</span> <span class="id" title="var">H<sub>1</sub></span> <span class="id" title="keyword">as</span> <span class="id" title="var">H<sub>1</sub></span>. <span class="id" title="tactic">subst</span>. <span class="id" title="tactic">∃</span> <span class="id" title="var">t</span>...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="comment">(*&nbsp;i&nbsp;in&nbsp;tail&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">IHHtyp2</span> <span class="id" title="keyword">in</span> <span class="id" title="var">H<sub>1</sub></span>...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">Hval</span>... <span class="id" title="keyword">Qed</span>.<br/>
+</div>
+</div>
+
+<div class="doc">
+<a id="lab491"></a><h3 class="section">Progress</h3>
+
+<div class="paragraph"> </div>
+
+<a id="lab492"></a><h4 class="section">Exercise: 3 stars, standard (canonical_forms_of_arrow_types)</h4>
+
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">canonical_forms_of_arrow_types</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">s</span> <span class="id" title="var">T<sub>1</sub></span> <span class="id" title="var">T<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">s</span> \<span class="id" title="keyword">in</span> (<span class="id" title="var">T<sub>1</sub></span> → <span class="id" title="var">T<sub>2</sub></span>) →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">value</span> <span class="id" title="var">s</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">x</span> <span class="id" title="var">S<sub>1</sub></span> <span class="id" title="var">s<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">s</span> = &lt;{ \ <span class="id" title="var">x</span>  : <span class="id" title="var">S<sub>1</sub></span>, <span class="id" title="var">s<sub>2</sub></span> }&gt;.<br/>
+<div class="togglescript" id="proofcontrol11" onclick="toggleDisplay('proof11');toggleDisplay('proofcontrol11')"><span class="show"></span></div>
+<div class="proofscript" id="proof11" onclick="toggleDisplay('proof11');toggleDisplay('proofcontrol11')">
+<span class="id" title="keyword">Proof</span> <span class="id" title="keyword">with</span> <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;FILL&nbsp;IN&nbsp;HERE&nbsp;*)</span> <span class="id" title="var">Admitted</span>.<br/>
+<font size=-2>&#9744;</font>
+</div>
+
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="tactic">progress</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">t</span> <span class="id" title="var">T</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">empty</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">t</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">value</span> <span class="id" title="var">t</span> ∨ <span class="id" title="tactic">∃</span> <span class="id" title="var">t'</span>, <span class="id" title="var">t</span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">t'</span>.<br/>
+<div class="togglescript" id="proofcontrol12" onclick="toggleDisplay('proof12');toggleDisplay('proofcontrol12')"><span class="show"></span></div>
+<div class="proofscript" id="proof12" onclick="toggleDisplay('proof12');toggleDisplay('proofcontrol12')">
+<span class="id" title="keyword">Proof</span> <span class="id" title="keyword">with</span> <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">t</span> <span class="id" title="var">T</span> <span class="id" title="var">Ht</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">remember</span> <span class="id" title="var">empty</span> <span class="id" title="keyword">as</span> <span class="id" title="var">Gamma</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">revert</span> <span class="id" title="var">HeqGamma</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">Ht</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">HeqGamma</span>; <span class="id" title="tactic">subst</span>...<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;T_Var&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;T_App&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">right</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">IHHt1</span>; <span class="id" title="tactic">subst</span>...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="comment">(*&nbsp;t<sub>1</sub>&nbsp;is&nbsp;a&nbsp;value&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">IHHt2</span>; <span class="id" title="tactic">subst</span>...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="comment">(*&nbsp;t<sub>2</sub>&nbsp;is&nbsp;a&nbsp;value&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">canonical_forms_of_arrow_types</span> <span class="id" title="var">empty</span> <span class="id" title="var">t<sub>1</sub></span> <span class="id" title="var">T<sub>1</sub></span> <span class="id" title="var">T<sub>2</sub></span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">as</span> [<span class="id" title="var">x</span> [<span class="id" title="var">S<sub>1</sub></span> [<span class="id" title="var">t<sub>12</sub></span> <span class="id" title="var">Heqt1</span>]]]...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">subst</span>. <span class="id" title="tactic">∃</span> &lt;{ [<span class="id" title="var">x</span>:=<span class="id" title="var">t<sub>2</sub></span>] <span class="id" title="var">t<sub>12</sub></span> }&gt;...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="comment">(*&nbsp;t<sub>2</sub>&nbsp;steps&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">H<sub>0</sub></span> <span class="id" title="keyword">as</span> [<span class="id" title="var">t<sub>2</sub>'</span> <span class="id" title="var">Hstp</span>]. <span class="id" title="tactic">∃</span> &lt;{ <span class="id" title="var">t<sub>1</sub></span> <span class="id" title="var">t<sub>2</sub>'</span> }&gt; ...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="comment">(*&nbsp;t<sub>1</sub>&nbsp;steps&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">t<sub>1</sub>'</span> <span class="id" title="var">Hstp</span>]. <span class="id" title="tactic">∃</span> &lt;{ <span class="id" title="var">t<sub>1</sub>'</span> <span class="id" title="var">t<sub>2</sub></span> }&gt;...<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;T_Proj&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">right</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">IHHt</span>...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="comment">(*&nbsp;rcd&nbsp;is&nbsp;value&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">lookup_field_in_value</span> <span class="id" title="var">t</span> <span class="id" title="var">T</span> <span class="id" title="var">i</span> <span class="id" title="var">Ti</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">as</span> [<span class="id" title="var">t'</span> [<span class="id" title="var">Hget</span> <span class="id" title="var">Ht'</span>]]...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="comment">(*&nbsp;rcd_steps&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">H<sub>0</sub></span> <span class="id" title="keyword">as</span> [<span class="id" title="var">t'</span> <span class="id" title="var">Hstp</span>]. <span class="id" title="tactic">∃</span> &lt;{ <span class="id" title="var">t'</span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">i</span> }&gt;...<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;T_RCons&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">IHHt1</span>...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="comment">(*&nbsp;head&nbsp;is&nbsp;a&nbsp;value&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">IHHt2</span>...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="comment">(*&nbsp;tail&nbsp;steps&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">right</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">H<sub>2</sub></span> <span class="id" title="keyword">as</span> [<span class="id" title="var">tr'</span> <span class="id" title="var">Hstp</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">∃</span> &lt;{ <span class="id" title="var">i</span> := <span class="id" title="var">t</span> :: <span class="id" title="var">tr'</span> }&gt;...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="comment">(*&nbsp;head&nbsp;steps&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">right</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">H<sub>1</sub></span> <span class="id" title="keyword">as</span> [<span class="id" title="var">t'</span> <span class="id" title="var">Hstp</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">∃</span> &lt;{ <span class="id" title="var">i</span> := <span class="id" title="var">t'</span> :: <span class="id" title="var">tr</span>}&gt;... <span class="id" title="keyword">Qed</span>.<br/>
+</div>
+</div>
+
+<div class="doc">
+<i>Theorem</i> : For any term <span class="inlinecode"><span class="id" title="var">t</span></span> and type <span class="inlinecode"><span class="id" title="var">T</span></span>, if <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">t</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">T</span></span>
+    then <span class="inlinecode"><span class="id" title="var">t</span></span> is a value or <span class="inlinecode"><span class="id" title="var">t</span></span> <span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode"><span class="id" title="var">t'</span></span> for some term <span class="inlinecode"><span class="id" title="var">t'</span></span>.
+
+<div class="paragraph"> </div>
+
+    <i>Proof</i>: Let <span class="inlinecode"><span class="id" title="var">t</span></span> and <span class="inlinecode"><span class="id" title="var">T</span></span> be given such that <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">t</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">T</span></span>.  We
+    proceed by induction on the given typing derivation.
+
+<div class="paragraph"> </div>
+
+<ul class="doclist">
+<li> The cases where the last step in the typing derivation is
+        <span class="inlinecode"><span class="id" title="var">T_Abs</span></span> or <span class="inlinecode"><span class="id" title="var">T_RNil</span></span> are immediate because abstractions and
+        <span class="inlinecode">{}</span> are always values.  The case for <span class="inlinecode"><span class="id" title="var">T_Var</span></span> is vacuous
+        because variables cannot be typed in the empty context.
+
+<div class="paragraph"> </div>
+
+
+</li>
+<li> If the last step in the typing derivation is by <span class="inlinecode"><span class="id" title="var">T_App</span></span>, then
+        there are terms <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">t<sub>2</sub></span></span> and types <span class="inlinecode"><span class="id" title="var">T<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">T<sub>2</sub></span></span> such that <span class="inlinecode"><span class="id" title="var">t</span></span> <span class="inlinecode">=</span>
+        <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">t<sub>2</sub></span></span>, <span class="inlinecode"><span class="id" title="var">T</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">T<sub>2</sub></span></span>, <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">T<sub>1</sub></span></span> <span class="inlinecode">→</span> <span class="inlinecode"><span class="id" title="var">T<sub>2</sub></span></span> and <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">t<sub>2</sub></span></span> <span class="inlinecode">:</span>
+        <span class="inlinecode"><span class="id" title="var">T<sub>1</sub></span></span>.
+
+<div class="paragraph"> </div>
+
+        The induction hypotheses for these typing derivations yield
+        that <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> is a value or steps, and that <span class="inlinecode"><span class="id" title="var">t<sub>2</sub></span></span> is a value or
+        steps.
+
+<div class="paragraph"> </div>
+
+<ul class="doclist">
+<li> Suppose <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode"><span class="id" title="var">t<sub>1</sub>'</span></span> for some term <span class="inlinecode"><span class="id" title="var">t<sub>1</sub>'</span></span>.  Then <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">t<sub>2</sub></span></span> <span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span>
+          <span class="inlinecode"><span class="id" title="var">t<sub>1</sub>'</span></span> <span class="inlinecode"><span class="id" title="var">t<sub>2</sub></span></span> by <span class="inlinecode"><span class="id" title="var">ST_App1</span></span>.
+
+<div class="paragraph"> </div>
+
+
+</li>
+<li> Otherwise <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> is a value.
+
+<div class="paragraph"> </div>
+
+<ul class="doclist">
+<li> Suppose <span class="inlinecode"><span class="id" title="var">t<sub>2</sub></span></span> <span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode"><span class="id" title="var">t<sub>2</sub>'</span></span> for some term <span class="inlinecode"><span class="id" title="var">t<sub>2</sub>'</span></span>.  Then <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">t<sub>2</sub></span></span> <span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span>
+            <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">t<sub>2</sub>'</span></span> by rule <span class="inlinecode"><span class="id" title="var">ST_App2</span></span> because <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> is a value.
+
+<div class="paragraph"> </div>
+
+
+</li>
+<li> Otherwise, <span class="inlinecode"><span class="id" title="var">t<sub>2</sub></span></span> is a value.  By Lemma
+            <span class="inlinecode"><span class="id" title="var">canonical_forms_for_arrow_types</span></span>, <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode">=</span> <span class="inlinecode">\<span class="id" title="var">x</span>:<span class="id" title="var">S<sub>1</sub></span>,<span class="id" title="var">s<sub>2</sub></span></span> for
+            some <span class="inlinecode"><span class="id" title="var">x</span></span>, <span class="inlinecode"><span class="id" title="var">S<sub>1</sub></span></span>, and <span class="inlinecode"><span class="id" title="var">s<sub>2</sub></span></span>.  But then <span class="inlinecode">(\<span class="id" title="var">x</span>:<span class="id" title="var">S<sub>1</sub></span>,<span class="id" title="var">s<sub>2</sub></span>)</span> <span class="inlinecode"><span class="id" title="var">t<sub>2</sub></span></span> <span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span>
+            <span class="inlinecode">[<span class="id" title="var">x</span>:=<span class="id" title="var">t<sub>2</sub></span>]<span class="id" title="var">s<sub>2</sub></span></span> by <span class="inlinecode"><span class="id" title="var">ST_AppAbs</span></span>, since <span class="inlinecode"><span class="id" title="var">t<sub>2</sub></span></span> is a value.
+
+<div class="paragraph"> </div>
+
+
+</li>
+</ul>
+
+</li>
+</ul>
+
+</li>
+<li> If the last step of the derivation is by <span class="inlinecode"><span class="id" title="var">T_Proj</span></span>, then there
+        are a term <span class="inlinecode"><span class="id" title="var">tr</span></span>, a type <span class="inlinecode"><span class="id" title="var">Tr</span></span>, and a label <span class="inlinecode"><span class="id" title="var">i</span></span> such that <span class="inlinecode"><span class="id" title="var">t</span></span> <span class="inlinecode">=</span>
+        <span class="inlinecode"><span class="id" title="var">tr.i</span></span>, <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">tr</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">Tr</span></span>, and <span class="inlinecode"><span class="id" title="var">Tlookup</span></span> <span class="inlinecode"><span class="id" title="var">i</span></span> <span class="inlinecode"><span class="id" title="var">Tr</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">Some</span></span> <span class="inlinecode"><span class="id" title="var">T</span></span>.
+
+<div class="paragraph"> </div>
+
+        By the IH, either <span class="inlinecode"><span class="id" title="var">tr</span></span> is a value or it steps.  If <span class="inlinecode"><span class="id" title="var">tr</span></span> <span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span>
+        <span class="inlinecode"><span class="id" title="var">tr'</span></span> for some term <span class="inlinecode"><span class="id" title="var">tr'</span></span>, then <span class="inlinecode"><span class="id" title="var">tr.i</span></span> <span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode"><span class="id" title="var">tr'.i</span></span> by rule
+        <span class="inlinecode"><span class="id" title="var">ST_Proj1</span></span>.
+
+<div class="paragraph"> </div>
+
+        If <span class="inlinecode"><span class="id" title="var">tr</span></span> is a value, then Lemma <span class="inlinecode"><span class="id" title="var">lookup_field_in_value</span></span> yields
+        that there is a term <span class="inlinecode"><span class="id" title="var">ti</span></span> such that <span class="inlinecode"><span class="id" title="var">tlookup</span></span> <span class="inlinecode"><span class="id" title="var">i</span></span> <span class="inlinecode"><span class="id" title="var">tr</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">Some</span></span> <span class="inlinecode"><span class="id" title="var">ti</span></span>.
+        It follows that <span class="inlinecode"><span class="id" title="var">tr.i</span></span> <span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode"><span class="id" title="var">ti</span></span> by rule <span class="inlinecode"><span class="id" title="var">ST_ProjRcd</span></span>.
+
+<div class="paragraph"> </div>
+
+
+</li>
+<li> If the final step of the derivation is by <span class="inlinecode"><span class="id" title="var">T_Sub</span></span>, then there
+        is a type <span class="inlinecode"><span class="id" title="var">S</span></span> such that <span class="inlinecode"><span class="id" title="var">S</span></span> <span class="inlinecode">&lt;:</span> <span class="inlinecode"><span class="id" title="var">T</span></span> and <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">t</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">S</span></span>.  The
+        desired result is exactly the induction hypothesis for the
+        typing subderivation.
+
+<div class="paragraph"> </div>
+
+
+</li>
+<li> If the final step of the derivation is by <span class="inlinecode"><span class="id" title="var">T_RCons</span></span>, then
+        there exist some terms <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">tr</span></span>, types <span class="inlinecode"><span class="id" title="var">T<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">Tr</span></span> and a label
+        <span class="inlinecode"><span class="id" title="var">t</span></span> such that <span class="inlinecode"><span class="id" title="var">t</span></span> <span class="inlinecode">=</span> <span class="inlinecode">{<span class="id" title="var">i</span>=<span class="id" title="var">t<sub>1</sub></span>,</span> <span class="inlinecode"><span class="id" title="var">tr</span>}</span>, <span class="inlinecode"><span class="id" title="var">T</span></span> <span class="inlinecode">=</span> <span class="inlinecode">{<span class="id" title="var">i</span>:<span class="id" title="var">T<sub>1</sub></span>,</span> <span class="inlinecode"><span class="id" title="var">Tr</span>}</span>, <span class="inlinecode"><span class="id" title="var">record_ty</span></span>
+        <span class="inlinecode"><span class="id" title="var">tr</span></span>, <span class="inlinecode"><span class="id" title="var">record_tm</span></span> <span class="inlinecode"><span class="id" title="var">Tr</span></span>, <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">T<sub>1</sub></span></span> and <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">tr</span></span> <span class="inlinecode">:</span>
+        <span class="inlinecode"><span class="id" title="var">Tr</span></span>.
+
+<div class="paragraph"> </div>
+
+        The induction hypotheses for these typing derivations yield
+        that <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> is a value or steps, and that <span class="inlinecode"><span class="id" title="var">tr</span></span> is a value or
+        steps.  We consider each case:
+
+<div class="paragraph"> </div>
+
+<ul class="doclist">
+<li> Suppose <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode"><span class="id" title="var">t<sub>1</sub>'</span></span> for some term <span class="inlinecode"><span class="id" title="var">t<sub>1</sub>'</span></span>.  Then <span class="inlinecode">{<span class="id" title="var">i</span>=<span class="id" title="var">t<sub>1</sub></span>,</span> <span class="inlinecode"><span class="id" title="var">tr</span>}</span>
+          <span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode">{<span class="id" title="var">i</span>=<span class="id" title="var">t<sub>1</sub>'</span>,</span> <span class="inlinecode"><span class="id" title="var">tr</span>}</span> by rule <span class="inlinecode"><span class="id" title="var">ST_Rcd_Head</span></span>.
+
+<div class="paragraph"> </div>
+
+
+</li>
+<li> Otherwise <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> is a value.
+
+<div class="paragraph"> </div>
+
+<ul class="doclist">
+<li> Suppose <span class="inlinecode"><span class="id" title="var">tr</span></span> <span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode"><span class="id" title="var">tr'</span></span> for some term <span class="inlinecode"><span class="id" title="var">tr'</span></span>.  Then <span class="inlinecode">{<span class="id" title="var">i</span>=<span class="id" title="var">t<sub>1</sub></span>,</span>
+            <span class="inlinecode"><span class="id" title="var">tr</span>}</span> <span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode">{<span class="id" title="var">i</span>=<span class="id" title="var">t<sub>1</sub></span>,</span> <span class="inlinecode"><span class="id" title="var">tr'</span>}</span> by rule <span class="inlinecode"><span class="id" title="var">ST_Rcd_Tail</span></span>, since <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> is
+            a value.
+
+<div class="paragraph"> </div>
+
+
+</li>
+<li> Otherwise, <span class="inlinecode"><span class="id" title="var">tr</span></span> is also a value.  So, <span class="inlinecode">{<span class="id" title="var">i</span>=<span class="id" title="var">t<sub>1</sub></span>,</span> <span class="inlinecode"><span class="id" title="var">tr</span>}</span> is a
+            value by <span class="inlinecode"><span class="id" title="var">v_rcons</span></span>. 
+
+</li>
+</ul>
+
+</li>
+</ul>
+
+</li>
+</ul>
+</div>
+
+<div class="doc">
+<a id="lab493"></a><h3 class="section">Inversion Lemma</h3>
+
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">typing_inversion_abs</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">x</span> <span class="id" title="var">S<sub>1</sub></span> <span class="id" title="var">t<sub>2</sub></span> <span class="id" title="var">T</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="nowrap">&vert;--</span> \ <span class="id" title="var">x</span> : <span class="id" title="var">S<sub>1</sub></span>, <span class="id" title="var">t<sub>2</sub></span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="tactic">∃</span> <span class="id" title="var">S<sub>2</sub></span>, &lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">S<sub>1</sub></span> → <span class="id" title="var">S<sub>2</sub></span> <span style='letter-spacing:-.4em;'>}</span>}&gt; &lt;: <span class="id" title="var">T</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;∧ (<span class="id" title="var">x</span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>&#x22A2;</span><span style='font-size:90%;'>&gt;</span></span></span></span> <span class="id" title="var">S<sub>1</sub></span>; <span class="id" title="var">Gamma</span>) <span class="nowrap">&vert;--</span> <span class="id" title="var">t<sub>2</sub></span> \<span class="id" title="keyword">in</span> <span class="id" title="var">S<sub>2</sub></span>).<br/>
+<div class="togglescript" id="proofcontrol13" onclick="toggleDisplay('proof13');toggleDisplay('proofcontrol13')"><span class="show"></span></div>
+<div class="proofscript" id="proof13" onclick="toggleDisplay('proof13');toggleDisplay('proofcontrol13')">
+<span class="id" title="keyword">Proof</span> <span class="id" title="keyword">with</span> <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">x</span> <span class="id" title="var">S<sub>1</sub></span> <span class="id" title="var">t<sub>2</sub></span> <span class="id" title="var">T</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">remember</span> &lt;{ \ <span class="id" title="var">x</span> : <span class="id" title="var">S<sub>1</sub></span>, <span class="id" title="var">t<sub>2</sub></span> }&gt; <span class="id" title="keyword">as</span> <span class="id" title="var">t</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">H</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">Heqt</span>; <span class="id" title="tactic">subst</span>; <span class="id" title="tactic">intros</span>; <span class="id" title="tactic">try</span> <span class="id" title="var">solve_by_invert</span>.<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;T_Abs&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">Hwf</span> := <span class="id" title="var">has_type__wf</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">H<sub>0</sub></span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">T<sub>12</sub></span>...<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;T_Sub&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">IHhas_type</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">S<sub>2</sub></span> [<span class="id" title="var">Hsub</span> <span class="id" title="var">Hty</span>]]...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">abs_arrow</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">x</span> <span class="id" title="var">S<sub>1</sub></span> <span class="id" title="var">s<sub>2</sub></span> <span class="id" title="var">T<sub>1</sub></span> <span class="id" title="var">T<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">empty</span> <span class="nowrap">&vert;--</span> \<span class="id" title="var">x</span> : <span class="id" title="var">S<sub>1</sub></span>, <span class="id" title="var">s<sub>2</sub></span> \<span class="id" title="keyword">in</span> (<span class="id" title="var">T<sub>1</sub></span> → <span class="id" title="var">T<sub>2</sub></span>) →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">T<sub>1</sub></span> &lt;: <span class="id" title="var">S<sub>1</sub></span><br/>
+&nbsp;&nbsp;∧ (<span class="id" title="var">x</span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>&#x22A2;</span><span style='font-size:90%;'>&gt;</span></span></span></span> <span class="id" title="var">S<sub>1</sub></span>) <span class="nowrap">&vert;--</span> <span class="id" title="var">s<sub>2</sub></span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T<sub>2</sub></span>.<br/>
+<div class="togglescript" id="proofcontrol14" onclick="toggleDisplay('proof14');toggleDisplay('proofcontrol14')"><span class="show"></span></div>
+<div class="proofscript" id="proof14" onclick="toggleDisplay('proof14');toggleDisplay('proofcontrol14')">
+<span class="id" title="keyword">Proof</span> <span class="id" title="keyword">with</span> <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">x</span> <span class="id" title="var">S<sub>1</sub></span> <span class="id" title="var">s<sub>2</sub></span> <span class="id" title="var">T<sub>1</sub></span> <span class="id" title="var">T<sub>2</sub></span> <span class="id" title="var">Hty</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">typing_inversion_abs</span> <span class="id" title="keyword">in</span> <span class="id" title="var">Hty</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">Hty</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">S<sub>2</sub></span> [<span class="id" title="var">Hsub</span> <span class="id" title="var">Hty</span>]].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">sub_inversion_arrow</span> <span class="id" title="keyword">in</span> <span class="id" title="var">Hsub</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">Hsub</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">U<sub>1</sub></span> [<span class="id" title="var">U<sub>2</sub></span> [<span class="id" title="var">Heq</span> [<span class="id" title="var">Hsub1</span> <span class="id" title="var">Hsub2</span>]]]].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">Heq</span>; <span class="id" title="tactic">subst</span>... <span class="id" title="keyword">Qed</span>.<br/>
+</div>
+</div>
+
+<div class="doc">
+<a id="lab494"></a><h2 class="section">Weakening</h2>
+
+<div class="paragraph"> </div>
+
+ The weakening lemma is proved as in pure STLC. 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">weakening</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">Gamma'</span> <span class="id" title="var">t</span> <span class="id" title="var">T</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">includedin</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">Gamma'</span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span>  <span class="nowrap">&vert;--</span> <span class="id" title="var">t</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T</span>  →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma'</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">t</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">Gamma'</span> <span class="id" title="var">t</span> <span class="id" title="var">T</span> <span class="id" title="var">H</span> <span class="id" title="var">Ht</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">Gamma'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">Ht</span>; <span class="id" title="tactic">eauto</span> <span class="id" title="keyword">using</span> <span class="id" title="var">includedin_update</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">weakening_empty</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">t</span> <span class="id" title="var">T</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">empty</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">t</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T</span>  →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">t</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">t</span> <span class="id" title="var">T</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">weakening</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">discriminate</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<div class="doc">
+<a id="lab495"></a><h3 class="section">Preservation</h3>
+
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">substitution_preserves_typing</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">x</span> <span class="id" title="var">U</span> <span class="id" title="var">t</span> <span class="id" title="var">v</span> <span class="id" title="var">T</span>,<br/>
+&nbsp;&nbsp;&nbsp;(<span class="id" title="var">x</span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>&#x22A2;</span><span style='font-size:90%;'>&gt;</span></span></span></span> <span class="id" title="var">U</span> ; <span class="id" title="var">Gamma</span>) <span class="nowrap">&vert;--</span> <span class="id" title="var">t</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T</span> →<br/>
+&nbsp;&nbsp;&nbsp;<span class="id" title="var">empty</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">v</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">U</span>   →<br/>
+&nbsp;&nbsp;&nbsp;<span class="id" title="var">Gamma</span> <span class="nowrap">&vert;--</span> [<span class="id" title="var">x</span>:=<span class="id" title="var">v</span>]<span class="id" title="var">t</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+<div class="togglescript" id="proofcontrol15" onclick="toggleDisplay('proof15');toggleDisplay('proofcontrol15')"><span class="show"></span></div>
+<div class="proofscript" id="proof15" onclick="toggleDisplay('proof15');toggleDisplay('proofcontrol15')">
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">Gamma</span> <span class="id" title="var">x</span> <span class="id" title="var">U</span> <span class="id" title="var">t</span> <span class="id" title="var">v</span> <span class="id" title="var">T</span> <span class="id" title="var">Ht</span> <span class="id" title="var">Hv</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">x</span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>&#x22A2;</span><span style='font-size:90%;'>&gt;</span></span></span></span> <span class="id" title="var">U</span>; <span class="id" title="var">Gamma</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">Gamma'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">Gamma</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">Ht</span>; <span class="id" title="tactic">intros</span> <span class="id" title="var">Gamma'</span> <span class="id" title="var">G</span>; <span class="id" title="tactic">simpl</span>; <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;T_Var&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rename</span> <span class="id" title="var">x<sub>0</sub></span> <span class="id" title="var">into</span> <span class="id" title="var">y</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">eqb_spec</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">Hxy</span>|<span class="id" title="var">Hxy</span>]; <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="comment">(*&nbsp;x&nbsp;=&nbsp;y&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">update_eq</span> <span class="id" title="keyword">in</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">injection</span> <span class="id" title="var">H</span> <span class="id" title="keyword">as</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">weakening_empty</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="comment">(*&nbsp;x&lt;&gt;y&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">T_Var</span>; [|<span class="id" title="tactic">assumption</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">update_neq</span> <span class="id" title="keyword">in</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;T_Abs&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rename</span> <span class="id" title="var">x<sub>0</sub></span> <span class="id" title="var">into</span> <span class="id" title="var">y</span>. <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">eqb_spec</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">Hxy</span>|<span class="id" title="var">Hxy</span>]; <span class="id" title="tactic">apply</span> <span class="id" title="var">T_Abs</span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="comment">(*&nbsp;x=y&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">subst</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">update_shadow</span> <span class="id" title="keyword">in</span> <span class="id" title="var">Ht</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="comment">(*&nbsp;x&nbsp;&lt;&gt;&nbsp;y&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">subst</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">IHHt</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">update_permute</span>; <span class="id" title="tactic">auto</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="comment">(*&nbsp;rcons&nbsp;*)</span>   <span class="comment">(*&nbsp;&lt;===&nbsp;only&nbsp;new&nbsp;case&nbsp;compared&nbsp;to&nbsp;pure&nbsp;STLC&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">T_RCons</span>; <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H<sub>0</sub></span>; <span class="id" title="tactic">subst</span>; <span class="id" title="tactic">simpl</span>; <span class="id" title="tactic">auto</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">preservation</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">t</span> <span class="id" title="var">t'</span> <span class="id" title="var">T</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">empty</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">t</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T</span>  →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">t</span> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">t'</span>  →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">empty</span> <span class="nowrap">&vert;--</span> <span class="id" title="var">t'</span> \<span class="id" title="keyword">in</span> <span class="id" title="var">T</span>.<br/>
+<div class="togglescript" id="proofcontrol16" onclick="toggleDisplay('proof16');toggleDisplay('proofcontrol16')"><span class="show"></span></div>
+<div class="proofscript" id="proof16" onclick="toggleDisplay('proof16');toggleDisplay('proofcontrol16')">
+<span class="id" title="keyword">Proof</span> <span class="id" title="keyword">with</span> <span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">t</span> <span class="id" title="var">t'</span> <span class="id" title="var">T</span> <span class="id" title="var">HT</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">t'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">remember</span> <span class="id" title="var">empty</span> <span class="id" title="keyword">as</span> <span class="id" title="var">Gamma</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">HT</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">t'</span> <span class="id" title="var">HE</span>; <span class="id" title="tactic">subst</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> <span class="id" title="tactic">solve</span> [<span class="id" title="tactic">inversion</span> <span class="id" title="var">HE</span>; <span class="id" title="tactic">subst</span>; <span class="id" title="tactic">eauto</span>].<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;T_App&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">HE</span>; <span class="id" title="tactic">subst</span>...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="comment">(*&nbsp;ST_AppAbs&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">abs_arrow</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">HT<sub>1</sub></span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">HA<sub>1</sub></span> <span class="id" title="var">HA<sub>2</sub></span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">substitution_preserves_typing</span> <span class="id" title="keyword">with</span> <span class="id" title="var">T<sub>0</sub></span>...<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;T_Proj&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">HE</span>; <span class="id" title="tactic">subst</span>...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">lookup_field_in_value</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">H<sub>2</sub></span> <span class="id" title="var">HT</span> <span class="id" title="var">H</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">as</span> [<span class="id" title="var">vi</span> [<span class="id" title="var">Hget</span> <span class="id" title="var">Hty</span>]].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H<sub>4</sub></span> <span class="id" title="keyword">in</span> <span class="id" title="var">Hget</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">Hget</span>. <span class="id" title="tactic">subst</span>...<br/>
+&nbsp;&nbsp;- <span class="comment">(*&nbsp;T_RCons&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">HE</span>; <span class="id" title="tactic">subst</span>...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eauto</span> <span class="id" title="keyword">using</span> <span class="id" title="var">step_preserves_record_tm</span>. <span class="id" title="keyword">Qed</span>.<br/>
+</div>
+</div>
+
+<div class="doc">
+<i>Theorem</i>: If <span class="inlinecode"><span class="id" title="var">t</span></span>, <span class="inlinecode"><span class="id" title="var">t'</span></span> are terms and <span class="inlinecode"><span class="id" title="var">T</span></span> is a type such that
+     <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">t</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">T</span></span> and <span class="inlinecode"><span class="id" title="var">t</span></span> <span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode"><span class="id" title="var">t'</span></span>, then <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">t'</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">T</span></span>.
+
+<div class="paragraph"> </div>
+
+    <i>Proof</i>: Let <span class="inlinecode"><span class="id" title="var">t</span></span> and <span class="inlinecode"><span class="id" title="var">T</span></span> be given such that <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">t</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">T</span></span>.  We go
+     by induction on the structure of this typing derivation, leaving
+     <span class="inlinecode"><span class="id" title="var">t'</span></span> general.  Cases <span class="inlinecode"><span class="id" title="var">T_Abs</span></span> and <span class="inlinecode"><span class="id" title="var">T_RNil</span></span> are vacuous because
+     abstractions and <span class="inlinecode">{}</span> don't step.  Case <span class="inlinecode"><span class="id" title="var">T_Var</span></span> is vacuous as well,
+     since the context is empty.
+
+<div class="paragraph"> </div>
+
+<ul class="doclist">
+<li> If the final step of the derivation is by <span class="inlinecode"><span class="id" title="var">T_App</span></span>, then there
+       are terms <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">t<sub>2</sub></span></span> and types <span class="inlinecode"><span class="id" title="var">T<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">T<sub>2</sub></span></span> such that <span class="inlinecode"><span class="id" title="var">t</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">t<sub>2</sub></span></span>,
+       <span class="inlinecode"><span class="id" title="var">T</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">T<sub>2</sub></span></span>, <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">T<sub>1</sub></span></span> <span class="inlinecode">→</span> <span class="inlinecode"><span class="id" title="var">T<sub>2</sub></span></span> and <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">t<sub>2</sub></span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">T<sub>1</sub></span></span>.
+
+<div class="paragraph"> </div>
+
+       By inspection of the definition of the step relation, there are
+       three ways <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">t<sub>2</sub></span></span> can step.  Cases <span class="inlinecode"><span class="id" title="var">ST_App1</span></span> and <span class="inlinecode"><span class="id" title="var">ST_App2</span></span>
+       follow immediately by the induction hypotheses for the typing
+       subderivations and a use of <span class="inlinecode"><span class="id" title="var">T_App</span></span>.
+
+<div class="paragraph"> </div>
+
+       Suppose instead <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">t<sub>2</sub></span></span> steps by <span class="inlinecode"><span class="id" title="var">ST_AppAbs</span></span>.  Then
+       <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode">=</span> <span class="inlinecode">\<span class="id" title="var">x</span>:<span class="id" title="var">S</span>,<span class="id" title="var">t<sub>12</sub></span></span> for some type <span class="inlinecode"><span class="id" title="var">S</span></span> and term <span class="inlinecode"><span class="id" title="var">t<sub>12</sub></span></span>, and
+       <span class="inlinecode"><span class="id" title="var">t'</span></span> <span class="inlinecode">=</span> <span class="inlinecode">[<span class="id" title="var">x</span>:=<span class="id" title="var">t<sub>2</sub></span>]<span class="id" title="var">t<sub>12</sub></span></span>.
+
+<div class="paragraph"> </div>
+
+       By Lemma <span class="inlinecode"><span class="id" title="var">abs_arrow</span></span>, we have <span class="inlinecode"><span class="id" title="var">T<sub>1</sub></span></span> <span class="inlinecode">&lt;:</span> <span class="inlinecode"><span class="id" title="var">S</span></span> and <span class="inlinecode"><span class="id" title="var">x</span>:<span class="id" title="var">S<sub>1</sub></span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">s<sub>2</sub></span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">T<sub>2</sub></span></span>.
+       It then follows by lemma <span class="inlinecode"><span class="id" title="var">substitution_preserves_typing</span></span> that
+       <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode">[<span class="id" title="var">x</span>:=<span class="id" title="var">t<sub>2</sub></span>]</span> <span class="inlinecode"><span class="id" title="var">t<sub>12</sub></span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">T<sub>2</sub></span></span> as desired.
+
+<div class="paragraph"> </div>
+
+
+</li>
+<li> If the final step of the derivation is by <span class="inlinecode"><span class="id" title="var">T_Proj</span></span>, then there
+       is a term <span class="inlinecode"><span class="id" title="var">tr</span></span>, type <span class="inlinecode"><span class="id" title="var">Tr</span></span> and label <span class="inlinecode"><span class="id" title="var">i</span></span> such that <span class="inlinecode"><span class="id" title="var">t</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">tr.i</span></span>,
+       <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">tr</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">Tr</span></span>, and <span class="inlinecode"><span class="id" title="var">Tlookup</span></span> <span class="inlinecode"><span class="id" title="var">i</span></span> <span class="inlinecode"><span class="id" title="var">Tr</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">Some</span></span> <span class="inlinecode"><span class="id" title="var">T</span></span>.
+
+<div class="paragraph"> </div>
+
+       The IH for the typing derivation gives us that, for any term
+       <span class="inlinecode"><span class="id" title="var">tr'</span></span>, if <span class="inlinecode"><span class="id" title="var">tr</span></span> <span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode"><span class="id" title="var">tr'</span></span> then <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">tr'</span></span> <span class="inlinecode"><span class="id" title="var">Tr</span></span>.  Inspection of
+       the definition of the step relation reveals that there are two
+       ways a projection can step.  Case <span class="inlinecode"><span class="id" title="var">ST_Proj1</span></span> follows
+       immediately by the IH.
+
+<div class="paragraph"> </div>
+
+       Instead suppose <span class="inlinecode"><span class="id" title="var">tr</span></span> <span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode"><span class="id" title="var">i</span></span> steps by <span class="inlinecode"><span class="id" title="var">ST_ProjRcd</span></span>.  Then <span class="inlinecode"><span class="id" title="var">tr</span></span> is a
+       value and there is some term <span class="inlinecode"><span class="id" title="var">vi</span></span> such that
+       <span class="inlinecode"><span class="id" title="var">tlookup</span></span> <span class="inlinecode"><span class="id" title="var">i</span></span> <span class="inlinecode"><span class="id" title="var">tr</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">Some</span></span> <span class="inlinecode"><span class="id" title="var">vi</span></span> and <span class="inlinecode"><span class="id" title="var">t'</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">vi</span></span>.  But by lemma
+       <span class="inlinecode"><span class="id" title="var">lookup_field_in_value</span></span>, <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">vi</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">Ti</span></span> as desired.
+
+<div class="paragraph"> </div>
+
+
+</li>
+<li> If the final step of the derivation is by <span class="inlinecode"><span class="id" title="var">T_Sub</span></span>, then there
+       is a type <span class="inlinecode"><span class="id" title="var">S</span></span> such that <span class="inlinecode"><span class="id" title="var">S</span></span> <span class="inlinecode">&lt;:</span> <span class="inlinecode"><span class="id" title="var">T</span></span> and <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">t</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">S</span></span>.  The
+       result is immediate by the induction hypothesis for the typing
+       subderivation and an application of <span class="inlinecode"><span class="id" title="var">T_Sub</span></span>.
+
+<div class="paragraph"> </div>
+
+
+</li>
+<li> If the final step of the derivation is by <span class="inlinecode"><span class="id" title="var">T_RCons</span></span>, then there
+       exist some terms <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">tr</span></span>, types <span class="inlinecode"><span class="id" title="var">T<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">Tr</span></span> and a label <span class="inlinecode"><span class="id" title="var">t</span></span> such
+       that <span class="inlinecode"><span class="id" title="var">t</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">i</span>:=<span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode">::</span> <span class="inlinecode"><span class="id" title="var">tr</span>}</span>, <span class="inlinecode"><span class="id" title="var">T</span></span> <span class="inlinecode">=</span> <span class="inlinecode"><span class="id" title="var">i</span>:<span class="id" title="var">T<sub>1</sub></span></span> <span class="inlinecode">::</span> <span class="inlinecode"><span class="id" title="var">Tr</span></span>, <span class="inlinecode"><span class="id" title="var">record_ty</span></span> <span class="inlinecode"><span class="id" title="var">tr</span></span>,
+       <span class="inlinecode"><span class="id" title="var">record_tm</span></span> <span class="inlinecode"><span class="id" title="var">Tr</span></span>, <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">T<sub>1</sub></span></span> and <span class="inlinecode"><span class="id" title="var">empty</span></span> <span class="inlinecode"><span class="nowrap">&vert;--</span></span> <span class="inlinecode"><span class="id" title="var">tr</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">Tr</span></span>.
+
+<div class="paragraph"> </div>
+
+       By the definition of the step relation, <span class="inlinecode"><span class="id" title="var">t</span></span> must have stepped
+       by <span class="inlinecode"><span class="id" title="var">ST_Rcd_Head</span></span> or <span class="inlinecode"><span class="id" title="var">ST_Rcd_Tail</span></span>.  In the first case, the
+       result follows by the IH for <span class="inlinecode"><span class="id" title="var">t<sub>1</sub></span></span>'s typing derivation and
+       <span class="inlinecode"><span class="id" title="var">T_RCons</span></span>.  In the second case, the result follows by the IH
+       for <span class="inlinecode"><span class="id" title="var">tr</span></span>'s typing derivation, <span class="inlinecode"><span class="id" title="var">T_RCons</span></span>, and a use of the
+       <span class="inlinecode"><span class="id" title="var">step_preserves_record_tm</span></span> lemma. 
+
+</li>
+</ul>
+</div>
+<div class="code">
+
+<span class="id" title="keyword">End</span> <span class="id" title="var">RecordSub</span>.<br/>
+</div>
+</div>
+
+<div id="footer">
+<hr/><a href="coqindex.html">Index</a><hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>
