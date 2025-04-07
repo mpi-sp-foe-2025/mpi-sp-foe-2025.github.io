@@ -33,11 +33,9 @@
 <h1 class="libtitle">Noninterference<span class="subtitle">Defining Secrecy and Secure Multi-Execution</span></h1>
 
 
+
 <div class="doc">
-
-<div class="paragraph"> </div>
-
- Programmers have to be very careful about how information flows in
+Programmers have to be very careful about how information flows in
     the software they develop to prevent leaking secret data. For
     instance in Moodle students shouldn't be able to obtain
     information about other student's grades. Or in crypto protocols
@@ -109,7 +107,7 @@ In the last two cases the value of the public output is equal to the value
 </div>
 <div class="code">
 
-<span class="id" title="keyword">Definition</span> <span class="id" title="var">broken_def</span> (<span class="id" title="var">f</span> : <span class="id" title="var">nat</span> → <span class="id" title="var">nat</span> → <span class="id" title="var">nat</span>×<span class="id" title="var">nat</span>) :=<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">broken_sec_def</span> (<span class="id" title="var">f</span> : <span class="id" title="var">nat</span> → <span class="id" title="var">nat</span> → <span class="id" title="var">nat</span>×<span class="id" title="var">nat</span>) :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">pi</span> <span class="id" title="var">si</span>, <span class="id" title="var">fst</span> (<span class="id" title="var">f</span> <span class="id" title="var">pi</span> <span class="id" title="var">si</span>) ≠ <span class="id" title="var">si</span>.<br/>
 </div>
 
@@ -119,7 +117,7 @@ As discussed above, this definition would reject our secure
 </div>
 <div class="code">
 
-<span class="id" title="keyword">Lemma</span> <span class="id" title="var">broken_def_rejects_secure_f</span> : ¬<span class="id" title="var">broken_def</span> <span class="id" title="var">secure_f</span>.<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">broken_sec_def_rejects_secure_f</span> : ¬<span class="id" title="var">broken_sec_def</span> <span class="id" title="var">secure_f</span>.<br/>
 <span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">Hc</span>. <span class="id" title="tactic">apply</span> (<span class="id" title="var">Hc</span> 0 1). <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
 </div>
 
@@ -143,11 +141,11 @@ This function's public output is never equal to its secret input, yet an
 </div>
 <div class="code">
 
-<span class="id" title="keyword">Lemma</span> <span class="id" title="var">broken_def_accepts_insecure_f</span> : <span class="id" title="var">broken_def</span> <span class="id" title="var">insecure_f</span>.<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">broken_sec_def_accepts_insecure_f</span> : <span class="id" title="var">broken_sec_def</span> <span class="id" title="var">insecure_f</span>.<br/>
 <div class="togglescript" id="proofcontrol1" onclick="toggleDisplay('proof1');toggleDisplay('proofcontrol1')"><span class="show"></span></div>
 <div class="proofscript" id="proof1" onclick="toggleDisplay('proof1');toggleDisplay('proofcontrol1')">
 <span class="id" title="keyword">Proof</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">broken_def</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">pi</span> <span class="id" title="var">si</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">si</span> <span class="id" title="keyword">as</span> [| <span class="id" title="var">si'</span> <span class="id" title="var">IH</span>].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">broken_sec_def</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">pi</span> <span class="id" title="var">si</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">si</span> <span class="id" title="keyword">as</span> [| <span class="id" title="var">si'</span> <span class="id" title="var">IH</span>].<br/>
 &nbsp;&nbsp;- <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">contra</span>. <span class="id" title="tactic">discriminate</span> <span class="id" title="var">contra</span>.<br/>
 &nbsp;&nbsp;- <span class="id" title="tactic">simpl</span> <span class="id" title="keyword">in</span> ×. <span class="id" title="tactic">intro</span> <span class="id" title="var">Hc</span>. <span class="id" title="tactic">injection</span> <span class="id" title="var">Hc</span> <span class="id" title="keyword">as</span> <span class="id" title="var">Hc</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">IH</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Hc</span>.<br/>
 <span class="id" title="keyword">Qed</span>.<br/>
@@ -179,9 +177,15 @@ This attempt at defining secure information flow by looking at how
 </div>
 
 <div class="doc">
-This defines noninterference for arbitrary types of inputs and
-    outputs, so we can instantiate them to <span class="inlinecode"><span class="id" title="var">nat</span></span> when looking at our
-    example functions above: 
+This definition prevents secret inputs from interfering with public
+    outputs in any way. At the same time it allows secret inputs to
+    influence secret outputs and also public inputs to influence both
+    public and secret outputs. 
+<div class="paragraph"> </div>
+
+ The definition above defines noninterference for arbitrary types
+    of inputs and outputs, so we can instantiate them to <span class="inlinecode"><span class="id" title="var">nat</span></span> when
+    looking at our example functions above: 
 </div>
 <div class="code">
 
@@ -191,6 +195,74 @@ This defines noninterference for arbitrary types of inputs and
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">noninterferent</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">contra</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">contra</span> 0 0 1). <span class="id" title="tactic">discriminate</span> <span class="id" title="var">contra</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<div class="doc">
+The <span class="inlinecode"><span class="id" title="var">secure_f</span></span> function above is quite obviously noninterferent,
+    because the expression <span class="inlinecode"><span class="id" title="var">pi</span>+1</span> computing the public output doesn't
+    syntactically mention the secret input at all. Since
+    noninterference is a semantic property though (not a one syntactic
+    one), functions where the expression computing the public input
+    does syntactically mention the secret input can still be
+    noninterferent. Here is a first example: 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">less_obvious_f<sub>1</sub></span> (<span class="id" title="var">pi</span> <span class="id" title="var">si</span> : <span class="id" title="var">nat</span>) : <span class="id" title="var">nat</span>×<span class="id" title="var">nat</span> := (<span class="id" title="var">si</span> × 0, <span class="id" title="var">pi</span>+<span class="id" title="var">si</span>).<br/>
+</div>
+
+<div class="doc">
+This function is noninterferent; since the public output is
+    constant <span class="inlinecode">0</span>, so it can't depend on <span class="inlinecode"><span class="id" title="var">si</span></span>, even if it syntactically
+    mentions it: 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">noninterferent_less_obvious_f<sub>1</sub></span> : <span class="id" title="var">noninterferent</span> <span class="id" title="var">less_obvious_f<sub>1</sub></span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">noninterferent</span>, <span class="id" title="var">less_obvious_f<sub>1</sub></span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">pi</span> <span class="id" title="var">si<sub>1</sub></span> <span class="id" title="var">si<sub>2</sub></span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">mult_n_O</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<div class="doc">
+Here is a second example of a function that is noninterferent, even
+    if this is not syntactically obvious: 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">less_obvious_f<sub>2</sub></span> (<span class="id" title="var">pi</span> <span class="id" title="var">si</span> : <span class="id" title="var">nat</span>) : <span class="id" title="var">nat</span>×<span class="id" title="var">nat</span> :=<br/>
+&nbsp;&nbsp;(<span class="id" title="keyword">if</span> <span class="id" title="var">Nat.eqb</span> <span class="id" title="var">si</span> 1 <span class="id" title="keyword">then</span> <span class="id" title="var">si</span> × <span class="id" title="var">pi</span> <span class="id" title="keyword">else</span> <span class="id" title="var">pi</span>, <span class="id" title="var">pi</span>+<span class="id" title="var">si</span>).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">aux_f<sub>2</sub></span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">si</span> <span class="id" title="var">pi</span>, (<span class="id" title="keyword">if</span> <span class="id" title="var">Nat.eqb</span> <span class="id" title="var">si</span> 1 <span class="id" title="keyword">then</span> <span class="id" title="var">si</span> × <span class="id" title="var">pi</span> <span class="id" title="keyword">else</span> <span class="id" title="var">pi</span>) = <span class="id" title="var">pi</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">si</span> <span class="id" title="var">pi</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">si</span>; <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">destruct</span> <span class="id" title="var">si</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">plus_n_O</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">noninterferent_less_obvious_f<sub>2</sub></span> : <span class="id" title="var">noninterferent</span> <span class="id" title="var">less_obvious_f<sub>2</sub></span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">noninterferent</span>, <span class="id" title="var">less_obvious_f<sub>2</sub></span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">pi</span> <span class="id" title="var">si<sub>1</sub></span> <span class="id" title="var">si<sub>2</sub></span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">repeat</span> <span class="id" title="tactic">rewrite</span> <span class="id" title="var">aux_f<sub>2</sub></span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<div class="doc">
+Branching on a secret can, however, be dangerous, since one can
+    easily leak the secret this way, even if both the <span class="inlinecode"><span class="id" title="keyword">then</span></span> and the
+    <span class="inlinecode"><span class="id" title="keyword">else</span></span> branches are public. For instance the following function
+    leaks whether <span class="inlinecode"><span class="id" title="var">si</span></span> is zero or not, so it is not noninterferent. 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">less_obvious_f<sub>3</sub></span> (<span class="id" title="var">pi</span> <span class="id" title="var">si</span> : <span class="id" title="var">nat</span>) : <span class="id" title="var">nat</span>×<span class="id" title="var">nat</span> :=<br/>
+&nbsp;&nbsp;(<span class="id" title="keyword">if</span> <span class="id" title="var">Nat.eqb</span> <span class="id" title="var">si</span> 0 <span class="id" title="keyword">then</span> 1 <span class="id" title="keyword">else</span> 0, <span class="id" title="var">pi</span>+<span class="id" title="var">si</span>).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">interferent_less_obvious_f<sub>3</sub></span> : ¬<span class="id" title="var">noninterferent</span> <span class="id" title="var">less_obvious_f<sub>3</sub></span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">noninterferent</span>, <span class="id" title="var">less_obvious_f<sub>3</sub></span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">contra</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">contra</span> 1 1 0). <span class="id" title="tactic">simpl</span> <span class="id" title="keyword">in</span> <span class="id" title="var">contra</span>. <span class="id" title="tactic">discriminate</span> <span class="id" title="var">contra</span>.<br/>
 <span class="id" title="keyword">Qed</span>.<br/>
 </div>
 
@@ -206,7 +278,7 @@ This defines noninterference for arbitrary types of inputs and
 </div>
 <div class="code">
 
-<span class="id" title="keyword">Definition</span> <span class="id" title="var">too_strong_def</span> {<span class="id" title="var">PI</span> <span class="id" title="var">SI</span> <span class="id" title="var">PO</span> <span class="id" title="var">SO</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">f</span>:<span class="id" title="var">PI</span>→<span class="id" title="var">SI</span>→<span class="id" title="var">PO</span>×<span class="id" title="var">SO</span>) :=<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">too_strong_sec_def</span> {<span class="id" title="var">PI</span> <span class="id" title="var">SI</span> <span class="id" title="var">PO</span> <span class="id" title="var">SO</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">f</span>:<span class="id" title="var">PI</span>→<span class="id" title="var">SI</span>→<span class="id" title="var">PO</span>×<span class="id" title="var">SO</span>) :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">∀</span> (<span class="id" title="var">pi<sub>1</sub></span> <span class="id" title="var">pi<sub>2</sub></span>:<span class="id" title="var">PI</span>) (<span class="id" title="var">si<sub>1</sub></span> <span class="id" title="var">si<sub>2</sub></span>:<span class="id" title="var">SI</span>), <span class="id" title="var">fst</span> (<span class="id" title="var">f</span> <span class="id" title="var">pi<sub>1</sub></span> <span class="id" title="var">si<sub>1</sub></span>) = <span class="id" title="var">fst</span> (<span class="id" title="var">f</span> <span class="id" title="var">pi<sub>2</sub></span> <span class="id" title="var">si<sub>2</sub></span>).<br/>
 </div>
 
@@ -217,11 +289,11 @@ This basically says that the public output of <span class="inlinecode"><span cla
 </div>
 <div class="code">
 
-<span class="id" title="keyword">Lemma</span> <span class="id" title="var">secure_f_rejected_again</span> : ¬<span class="id" title="var">too_strong_def</span> <span class="id" title="var">secure_f</span>.<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">secure_f_rejected_again</span> : ¬<span class="id" title="var">too_strong_sec_def</span> <span class="id" title="var">secure_f</span>.<br/>
 <div class="togglescript" id="proofcontrol2" onclick="toggleDisplay('proof2');toggleDisplay('proofcontrol2')"><span class="show"></span></div>
 <div class="proofscript" id="proof2" onclick="toggleDisplay('proof2');toggleDisplay('proofcontrol2')">
 <span class="id" title="keyword">Proof</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">too_strong_def</span>, <span class="id" title="var">secure_f</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">contra</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">too_strong_sec_def</span>, <span class="id" title="var">secure_f</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">contra</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">contra</span> 0 1 0 0). <span class="id" title="tactic">discriminate</span> <span class="id" title="var">contra</span>.<br/>
 <span class="id" title="keyword">Qed</span>.<br/>
 </div>
@@ -484,7 +556,6 @@ Now we can finally state our theorem about the equivalence between
 </div>
 
 <br/>
-<span class="comment">(*&nbsp;YH:&nbsp;Alternative&nbsp;definition&nbsp;*)</span><br/>
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">merge_state_fun</span> (<span class="id" title="var">pub</span> : <span class="id" title="var">pub_map</span>) (<span class="id" title="var">sf</span> : <span class="id" title="var">state</span> → <span class="id" title="var">state</span> → <span class="id" title="var">state</span>×<span class="id" title="var">state</span>) :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">fun</span> <span class="id" title="var">s</span> : <span class="id" title="var">state</span> ⇒<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">ps</span> := <span class="id" title="var">sf</span> (<span class="id" title="var">split_state</span> <span class="id" title="var">s</span> <span class="id" title="var">pub</span> <span class="id" title="var">true</span>) (<span class="id" title="var">split_state</span> <span class="id" title="var">s</span> <span class="id" title="var">pub</span> <span class="id" title="var">false</span>) <span class="id" title="keyword">in</span><br/>
@@ -535,10 +606,11 @@ We can prove the same two theorems as for <span class="inlinecode"><span class="
 &nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">merge_states</span>, <span class="id" title="var">split_state</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">pub_equiv</span> <span class="id" title="keyword">in</span> <span class="id" title="var">Hni</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">functional_extensionality</span>. <span class="id" title="tactic">intro</span> <span class="id" title="var">x</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">pub</span> <span class="id" title="var">x</span>) <span class="id" title="var">eqn</span>:<span class="id" title="var">Eq</span>.<br/>
-&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <span class="id" title="var">Hni</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">x'</span> <span class="id" title="var">Hx'</span>.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">Bool.eqb_spec</span> (<span class="id" title="var">pub</span> <span class="id" title="var">x'</span>) <span class="id" title="var">true</span>).<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">reflexivity</span>.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="var">contradiction</span>.<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <span class="id" title="var">Hni</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">intros</span> <span class="id" title="var">x'</span> <span class="id" title="var">Hx'</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">Bool.eqb_spec</span> (<span class="id" title="var">pub</span> <span class="id" title="var">x'</span>) <span class="id" title="var">true</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="var">contradiction</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">assumption</span>.<br/>
 &nbsp;&nbsp;- <span class="id" title="tactic">reflexivity</span>.<br/>
 <span class="id" title="keyword">Qed</span>.<br/>
@@ -1004,8 +1076,11 @@ The reverse direction of the implication only works for programs that
 &nbsp;&nbsp;<span class="id" title="tactic">split</span>.<br/>
 &nbsp;&nbsp;- <span class="id" title="tactic">intros</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">specialize</span> (<span class="id" title="var">Hni</span> <span class="id" title="var">s</span> (<span class="id" title="var">split_state</span> <span class="id" title="var">s</span> <span class="id" title="var">pub</span> <span class="id" title="var">true</span>) <span class="id" title="var">s'</span> <span class="id" title="var">H</span> <span class="id" title="var">HH</span>).<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">Hni</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">s''</span> [<span class="id" title="var">Heval</span> <span class="id" title="var">Hequiv</span>]].<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">s''</span>. <span class="id" title="tactic">∃</span> <span class="id" title="var">s'</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">merge_state_pub_equiv</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">s''</span>. <span class="id" title="tactic">∃</span> <span class="id" title="var">s'</span>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">apply</span> <span class="id" title="var">merge_state_pub_equiv</span>. <span class="id" title="tactic">assumption</span>.<br/>
 &nbsp;&nbsp;- <span class="id" title="tactic">intros</span> [<span class="id" title="var">ps</span> [<span class="id" title="var">ss</span> [<span class="id" title="var">Hp</span> [<span class="id" title="var">Hs</span> <span class="id" title="var">Hm</span>]]]]. <span class="id" title="tactic">subst</span> <span class="id" title="var">s'</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">Hni</span> <span class="id" title="var">s</span> (<span class="id" title="var">split_state</span> <span class="id" title="var">s</span> <span class="id" title="var">pub</span> <span class="id" title="var">true</span>) <span class="id" title="var">ss</span> <span class="id" title="var">Hs</span> <span class="id" title="var">HH</span>).<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">Hni</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">s'</span> [<span class="id" title="var">Hp'</span> <span class="id" title="var">Hni</span>]].<br/>
