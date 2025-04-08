@@ -70,15 +70,15 @@
 </div>
 
 <div class="doc">
-A noninterference attacker can only observe the values of public
+A noninterference attacker can only observe the final values of public
     variables, not of secret ones. We formalize this as a notion of
-    <i>publicly equivalent</i> states that agree on the values of all
+    <i>publicly equivalent states</i> that agree on the values of all
     public variables, which are thus indistinguishable to an attacker: 
 </div>
 <div class="code">
 
 <span class="id" title="keyword">Definition</span> <a id="pub_equiv" class="idref" href="#pub_equiv"><span class="id" title="definition">pub_equiv</span></a> (<a id="P:1" class="idref" href="#P:1"><span class="id" title="binder">P</span></a> : <a class="idref" href="StaticIFC.html#pub_vars"><span class="id" title="definition">pub_vars</span></a>) {<a id="X:2" class="idref" href="#X:2"><span class="id" title="binder">X</span></a>:<span class="id" title="keyword">Type</span>} (<a id="s<sub>1</sub>:3" class="idref" href="#s<sub>1</sub>:3"><span class="id" title="binder">s<sub>1</sub></span></a> <a id="s<sub>2</sub>:4" class="idref" href="#s<sub>2</sub>:4"><span class="id" title="binder">s<sub>2</sub></span></a> : <span class="id" title="definition">total_map</span> <a class="idref" href="StaticIFC.html#X:2"><span class="id" title="variable">X</span></a>) :=<br/>
-&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <a id="x:5" class="idref" href="#x:5"><span class="id" title="binder">x</span></a>:<a class="idref" href="http://coq.inria.fr/library//Coq.Strings.String.html#string"><span class="id" title="inductive">string</span></a>, <a class="idref" href="StaticIFC.html#P:1"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#x:5"><span class="id" title="variable">x</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <span class="id" title="notation">true</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a> <a class="idref" href="StaticIFC.html#s<sub>1</sub>:3"><span class="id" title="variable">s<sub>1</sub></span></a> <a class="idref" href="StaticIFC.html#x:5"><span class="id" title="variable">x</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="StaticIFC.html#s<sub>2</sub>:4"><span class="id" title="variable">s<sub>2</sub></span></a> <a class="idref" href="StaticIFC.html#x:5"><span class="id" title="variable">x</span></a>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <a id="x:5" class="idref" href="#x:5"><span class="id" title="binder">x</span></a>:<a class="idref" href="http://coq.inria.fr/library//Coq.Strings.String.html#string"><span class="id" title="inductive">string</span></a>, <a class="idref" href="StaticIFC.html#P:1"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#x:5"><span class="id" title="variable">x</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="StaticIFC.html#public"><span class="id" title="definition">public</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a> <a class="idref" href="StaticIFC.html#s<sub>1</sub>:3"><span class="id" title="variable">s<sub>1</sub></span></a> <a class="idref" href="StaticIFC.html#x:5"><span class="id" title="variable">x</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="StaticIFC.html#s<sub>2</sub>:4"><span class="id" title="variable">s<sub>2</sub></span></a> <a class="idref" href="StaticIFC.html#x:5"><span class="id" title="variable">x</span></a>.<br/>
 </div>
 
 <div class="doc">
@@ -121,7 +121,14 @@ Program <span class="inlinecode"><span class="id" title="var">c</span></span> is
 Intuitively, <span class="inlinecode"><span class="id" title="var">c</span></span> is noninterferent when the value of the public
     variables in the final state can only depend on the value of
     public variables in the initial state, and do not depend on the
-    initial value of secret variables. 
+    initial value of secret variables.
+
+<div class="paragraph"> </div>
+
+    In particular, changing the value of the secret variables in the
+    initial state (as allowed by <span class="inlinecode"><span class="id" title="var">pub_equiv</span></span> <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode"><span class="id" title="var">s<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">s<sub>2</sub></span></span>), should lead to
+    no change in the final value of the public variables (as required
+    by <span class="inlinecode"><span class="id" title="var">pub_equiv</span></span> <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode"><span class="id" title="var">s<sub>1</sub>'</span></span> <span class="inlinecode"><span class="id" title="var">s<sub>2</sub>'</span></span>). 
 <div class="paragraph"> </div>
 
  For instance, consider the following command
@@ -145,11 +152,11 @@ If we assume that variable <span class="inlinecode"><span class="id" title="var"
 
 <div class="doc">
 We have already proved that <span class="inlinecode"><span class="id" title="var">secure_com</span></span> is indeed noninterferent
-    both directly using the semantics (in <a href="Noninterference.html"><span class="inlineref">Noninterference</span></a>) and using
-    RHL (in <a href="RelHoare.html"><span class="inlineref">RelHoare</span></a>). Both these proofs were manual though,
-    while in this chapter we will show how this proof can be done more
-    syntactically using several <i>information flow control</i> (IFC) type
-    systems that enforce noninterference for all well-typed programs. 
+    both directly using the semantics (in <a href="Noninterference.html"><span class="inlineref">Noninterference</span></a>).
+    This proof was manual though, while in this chapter we will show
+    how this proof can be done more syntactically and automatically
+    using several <i>information flow control</i> (IFC) type systems that
+    enforce noninterference for all well-typed programs. 
 <div class="paragraph"> </div>
 
  Not all programs are noninterferent though. For instance, a
@@ -160,8 +167,8 @@ We have already proved that <span class="inlinecode"><span class="id" title="var
 
 <div class="paragraph"> </div>
 
-    Here is a program that has an explicit flow, which breaks
-    noninterference, as we already proved in <a href="Noninterference.html"><span class="inlineref">Noninterference</span></a>. 
+    Here is a program that has an explicit flow, which in this case
+    breaks noninterference (as we proved in <a href="Noninterference.html"><span class="inlineref">Noninterference</span></a>): 
 </div>
 <div class="code">
 
@@ -189,13 +196,13 @@ Not all explicit flows break noninterference though. For instance,
 <div class="doc">
 Since our IFC type systems will prevent all explicit flows, they
     will also reject <span class="inlinecode"><span class="id" title="var">secure_com1'</span></span>, even if it is secure with respect
-    to our attacker model for noninterference, in which the attacker
-    only observes the final values of public variables.
+    to our simple attacker model for noninterference, in which the
+    attacker only observes the <i>final</i> values of public variables.
 
 <div class="paragraph"> </div>
 
-    As usual, our type systems will only provide sound syntactic
-    overapproximations of the semantic property of noninterference. 
+    Our type systems will only provide <i>sound syntactic
+    overapproximations</i> of the semantic noninterference property. 
 <div class="paragraph"> </div>
 
  Explicit flows are not the only way to leak secrets: one can also
@@ -217,16 +224,15 @@ Here the expression <span class="inlinecode"><span class="id" title="var">X</spa
     information, but we are doing this assignment after we branched on
     a secret condition <span class="inlinecode"><span class="id" title="var">Y</span></span> <span class="inlinecode">=</span> <span class="inlinecode">0</span>, so we are indirectly leaking
     information about the value of <span class="inlinecode"><span class="id" title="var">Y</span></span>. In this case we can infer that
-    if <span class="inlinecode"><span class="id" title="var">X</span></span> gets incremented the value of <span class="inlinecode"><span class="id" title="var">Y</span></span> is not <span class="inlinecode">0</span>. We have
-    proved in <a href="Noninterference.html"><span class="inlineref">Noninterference</span></a> that this program is insecure, so it
-    will be rejected by our type systems, which enforce noninterference
-    by preventing <i>all</i> implicit flows. 
+    if <span class="inlinecode"><span class="id" title="var">X</span></span> gets incremented the value of <span class="inlinecode"><span class="id" title="var">Y</span></span> is not <span class="inlinecode">0</span>. This program
+    is insecure (as proved in <a href="Noninterference.html"><span class="inlineref">Noninterference</span></a>), so it will be
+    rejected by our type systems, which enforce noninterference by
+    also preventing <i>all</i> implicit flows. 
 <div class="paragraph"> </div>
 
- Not all implicit flows break noninterference though. For instance,
-    in <a href="RelHoare.html"><span class="inlineref">RelHoare</span></a> we saw a program that we proved to be
-    noninterferent, even though it contains both an explicit and an
-    implicit flow: 
+ Not all implicit flows break noninterference though. Here is a
+    program that is noninterferent, even though it contains both an
+    explicit and an implicit flow: 
 </div>
 <div class="code">
 
@@ -263,11 +269,10 @@ Intuitively, even if this program branches on the secret <span class="inlinecode
     In particular, <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">&#x22A2;<span class="id" title="var">a</span>-</span> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode">\<span class="id" title="keyword">in</span></span> <span class="inlinecode"><span class="id" title="var">public</span></span> says that expression <span class="inlinecode"><span class="id" title="var">a</span></span>
     only reads public variables, so it computes a public value.
     <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">&#x22A2;<span class="id" title="var">a</span>-</span> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode">\<span class="id" title="keyword">in</span></span> <span class="inlinecode"><span class="id" title="var">secret</span></span> says that expression <span class="inlinecode"><span class="id" title="var">a</span></span> reads some secret
-    variable, so it computes a value that may depend on secrets.
-
+    variable, so it computes a value that may depend on secrets. 
 <div class="paragraph"> </div>
 
-    Here are some examples:
+ Here are some examples:
 <ul class="doclist">
 <li> For a variable <span class="inlinecode"><span class="id" title="var">X</span></span> we just look up its label in P, so
       <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">&#x22A2;<span class="id" title="var">a</span>-</span> <span class="inlinecode"><span class="id" title="var">X</span></span> <span class="inlinecode">\<span class="id" title="keyword">in</span></span> <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode"><span class="id" title="var">X</span></span>.
@@ -293,7 +298,16 @@ Intuitively, even if this program branches on the secret <span class="inlinecode
 </div>
 <div class="code">
 
-<span class="id" title="keyword">Definition</span> <a id="join" class="idref" href="#join"><span class="id" title="definition">join</span></a> (<a id="l<sub>1</sub>:24" class="idref" href="#l<sub>1</sub>:24"><span class="id" title="binder">l<sub>1</sub></span></a> <a id="l<sub>2</sub>:25" class="idref" href="#l<sub>2</sub>:25"><span class="id" title="binder">l<sub>2</sub></span></a> : <a class="idref" href="StaticIFC.html#label"><span class="id" title="definition">label</span></a>) : <a class="idref" href="StaticIFC.html#label"><span class="id" title="definition">label</span></a> := <a class="idref" href="StaticIFC.html#l<sub>1</sub>:24"><span class="id" title="variable">l<sub>1</sub></span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Datatypes.html#::bool_scope:x_'&amp;&amp;'_x"><span class="id" title="notation">&amp;&amp;</span></a> <a class="idref" href="StaticIFC.html#l<sub>2</sub>:25"><span class="id" title="variable">l<sub>2</sub></span></a>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Definition</span> <a id="join" class="idref" href="#join"><span class="id" title="definition">join</span></a> (<a id="l<sub>1</sub>:24" class="idref" href="#l<sub>1</sub>:24"><span class="id" title="binder">l<sub>1</sub></span></a> <a id="l<sub>2</sub>:25" class="idref" href="#l<sub>2</sub>:25"><span class="id" title="binder">l<sub>2</sub></span></a> : <a class="idref" href="StaticIFC.html#label"><span class="id" title="definition">label</span></a>) : <a class="idref" href="StaticIFC.html#label"><span class="id" title="definition">label</span></a> := <a class="idref" href="StaticIFC.html#l<sub>1</sub>:24"><span class="id" title="variable">l<sub>1</sub></span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Datatypes.html#::bool_scope:x_'&amp;&amp;'_x"><span class="id" title="notation">&amp;&amp;</span></a> <a class="idref" href="StaticIFC.html#l<sub>2</sub>:25"><span class="id" title="variable">l<sub>2</sub></span></a>.<br/>
+</div>
+
+<div class="doc">
+Intuitively if we add up two expressions <span class="inlinecode"><span class="id" title="var">e<sub>1</sub></span></span> labeled <span class="inlinecode"><span class="id" title="var">l<sub>2</sub></span></span> and
+    <span class="inlinecode"><span class="id" title="var">e<sub>2</sub></span></span> labeled <span class="inlinecode"><span class="id" title="var">l<sub>2</sub></span></span>, the result of the addition will be labeled
+    <span class="inlinecode"><span class="id" title="var">join</span></span> <span class="inlinecode"><span class="id" title="var">l<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">l<sub>2</sub></span></span>, which is public iff <span class="inlinecode"><span class="id" title="var">l<sub>1</sub></span></span> is public and <span class="inlinecode"><span class="id" title="var">l<sub>2</sub></span></span> is public. 
+</div>
+<div class="code">
+
 <span class="id" title="keyword">Lemma</span> <a id="join_commutative" class="idref" href="#join_commutative"><span class="id" title="lemma">join_commutative</span></a> : <span class="id" title="keyword">∀</span> {<a id="l<sub>1</sub>:26" class="idref" href="#l<sub>1</sub>:26"><span class="id" title="binder">l<sub>1</sub></span></a> <a id="l<sub>2</sub>:27" class="idref" href="#l<sub>2</sub>:27"><span class="id" title="binder">l<sub>2</sub></span></a>},<br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#join"><span class="id" title="definition">join</span></a> <a class="idref" href="StaticIFC.html#l<sub>1</sub>:26"><span class="id" title="variable">l<sub>1</sub></span></a> <a class="idref" href="StaticIFC.html#l<sub>2</sub>:27"><span class="id" title="variable">l<sub>2</sub></span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="StaticIFC.html#join"><span class="id" title="definition">join</span></a> <a class="idref" href="StaticIFC.html#l<sub>2</sub>:27"><span class="id" title="variable">l<sub>2</sub></span></a> <a class="idref" href="StaticIFC.html#l<sub>1</sub>:26"><span class="id" title="variable">l<sub>1</sub></span></a>.<br/>
 <span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">l<sub>1</sub></span> <span class="id" title="var">l<sub>2</sub></span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">l<sub>1</sub></span>; <span class="id" title="tactic">destruct</span> <span class="id" title="var">l<sub>2</sub></span>; <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/><hr class='doublespaceincode'/>
@@ -312,7 +326,12 @@ Intuitively, even if this program branches on the secret <span class="inlinecode
 </div>
 
 <div class="doc">
-<center><table class="infrule">
+We now define a set of rules for the IFC typing relation for
+    arithmetic expressions <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">&#x22A2;<span class="id" title="var">a</span>-</span> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode">\<span class="id" title="keyword">in</span></span> <span class="inlinecode"><span class="id" title="var">l</span></span>, which we read as follows:
+    "given the public variables <span class="inlinecode"><span class="id" title="var">P</span></span> expression <span class="inlinecode"><span class="id" title="var">a</span></span> has label <span class="inlinecode"><span class="id" title="var">l</span></span>:" 
+<div class="paragraph"> </div>
+
+ <center><table class="infrule">
 <tr class="infruleassumption">
   <td class="infrule">&nbsp;&nbsp;</td>
   <td class="infrulenamecol" rowspan="3">
@@ -400,7 +419,20 @@ Intuitively, even if this program branches on the secret <span class="inlinecode
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:33"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">a</span></a><a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">-</span></a> <a class="idref" href="StaticIFC.html#a<sub>2</sub>:48"><span class="id" title="variable">a<sub>2</sub></span></a> <a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">\</span></a><a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">in</span></a> <a class="idref" href="StaticIFC.html#l<sub>2</sub>:49"><span class="id" title="variable">l<sub>2</sub></span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:33"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">a</span></a><a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">-</span></a> <span class="id" title="notation">&lt;{</span> <a class="idref" href="StaticIFC.html#a<sub>1</sub>:46"><span class="id" title="variable">a<sub>1</sub></span></a> <span class="id" title="notation">×</span> <a class="idref" href="StaticIFC.html#a<sub>2</sub>:48"><span class="id" title="variable">a<sub>2</sub></span></a> <span class="id" title="notation">}&gt;</span> <a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">\</span></a><a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">in</span></a> <a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">(</span></a><a class="idref" href="StaticIFC.html#join"><span class="id" title="definition">join</span></a> <a class="idref" href="StaticIFC.html#l<sub>1</sub>:47"><span class="id" title="variable">l<sub>1</sub></span></a> <a class="idref" href="StaticIFC.html#l<sub>2</sub>:49"><span class="id" title="variable">l<sub>2</sub></span></a><a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">)</span></a><br/>
 <br/>
-<span class="id" title="keyword">where</span> <a id="871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>" class="idref" href="#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">&quot;</span></a>P '&#x22A2;a-' a '&#x2208;' l" := (<a class="idref" href="StaticIFC.html#aexp_has_label:35"><span class="id" title="inductive">aexp_has_label</span></a> <span class="id" title="var">P</span> <span class="id" title="var">a</span> <span class="id" title="var">l</span>).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">where</span> <a id="871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>" class="idref" href="#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">&quot;</span></a>P '&#x22A2;a-' a '&#x2208;' l" := (<a class="idref" href="StaticIFC.html#aexp_has_label:35"><span class="id" title="inductive">aexp_has_label</span></a> <span class="id" title="var">P</span> <span class="id" title="var">a</span> <span class="id" title="var">l</span>).<br/>
+</div>
+
+<div class="doc">
+<a id="lab16"></a><h2 class="section">Computing labels of arithmetic expressions</h2>
+
+<div class="paragraph"> </div>
+
+ Beyond <i>specifying</i> when an expression has a certain label as an
+    inductive relation, we can also easily <i>compute</i> the label of an
+    expression: 
+</div>
+<div class="code">
+
 <span class="id" title="keyword">Fixpoint</span> <a id="label_of_aexp" class="idref" href="#label_of_aexp"><span class="id" title="definition">label_of_aexp</span></a> (<a id="P:50" class="idref" href="#P:50"><span class="id" title="binder">P</span></a>:<a class="idref" href="StaticIFC.html#pub_vars"><span class="id" title="definition">pub_vars</span></a>) (<a id="a:51" class="idref" href="#a:51"><span class="id" title="binder">a</span></a>:<span class="id" title="inductive">aexp</span>) : <a class="idref" href="StaticIFC.html#label"><span class="id" title="definition">label</span></a> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <a class="idref" href="StaticIFC.html#a:51"><span class="id" title="variable">a</span></a> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;| <span class="id" title="constructor">ANum</span> <span class="id" title="var">n</span> ⇒ <a class="idref" href="StaticIFC.html#public"><span class="id" title="definition">public</span></a><br/>
@@ -411,22 +443,32 @@ Intuitively, even if this program branches on the secret <span class="inlinecode
 &nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/><hr class='doublespaceincode'/>
 <span class="id" title="keyword">Lemma</span> <a id="label_of_aexp_sound" class="idref" href="#label_of_aexp_sound"><span class="id" title="lemma">label_of_aexp_sound</span></a> : <span class="id" title="keyword">∀</span> <a id="P:54" class="idref" href="#P:54"><span class="id" title="binder">P</span></a> <a id="a:55" class="idref" href="#a:55"><span class="id" title="binder">a</span></a>,<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:54"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">a</span></a><a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">-</span></a> <a class="idref" href="StaticIFC.html#a:55"><span class="id" title="variable">a</span></a> <a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">\</span></a><a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">in</span></a> <a class="idref" href="StaticIFC.html#label_of_aexp"><span class="id" title="definition">label_of_aexp</span></a> <a class="idref" href="StaticIFC.html#P:54"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#a:55"><span class="id" title="variable">a</span></a>.<br/>
-<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">a</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">a</span>; <span class="id" title="tactic">constructor</span>; <span class="id" title="tactic">eauto</span>. <span class="id" title="keyword">Qed</span>.<br/><hr class='doublespaceincode'/>
+<div class="togglescript" id="proofcontrol1" onclick="toggleDisplay('proof1');toggleDisplay('proofcontrol1')"><span class="show"></span></div>
+<div class="proofscript" id="proof1" onclick="toggleDisplay('proof1');toggleDisplay('proofcontrol1')">
+<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">a</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">a</span>; <span class="id" title="tactic">constructor</span>; <span class="id" title="tactic">eauto</span>. <span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<br/>
 <span class="id" title="keyword">Lemma</span> <a id="label_of_aexp_unique" class="idref" href="#label_of_aexp_unique"><span class="id" title="lemma">label_of_aexp_unique</span></a> : <span class="id" title="keyword">∀</span> <a id="P:56" class="idref" href="#P:56"><span class="id" title="binder">P</span></a> <a id="a:57" class="idref" href="#a:57"><span class="id" title="binder">a</span></a> <a id="l:58" class="idref" href="#l:58"><span class="id" title="binder">l</span></a>,<br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:56"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">a</span></a><a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">-</span></a> <a class="idref" href="StaticIFC.html#a:57"><span class="id" title="variable">a</span></a> <a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">\</span></a><a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">in</span></a> <a class="idref" href="StaticIFC.html#l:58"><span class="id" title="variable">l</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#l:58"><span class="id" title="variable">l</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="StaticIFC.html#label_of_aexp"><span class="id" title="definition">label_of_aexp</span></a> <a class="idref" href="StaticIFC.html#P:56"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#a:57"><span class="id" title="variable">a</span></a>.<br/>
+<div class="togglescript" id="proofcontrol2" onclick="toggleDisplay('proof2');toggleDisplay('proofcontrol2')"><span class="show"></span></div>
+<div class="proofscript" id="proof2" onclick="toggleDisplay('proof2');toggleDisplay('proofcontrol2')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">a</span> <span class="id" title="var">l</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">simpl</span> <span class="id" title="keyword">in</span> *;<br/>
 &nbsp;&nbsp;(<span class="id" title="tactic">repeat</span> <span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;| [<span class="id" title="var">Heql</span> : <span class="id" title="var">_</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <span class="id" title="var">_</span> &#x22A2; <span class="id" title="var">_</span>] ⇒ <span class="id" title="tactic">rewrite</span> <span class="id" title="var">Heql</span> <span class="id" title="keyword">in</span> ×<br/>
 &nbsp;&nbsp;&nbsp;<span class="id" title="keyword">end</span>); <span class="id" title="tactic">eauto</span>.<br/>
-<span class="id" title="keyword">Qed</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<br/>
 <span class="id" title="keyword">Theorem</span> <a id="noninterferent_aexp" class="idref" href="#noninterferent_aexp"><span class="id" title="lemma">noninterferent_aexp</span></a> : <span class="id" title="keyword">∀</span> {<a id="P:59" class="idref" href="#P:59"><span class="id" title="binder">P</span></a> <a id="s<sub>1</sub>:60" class="idref" href="#s<sub>1</sub>:60"><span class="id" title="binder">s<sub>1</sub></span></a> <a id="s<sub>2</sub>:61" class="idref" href="#s<sub>2</sub>:61"><span class="id" title="binder">s<sub>2</sub></span></a> <a id="a:62" class="idref" href="#a:62"><span class="id" title="binder">a</span></a>},<br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#pub_equiv"><span class="id" title="definition">pub_equiv</span></a> <a class="idref" href="StaticIFC.html#P:59"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#s<sub>1</sub>:60"><span class="id" title="variable">s<sub>1</sub></span></a> <a class="idref" href="StaticIFC.html#s<sub>2</sub>:61"><span class="id" title="variable">s<sub>2</sub></span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:59"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">a</span></a><a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">-</span></a> <a class="idref" href="StaticIFC.html#a:62"><span class="id" title="variable">a</span></a> <a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">\</span></a><a class="idref" href="StaticIFC.html#871b7a65833b6a11edb1ff2d625a2de<sub>2</sub>"><span class="id" title="notation">in</span></a> <a class="idref" href="StaticIFC.html#public"><span class="id" title="definition">public</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<span class="id" title="definition">aeval</span> <a class="idref" href="StaticIFC.html#s<sub>1</sub>:60"><span class="id" title="variable">s<sub>1</sub></span></a> <a class="idref" href="StaticIFC.html#a:62"><span class="id" title="variable">a</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <span class="id" title="definition">aeval</span> <a class="idref" href="StaticIFC.html#s<sub>2</sub>:61"><span class="id" title="variable">s<sub>2</sub></span></a> <a class="idref" href="StaticIFC.html#a:62"><span class="id" title="variable">a</span></a>.<br/>
-<div class="togglescript" id="proofcontrol1" onclick="toggleDisplay('proof1');toggleDisplay('proofcontrol1')"><span class="show"></span></div>
-<div class="proofscript" id="proof1" onclick="toggleDisplay('proof1');toggleDisplay('proofcontrol1')">
+<div class="togglescript" id="proofcontrol3" onclick="toggleDisplay('proof3');toggleDisplay('proofcontrol3')"><span class="show"></span></div>
+<div class="proofscript" id="proof3" onclick="toggleDisplay('proof3');toggleDisplay('proofcontrol3')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">s<sub>1</sub></span> <span class="id" title="var">s<sub>2</sub></span> <span class="id" title="var">a</span> <span class="id" title="var">Heq</span> <span class="id" title="var">Ht</span>. <span class="id" title="var">remember</span> <a class="idref" href="StaticIFC.html#public"><span class="id" title="definition">public</span></a> <span class="id" title="keyword">as</span> <span class="id" title="var">l</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">Ht</span>; <span class="id" title="tactic">simpl</span>.<br/>
@@ -550,7 +592,15 @@ Intuitively, even if this program branches on the secret <span class="inlinecode
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:63"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">b</span></a><a class="idref" href="StaticIFC.html#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">-</span></a> <a class="idref" href="StaticIFC.html#b<sub>2</sub>:86"><span class="id" title="variable">b<sub>2</sub></span></a> <a class="idref" href="StaticIFC.html#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">\</span></a><a class="idref" href="StaticIFC.html#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">in</span></a> <a class="idref" href="StaticIFC.html#l<sub>2</sub>:87"><span class="id" title="variable">l<sub>2</sub></span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:63"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">b</span></a><a class="idref" href="StaticIFC.html#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">-</span></a> <span class="id" title="notation">&lt;{</span> <a class="idref" href="StaticIFC.html#b<sub>1</sub>:84"><span class="id" title="variable">b<sub>1</sub></span></a> <span class="id" title="notation">&amp;&amp;</span> <a class="idref" href="StaticIFC.html#b<sub>2</sub>:86"><span class="id" title="variable">b<sub>2</sub></span></a> <span class="id" title="notation">}&gt;</span> <a class="idref" href="StaticIFC.html#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">\</span></a><a class="idref" href="StaticIFC.html#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">in</span></a> <a class="idref" href="StaticIFC.html#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">(</span></a><a class="idref" href="StaticIFC.html#join"><span class="id" title="definition">join</span></a> <a class="idref" href="StaticIFC.html#l<sub>1</sub>:85"><span class="id" title="variable">l<sub>1</sub></span></a> <a class="idref" href="StaticIFC.html#l<sub>2</sub>:87"><span class="id" title="variable">l<sub>2</sub></span></a><a class="idref" href="StaticIFC.html#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">)</span></a><br/>
 <br/>
-<span class="id" title="keyword">where</span> <a id="42fedf909cd00a38e584747953581bd<sub>3</sub>" class="idref" href="#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">&quot;</span></a>P '&#x22A2;b-' b '&#x2208;' l" := (<a class="idref" href="StaticIFC.html#bexp_has_label:65"><span class="id" title="inductive">bexp_has_label</span></a> <span class="id" title="var">P</span> <span class="id" title="var">b</span> <span class="id" title="var">l</span>).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">where</span> <a id="42fedf909cd00a38e584747953581bd<sub>3</sub>" class="idref" href="#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">&quot;</span></a>P '&#x22A2;b-' b '&#x2208;' l" := (<a class="idref" href="StaticIFC.html#bexp_has_label:65"><span class="id" title="inductive">bexp_has_label</span></a> <span class="id" title="var">P</span> <span class="id" title="var">b</span> <span class="id" title="var">l</span>).<br/>
+</div>
+
+<div class="doc">
+<a id="lab17"></a><h2 class="section">Computing labels of boolean expressions</h2>
+
+</div>
+<div class="code">
+
 <span class="id" title="keyword">Fixpoint</span> <a id="label_of_bexp" class="idref" href="#label_of_bexp"><span class="id" title="definition">label_of_bexp</span></a> (<a id="P:88" class="idref" href="#P:88"><span class="id" title="binder">P</span></a>:<a class="idref" href="StaticIFC.html#pub_vars"><span class="id" title="definition">pub_vars</span></a>) (<a id="a:89" class="idref" href="#a:89"><span class="id" title="binder">a</span></a>:<span class="id" title="inductive">bexp</span>) : <a class="idref" href="StaticIFC.html#label"><span class="id" title="definition">label</span></a> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <a class="idref" href="StaticIFC.html#a:89"><span class="id" title="variable">a</span></a> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;| <span class="id" title="notation">&lt;{</span> <span class="id" title="notation">true</span> <span class="id" title="notation">}&gt;</span> | <span class="id" title="notation">&lt;{</span> <span class="id" title="notation">false</span> <span class="id" title="notation">}&gt;</span> ⇒ <a class="idref" href="StaticIFC.html#public"><span class="id" title="definition">public</span></a><br/>
@@ -581,8 +631,8 @@ Intuitively, even if this program branches on the secret <span class="inlinecode
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#pub_equiv"><span class="id" title="definition">pub_equiv</span></a> <a class="idref" href="StaticIFC.html#P:97"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#s<sub>1</sub>:98"><span class="id" title="variable">s<sub>1</sub></span></a> <a class="idref" href="StaticIFC.html#s<sub>2</sub>:99"><span class="id" title="variable">s<sub>2</sub></span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:97"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">b</span></a><a class="idref" href="StaticIFC.html#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">-</span></a> <a class="idref" href="StaticIFC.html#b:100"><span class="id" title="variable">b</span></a> <a class="idref" href="StaticIFC.html#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">\</span></a><a class="idref" href="StaticIFC.html#42fedf909cd00a38e584747953581bd<sub>3</sub>"><span class="id" title="notation">in</span></a> <a class="idref" href="StaticIFC.html#public"><span class="id" title="definition">public</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<span class="id" title="definition">beval</span> <a class="idref" href="StaticIFC.html#s<sub>1</sub>:98"><span class="id" title="variable">s<sub>1</sub></span></a> <a class="idref" href="StaticIFC.html#b:100"><span class="id" title="variable">b</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <span class="id" title="definition">beval</span> <a class="idref" href="StaticIFC.html#s<sub>2</sub>:99"><span class="id" title="variable">s<sub>2</sub></span></a> <a class="idref" href="StaticIFC.html#b:100"><span class="id" title="variable">b</span></a>.<br/>
-<div class="togglescript" id="proofcontrol2" onclick="toggleDisplay('proof2');toggleDisplay('proofcontrol2')"><span class="show"></span></div>
-<div class="proofscript" id="proof2" onclick="toggleDisplay('proof2');toggleDisplay('proofcontrol2')">
+<div class="togglescript" id="proofcontrol4" onclick="toggleDisplay('proof4');toggleDisplay('proofcontrol4')"><span class="show"></span></div>
+<div class="proofscript" id="proof4" onclick="toggleDisplay('proof4');toggleDisplay('proofcontrol4')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">s<sub>1</sub></span> <span class="id" title="var">s<sub>2</sub></span> <span class="id" title="var">b</span> <span class="id" title="var">Heq</span> <span class="id" title="var">Ht</span>. <span class="id" title="var">remember</span> <a class="idref" href="StaticIFC.html#public"><span class="id" title="definition">public</span></a> <span class="id" title="keyword">as</span> <span class="id" title="var">l</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">Ht</span>; <span class="id" title="tactic">simpl</span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">reflexivity</span>;<br/>
@@ -608,12 +658,13 @@ Intuitively, even if this program branches on the secret <span class="inlinecode
 </div>
 
 <div class="doc">
-<a id="lab16"></a><h1 class="section">Restrictive type system prohibiting branching on secrets</h1>
+<a id="lab18"></a><h1 class="section">Restrictive type system prohibiting branching on secrets</h1>
 
 <div class="paragraph"> </div>
 
  For commands, we start with a simple type system that doesn't
-    allow any branching on secrets, which prevents all implicit flows. 
+    allow any branching on secrets, which is so strong that on its own
+    prevents all implicit flows. 
 <div class="paragraph"> </div>
 
  For preventing explicit flows when typing assignments, we need to
@@ -626,32 +677,34 @@ Intuitively, even if this program branches on the secret <span class="inlinecode
 </div>
 
 <div class="doc">
-In particular, we disallow the value of secret expressions to be
-    assigned to public variables. 
+One way to read this is as boolean implication from l<sub>2</sub> to l<sub>1</sub>, so
+    <span class="inlinecode"><span class="id" title="var">l<sub>1</sub></span></span> can flow to <span class="inlinecode"><span class="id" title="var">l<sub>2</sub></span></span> iff <span class="inlinecode"><span class="id" title="var">l<sub>2</sub></span></span> is public implies that <span class="inlinecode"><span class="id" title="var">l<sub>1</sub></span></span> has to
+    be public as well.  In particular, this disallows that the value
+    of secret expressions be assigned to public variables: 
 </div>
 <div class="code">
 
 <span class="id" title="keyword">Lemma</span> <a id="cannot_flow_secret_public" class="idref" href="#cannot_flow_secret_public"><span class="id" title="lemma">cannot_flow_secret_public</span></a> : <a class="idref" href="StaticIFC.html#can_flow"><span class="id" title="definition">can_flow</span></a> <a class="idref" href="StaticIFC.html#secret"><span class="id" title="definition">secret</span></a> <a class="idref" href="StaticIFC.html#public"><span class="id" title="definition">public</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <span class="id" title="notation">false</span>.<br/>
-<div class="togglescript" id="proofcontrol3" onclick="toggleDisplay('proof3');toggleDisplay('proofcontrol3')"><span class="show"></span></div>
-<div class="proofscript" id="proof3" onclick="toggleDisplay('proof3');toggleDisplay('proofcontrol3')">
+<div class="togglescript" id="proofcontrol5" onclick="toggleDisplay('proof5');toggleDisplay('proofcontrol5')"><span class="show"></span></div>
+<div class="proofscript" id="proof5" onclick="toggleDisplay('proof5');toggleDisplay('proofcontrol5')">
 <span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
 </div>
 </div>
 
 <div class="doc">
-We allow public information to flow everywhere, and secret
+This allows public information to flow everywhere, and secret
     information to flow to secret variables: 
 </div>
 <div class="code">
 
 <span class="id" title="keyword">Lemma</span> <a id="can_flow_public" class="idref" href="#can_flow_public"><span class="id" title="lemma">can_flow_public</span></a> : <span class="id" title="keyword">∀</span> <a id="l:103" class="idref" href="#l:103"><span class="id" title="binder">l</span></a>, <a class="idref" href="StaticIFC.html#can_flow"><span class="id" title="definition">can_flow</span></a> <a class="idref" href="StaticIFC.html#public"><span class="id" title="definition">public</span></a> <a class="idref" href="StaticIFC.html#l:103"><span class="id" title="variable">l</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <span class="id" title="notation">true</span>.<br/>
-<div class="togglescript" id="proofcontrol4" onclick="toggleDisplay('proof4');toggleDisplay('proofcontrol4')"><span class="show"></span></div>
-<div class="proofscript" id="proof4" onclick="toggleDisplay('proof4');toggleDisplay('proofcontrol4')">
+<div class="togglescript" id="proofcontrol6" onclick="toggleDisplay('proof6');toggleDisplay('proofcontrol6')"><span class="show"></span></div>
+<div class="proofscript" id="proof6" onclick="toggleDisplay('proof6');toggleDisplay('proofcontrol6')">
 <span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
 </div>
 <span class="id" title="keyword">Lemma</span> <a id="can_flow_secret" class="idref" href="#can_flow_secret"><span class="id" title="lemma">can_flow_secret</span></a> : <a class="idref" href="StaticIFC.html#can_flow"><span class="id" title="definition">can_flow</span></a> <a class="idref" href="StaticIFC.html#secret"><span class="id" title="definition">secret</span></a> <a class="idref" href="StaticIFC.html#secret"><span class="id" title="definition">secret</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <span class="id" title="notation">true</span>.<br/>
-<div class="togglescript" id="proofcontrol5" onclick="toggleDisplay('proof5');toggleDisplay('proofcontrol5')"><span class="show"></span></div>
-<div class="proofscript" id="proof5" onclick="toggleDisplay('proof5');toggleDisplay('proofcontrol5')">
+<div class="togglescript" id="proofcontrol7" onclick="toggleDisplay('proof7');toggleDisplay('proofcontrol7')"><span class="show"></span></div>
+<div class="proofscript" id="proof7" onclick="toggleDisplay('proof7');toggleDisplay('proofcontrol7')">
 <span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
 </div>
 
@@ -690,7 +743,11 @@ We allow public information to flow everywhere, and secret
 </div>
 
 <div class="doc">
-<center><table class="infrule">
+For commands we use the previous relations to define a
+    <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span> relation inductively using the following rules: 
+<div class="paragraph"> </div>
+
+ <center><table class="infrule">
 <tr class="infruleassumption">
   <td class="infrule">&nbsp;&nbsp;</td>
   <td class="infrulenamecol" rowspan="3">
@@ -756,6 +813,12 @@ We allow public information to flow everywhere, and secret
   <td></td>
 </tr>
 </table></center>
+<div class="paragraph"> </div>
+
+ Intuitively, explicit flows are prevented by the <span class="inlinecode"><span class="id" title="var">can_flow</span></span>
+    requirement in the assignment rule and implicit flows are
+    prevented by the requirement that the boolean condition of <span class="inlinecode"><span class="id" title="keyword">if</span></span>
+    and <span class="inlinecode"><span class="id" title="var">while</span></span> has to be a public expression. 
 </div>
 <div class="code">
 
@@ -781,7 +844,15 @@ We allow public information to flow everywhere, and secret
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:123"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">pc</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">-</span></a> <a class="idref" href="StaticIFC.html#c<sub>1</sub>:135"><span class="id" title="variable">c<sub>1</sub></span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:123"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">pc</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">-</span></a> <span class="id" title="notation">&lt;{</span> <span class="id" title="notation">while</span> <a class="idref" href="StaticIFC.html#b:134"><span class="id" title="variable">b</span></a> <span class="id" title="notation">do</span> <a class="idref" href="StaticIFC.html#c<sub>1</sub>:135"><span class="id" title="variable">c<sub>1</sub></span></a> <span class="id" title="notation">end</span> <span class="id" title="notation">}&gt;</span><br/>
 <br/>
-<span class="id" title="keyword">where</span> <a id="d14a14cbe43755d0c5387962d2da5148" class="idref" href="#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">&quot;</span></a>P '&#x22A2;pc-' c" := (<a class="idref" href="StaticIFC.html#pc_well_typed:125"><span class="id" title="inductive">pc_well_typed</span></a> <span class="id" title="var">P</span> <span class="id" title="var">c</span>).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">where</span> <a id="d14a14cbe43755d0c5387962d2da5148" class="idref" href="#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">&quot;</span></a>P '&#x22A2;pc-' c" := (<a class="idref" href="StaticIFC.html#pc_well_typed:125"><span class="id" title="inductive">pc_well_typed</span></a> <span class="id" title="var">P</span> <span class="id" title="var">c</span>).<br/>
+</div>
+
+<div class="doc">
+<a id="lab19"></a><h2 class="section">Typechecker for <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span></h2>
+
+</div>
+<div class="code">
+
 <span class="id" title="keyword">Fixpoint</span> <a id="pc_typechecker" class="idref" href="#pc_typechecker"><span class="id" title="definition">pc_typechecker</span></a> (<a id="P:136" class="idref" href="#P:136"><span class="id" title="binder">P</span></a>:<a class="idref" href="StaticIFC.html#pub_vars"><span class="id" title="definition">pub_vars</span></a>) (<a id="c:137" class="idref" href="#c:137"><span class="id" title="binder">c</span></a>:<span class="id" title="inductive">com</span>) : <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Datatypes.html#bool"><span class="id" title="inductive">bool</span></a> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <a class="idref" href="StaticIFC.html#c:137"><span class="id" title="variable">c</span></a> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;| <span class="id" title="notation">&lt;{</span> <span class="id" title="notation">skip</span> <span class="id" title="notation">}&gt;</span> ⇒ <span class="id" title="notation">true</span><br/>
@@ -792,12 +863,20 @@ We allow public information to flow everywhere, and secret
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="StaticIFC.html#pc_typechecker:138"><span class="id" title="definition">pc_typechecker</span></a> <a class="idref" href="StaticIFC.html#P:136"><span class="id" title="variable">P</span></a> <span class="id" title="var">c<sub>1</sub></span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Datatypes.html#::bool_scope:x_'&amp;&amp;'_x"><span class="id" title="notation">&amp;&amp;</span></a> <a class="idref" href="StaticIFC.html#pc_typechecker:138"><span class="id" title="definition">pc_typechecker</span></a> <a class="idref" href="StaticIFC.html#P:136"><span class="id" title="variable">P</span></a> <span class="id" title="var">c<sub>2</sub></span><br/>
 &nbsp;&nbsp;| <span class="id" title="notation">&lt;{</span> <span class="id" title="notation">while</span> <span class="id" title="var">b</span> <span class="id" title="notation">do</span> <span class="id" title="var">c<sub>1</sub></span> <span class="id" title="notation">end</span> <span class="id" title="notation">}&gt;</span> ⇒<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/library//Coq.Bool.Bool.html#eqb"><span class="id" title="definition">Bool.eqb</span></a> (<a class="idref" href="StaticIFC.html#label_of_bexp"><span class="id" title="definition">label_of_bexp</span></a> <a class="idref" href="StaticIFC.html#P:136"><span class="id" title="variable">P</span></a> <span class="id" title="var">b</span>) <a class="idref" href="StaticIFC.html#public"><span class="id" title="definition">public</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Datatypes.html#::bool_scope:x_'&amp;&amp;'_x"><span class="id" title="notation">&amp;&amp;</span></a> <a class="idref" href="StaticIFC.html#pc_typechecker:138"><span class="id" title="definition">pc_typechecker</span></a> <a class="idref" href="StaticIFC.html#P:136"><span class="id" title="variable">P</span></a> <span class="id" title="var">c<sub>1</sub></span><br/>
-&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/><hr class='doublespaceincode'/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+</div>
+
+<div class="doc">
+This typechecker is sound and complete with respect to the
+    <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span> relation. 
+</div>
+<div class="code">
+
 <span class="id" title="keyword">Lemma</span> <a id="pc_typechecker_sound" class="idref" href="#pc_typechecker_sound"><span class="id" title="lemma">pc_typechecker_sound</span></a> : <span class="id" title="keyword">∀</span> <a id="P:140" class="idref" href="#P:140"><span class="id" title="binder">P</span></a> <a id="c:141" class="idref" href="#c:141"><span class="id" title="binder">c</span></a>,<br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#pc_typechecker"><span class="id" title="definition">pc_typechecker</span></a> <a class="idref" href="StaticIFC.html#P:140"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#c:141"><span class="id" title="variable">c</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <span class="id" title="notation">true</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:140"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">pc</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">-</span></a> <a class="idref" href="StaticIFC.html#c:141"><span class="id" title="variable">c</span></a>.<br/>
-<div class="togglescript" id="proofcontrol6" onclick="toggleDisplay('proof6');toggleDisplay('proofcontrol6')"><span class="show"></span></div>
-<div class="proofscript" id="proof6" onclick="toggleDisplay('proof6');toggleDisplay('proofcontrol6')">
+<div class="togglescript" id="proofcontrol8" onclick="toggleDisplay('proof8');toggleDisplay('proofcontrol8')"><span class="show"></span></div>
+<div class="proofscript" id="proof8" onclick="toggleDisplay('proof8');toggleDisplay('proofcontrol8')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">c</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">c</span>; <span class="id" title="tactic">simpl</span> <span class="id" title="keyword">in</span> *; <span class="id" title="tactic">econstructor</span>;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> <span class="id" title="tactic">rewrite</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Bool.Bool.html#andb_true_iff"><span class="id" title="lemma">andb_true_iff</span></a> <span class="id" title="keyword">in</span> *; <span class="id" title="tactic">try</span> <span class="id" title="tactic">tauto</span>;<br/>
@@ -815,8 +894,8 @@ We allow public information to flow everywhere, and secret
 <span class="id" title="keyword">Lemma</span> <a id="pc_typechecker_complete" class="idref" href="#pc_typechecker_complete"><span class="id" title="lemma">pc_typechecker_complete</span></a> : <span class="id" title="keyword">∀</span> <a id="P:142" class="idref" href="#P:142"><span class="id" title="binder">P</span></a> <a id="c:143" class="idref" href="#c:143"><span class="id" title="binder">c</span></a>,<br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#pc_typechecker"><span class="id" title="definition">pc_typechecker</span></a> <a class="idref" href="StaticIFC.html#P:142"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#c:143"><span class="id" title="variable">c</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <span class="id" title="notation">false</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">¬</span></a><a class="idref" href="StaticIFC.html#P:142"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">pc</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">-</span></a> <a class="idref" href="StaticIFC.html#c:143"><span class="id" title="variable">c</span></a>.<br/>
-<div class="togglescript" id="proofcontrol7" onclick="toggleDisplay('proof7');toggleDisplay('proofcontrol7')"><span class="show"></span></div>
-<div class="proofscript" id="proof7" onclick="toggleDisplay('proof7');toggleDisplay('proofcontrol7')">
+<div class="togglescript" id="proofcontrol9" onclick="toggleDisplay('proof9');toggleDisplay('proofcontrol9')"><span class="show"></span></div>
+<div class="proofscript" id="proof9" onclick="toggleDisplay('proof9');toggleDisplay('proofcontrol9')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">c</span> <span class="id" title="var">H</span> <span class="id" title="var">Hc</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">Hc</span>; <span class="id" title="tactic">simpl</span> <span class="id" title="keyword">in</span> *;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> <span class="id" title="tactic">rewrite</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Bool.Bool.html#andb_false_iff"><span class="id" title="lemma">andb_false_iff</span></a> <span class="id" title="keyword">in</span> *;<br/>
@@ -833,12 +912,12 @@ We allow public information to flow everywhere, and secret
 </div>
 
 <div class="doc">
-<a id="lab17"></a><h2 class="section">Secure program that is <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span>:</h2>
+<a id="lab20"></a><h2 class="section">Secure program that is <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span>:</h2>
 
 </div>
 <div class="code">
 
-<span class="id" title="keyword">Example</span> <a id="swt_secure_com" class="idref" href="#swt_secure_com"><span class="id" title="definition">swt_secure_com</span></a> :<br/>
+<span class="id" title="keyword">Example</span> <a id="pc_wt_secure_com" class="idref" href="#pc_wt_secure_com"><span class="id" title="definition">pc_wt_secure_com</span></a> :<br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#xpub"><span class="id" title="definition">xpub</span></a> <a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">pc</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">-</span></a> <span class="id" title="notation">&lt;{</span> <span class="id" title="definition">X</span> <span class="id" title="notation">:=</span> <span class="id" title="definition">X</span><span class="id" title="notation">+</span>1<span class="id" title="notation">;</span>  <span class="comment">(*&nbsp;check:&nbsp;can_flow&nbsp;public&nbsp;public&nbsp;(OK!)&nbsp;&nbsp;*)</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="definition">Y</span> <span class="id" title="notation">:=</span> <span class="id" title="definition">X</span><span class="id" title="notation">+</span><span class="id" title="definition">Y</span><span class="id" title="notation">×</span>2 <span class="comment">(*&nbsp;check:&nbsp;can_flow&nbsp;secret&nbsp;secret&nbsp;(OK!)&nbsp;&nbsp;*)</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">}&gt;</span>.<br/>
@@ -846,12 +925,12 @@ We allow public information to flow everywhere, and secret
 </div>
 
 <div class="doc">
-<a id="lab18"></a><h2 class="section">Explicit flow prevented by <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span>:</h2>
+<a id="lab21"></a><h2 class="section">Explicit flow prevented by <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span>:</h2>
 
 </div>
 <div class="code">
 
-<span class="id" title="keyword">Example</span> <a id="not_swt_insecure_com1" class="idref" href="#not_swt_insecure_com1"><span class="id" title="definition">not_swt_insecure_com1</span></a> :<br/>
+<span class="id" title="keyword">Example</span> <a id="not_pc_wt_insecure_com1" class="idref" href="#not_pc_wt_insecure_com1"><span class="id" title="definition">not_pc_wt_insecure_com1</span></a> :<br/>
 &nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">¬</span></a> <a class="idref" href="StaticIFC.html#xpub"><span class="id" title="definition">xpub</span></a> <a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">pc</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">-</span></a> <span class="id" title="notation">&lt;{</span> <span class="id" title="definition">X</span> <span class="id" title="notation">:=</span> <span class="id" title="definition">Y</span><span class="id" title="notation">+</span>1<span class="id" title="notation">;</span>  <span class="comment">(*&nbsp;check:&nbsp;can_flow&nbsp;secret&nbsp;public&nbsp;(FAILS!)&nbsp;*)</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="definition">Y</span> <span class="id" title="notation">:=</span> <span class="id" title="definition">X</span><span class="id" title="notation">+</span><span class="id" title="definition">Y</span><span class="id" title="notation">×</span>2 <span class="comment">(*&nbsp;check:&nbsp;can_flow&nbsp;secret&nbsp;secret&nbsp;(OK!)&nbsp;&nbsp;*)</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">}&gt;</span>.<br/>
@@ -859,12 +938,12 @@ We allow public information to flow everywhere, and secret
 </div>
 
 <div class="doc">
-<a id="lab19"></a><h2 class="section">Implicit flow prevented by <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span>:</h2>
+<a id="lab22"></a><h2 class="section">Implicit flow prevented by <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span>:</h2>
 
 </div>
 <div class="code">
 
-<span class="id" title="keyword">Example</span> <a id="not_swt_insecure_com2" class="idref" href="#not_swt_insecure_com2"><span class="id" title="definition">not_swt_insecure_com2</span></a> :<br/>
+<span class="id" title="keyword">Example</span> <a id="not_pc_wt_insecure_com2" class="idref" href="#not_pc_wt_insecure_com2"><span class="id" title="definition">not_pc_wt_insecure_com2</span></a> :<br/>
 &nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">¬</span></a> <a class="idref" href="StaticIFC.html#xpub"><span class="id" title="definition">xpub</span></a> <a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">pc</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">-</span></a> <span class="id" title="notation">&lt;{</span> <span class="id" title="notation">if</span> <span class="id" title="definition">Y</span><span class="id" title="notation">=</span>0  <span class="comment">(*&nbsp;check:&nbsp;P&nbsp;&#x22A2;b-&nbsp;Y=0&nbsp;&#x2208;&nbsp;public&nbsp;(FAILS!)&nbsp;*)</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">then</span> <span class="id" title="definition">Y</span> <span class="id" title="notation">:=</span> 42<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">else</span> <span class="id" title="definition">X</span> <span class="id" title="notation">:=</span> <span class="id" title="definition">X</span><span class="id" title="notation">+</span>1 <span class="comment">(*&nbsp;&lt;-&nbsp;bad&nbsp;implicit&nbsp;flow!&nbsp;*)</span><br/>
@@ -880,8 +959,8 @@ We show that <span class="inlinecode"><span class="id" title="var">pc_well_typed
 <span class="id" title="keyword">Theorem</span> <a id="pc_well_typed_noninterferent" class="idref" href="#pc_well_typed_noninterferent"><span class="id" title="lemma">pc_well_typed_noninterferent</span></a> : <span class="id" title="keyword">∀</span> <a id="P:144" class="idref" href="#P:144"><span class="id" title="binder">P</span></a> <a id="c:145" class="idref" href="#c:145"><span class="id" title="binder">c</span></a>,<br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:144"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">pc</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">-</span></a> <a class="idref" href="StaticIFC.html#c:145"><span class="id" title="variable">c</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#noninterferent"><span class="id" title="definition">noninterferent</span></a> <a class="idref" href="StaticIFC.html#P:144"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#c:145"><span class="id" title="variable">c</span></a>.<br/>
-<div class="togglescript" id="proofcontrol8" onclick="toggleDisplay('proof8');toggleDisplay('proofcontrol8')"><span class="show"></span></div>
-<div class="proofscript" id="proof8" onclick="toggleDisplay('proof8');toggleDisplay('proofcontrol8')">
+<div class="togglescript" id="proofcontrol10" onclick="toggleDisplay('proof10');toggleDisplay('proofcontrol10')"><span class="show"></span></div>
+<div class="proofscript" id="proof10" onclick="toggleDisplay('proof10');toggleDisplay('proofcontrol10')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">c</span> <span class="id" title="var">Hwt</span> <span class="id" title="var">s<sub>1</sub></span> <span class="id" title="var">s<sub>2</sub></span> <span class="id" title="var">s<sub>1</sub>'</span> <span class="id" title="var">s<sub>2</sub>'</span> <span class="id" title="var">Heq</span> <span class="id" title="var">Heval1</span> <span class="id" title="var">Heval2</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">s<sub>2</sub>'</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">s<sub>2</sub></span>.<br/>
@@ -967,7 +1046,7 @@ forall s<sub>1</sub> s<sub>2</sub> s<sub>1</sub>' s<sub>2</sub>',
 
 <div class="paragraph"> </div>
 
-<a id="lab20"></a><h2 class="section"><span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span> too strong for noninterference</h2>
+<a id="lab23"></a><h2 class="section"><span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span> too strong for noninterference</h2>
 
 <div class="paragraph"> </div>
 
@@ -980,30 +1059,19 @@ forall s<sub>1</sub> s<sub>2</sub> s<sub>1</sub>' s<sub>2</sub>',
 </div>
 <div class="code">
 
-<span class="id" title="keyword">Example</span> <a id="not_swt_noninterferent_com" class="idref" href="#not_swt_noninterferent_com"><span class="id" title="definition">not_swt_noninterferent_com</span></a> :<br/>
+<span class="id" title="keyword">Example</span> <a id="not_pc_wt_noninterferent_com" class="idref" href="#not_pc_wt_noninterferent_com"><span class="id" title="definition">not_pc_wt_noninterferent_com</span></a> :<br/>
 &nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">¬</span></a> <a class="idref" href="StaticIFC.html#xpub"><span class="id" title="definition">xpub</span></a> <a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">pc</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">-</span></a> <span class="id" title="notation">&lt;{</span> <span class="id" title="notation">if</span> <span class="id" title="definition">Y</span><span class="id" title="notation">=</span>0 <span class="comment">(*&nbsp;check:&nbsp;P&nbsp;&#x22A2;b-&nbsp;Y=0&nbsp;&#x2208;&nbsp;public&nbsp;(fails!)&nbsp;*)</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">then</span> <span class="id" title="definition">Z</span> <span class="id" title="notation">:=</span> 0<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">else</span> <span class="id" title="notation">skip</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">end</span> <span class="id" title="notation">}&gt;</span>.<br/>
-<div class="togglescript" id="proofcontrol9" onclick="toggleDisplay('proof9');toggleDisplay('proofcontrol9')"><span class="show"></span></div>
-<div class="proofscript" id="proof9" onclick="toggleDisplay('proof9');toggleDisplay('proofcontrol9')">
-<span class="id" title="keyword">Proof</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">contra</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">contra</span>; <span class="id" title="tactic">subst</span>; <span class="id" title="tactic">clear</span> <span class="id" title="var">contra</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H<sub>2</sub></span>; <span class="id" title="tactic">subst</span>; <span class="id" title="tactic">clear</span> <span class="id" title="var">H<sub>2</sub></span>.<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">l<sub>1</sub></span>, <span class="id" title="var">l<sub>2</sub></span>; <span class="id" title="tactic">simpl</span> <span class="id" title="keyword">in</span> <span class="id" title="var">H<sub>1</sub></span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">discriminate</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H<sub>5</sub></span>.<br/>
-<span class="id" title="keyword">Qed</span>.<br/>
-</div>
-
-<br/>
-<span class="id" title="keyword">Example</span> <a id="not_swt_noninterferent_com_is_noninterferent" class="idref" href="#not_swt_noninterferent_com_is_noninterferent"><span class="id" title="definition">not_swt_noninterferent_com_is_noninterferent</span></a>:<br/>
+<span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">apply</span> <a class="idref" href="StaticIFC.html#pc_typechecker_complete"><span class="id" title="lemma">pc_typechecker_complete</span></a>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Example</span> <a id="not_pc_wt_noninterferent_com_is_noninterferent" class="idref" href="#not_pc_wt_noninterferent_com_is_noninterferent"><span class="id" title="definition">not_pc_wt_noninterferent_com_is_noninterferent</span></a>:<br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#noninterferent"><span class="id" title="definition">noninterferent</span></a> <a class="idref" href="StaticIFC.html#xpub"><span class="id" title="definition">xpub</span></a> <span class="id" title="notation">&lt;{</span> <span class="id" title="notation">if</span> <span class="id" title="definition">Y</span><span class="id" title="notation">=</span>0<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">then</span> <span class="id" title="definition">Z</span> <span class="id" title="notation">:=</span> 0<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">else</span> <span class="id" title="notation">skip</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">end</span> <span class="id" title="notation">}&gt;</span>.<br/>
-<div class="togglescript" id="proofcontrol10" onclick="toggleDisplay('proof10');toggleDisplay('proofcontrol10')"><span class="show"></span></div>
-<div class="proofscript" id="proof10" onclick="toggleDisplay('proof10');toggleDisplay('proofcontrol10')">
+<div class="togglescript" id="proofcontrol11" onclick="toggleDisplay('proof11');toggleDisplay('proofcontrol11')"><span class="show"></span></div>
+<div class="proofscript" id="proof11" onclick="toggleDisplay('proof11');toggleDisplay('proofcontrol11')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <a class="idref" href="StaticIFC.html#noninterferent"><span class="id" title="definition">noninterferent</span></a>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">s<sub>1</sub></span> <span class="id" title="var">s<sub>2</sub></span> <span class="id" title="var">s<sub>1</sub>'</span> <span class="id" title="var">s<sub>2</sub>'</span> <span class="id" title="var">H</span> <span class="id" title="var">red1</span> <span class="id" title="var">red2</span>.<br/>
@@ -1040,7 +1108,7 @@ We will later show that <span class="inlinecode"><span class="id" title="var">pc
     cryptographic constant-time. 
 <div class="paragraph"> </div>
 
-<a id="lab21"></a><h1 class="section">IFC type system allowing branching on secrets</h1>
+<a id="lab24"></a><h1 class="section">IFC type system allowing branching on secrets</h1>
 
 <div class="paragraph"> </div>
 
@@ -1150,7 +1218,22 @@ We will later show that <span class="inlinecode"><span class="id" title="var">pc
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:146"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#3431c6a3af34615c81a4e312b0fc6708"><span class="id" title="notation">;;</span></a> <a class="idref" href="StaticIFC.html#3431c6a3af34615c81a4e312b0fc6708"><span class="id" title="notation">(</span></a><a class="idref" href="StaticIFC.html#join"><span class="id" title="definition">join</span></a> <a class="idref" href="StaticIFC.html#pc:162"><span class="id" title="variable">pc</span></a> <a class="idref" href="StaticIFC.html#l:164"><span class="id" title="variable">l</span></a><a class="idref" href="StaticIFC.html#3431c6a3af34615c81a4e312b0fc6708"><span class="id" title="notation">)</span></a> <a class="idref" href="StaticIFC.html#3431c6a3af34615c81a4e312b0fc6708"><span class="id" title="notation"><span class="nowrap">&vert;--</span></span></a> <a class="idref" href="StaticIFC.html#c<sub>1</sub>:165"><span class="id" title="variable">c<sub>1</sub></span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:146"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#3431c6a3af34615c81a4e312b0fc6708"><span class="id" title="notation">;;</span></a> <a class="idref" href="StaticIFC.html#pc:162"><span class="id" title="variable">pc</span></a> <a class="idref" href="StaticIFC.html#3431c6a3af34615c81a4e312b0fc6708"><span class="id" title="notation"><span class="nowrap">&vert;--</span></span></a> <span class="id" title="notation">&lt;{</span> <span class="id" title="notation">while</span> <a class="idref" href="StaticIFC.html#b:163"><span class="id" title="variable">b</span></a> <span class="id" title="notation">do</span> <a class="idref" href="StaticIFC.html#c<sub>1</sub>:165"><span class="id" title="variable">c<sub>1</sub></span></a> <span class="id" title="notation">end</span> <span class="id" title="notation">}&gt;</span><br/>
 <br/>
-<span class="id" title="keyword">where</span> <a id="3431c6a3af34615c81a4e312b0fc6708" class="idref" href="#3431c6a3af34615c81a4e312b0fc6708"><span class="id" title="notation">&quot;</span></a>P ';;' pc '<span class="nowrap">&vert;--</span>' c" := (<a class="idref" href="StaticIFC.html#well_typed:148"><span class="id" title="inductive">well_typed</span></a> <span class="id" title="var">P</span> <span class="id" title="var">pc</span> <span class="id" title="var">c</span>).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">where</span> <a id="3431c6a3af34615c81a4e312b0fc6708" class="idref" href="#3431c6a3af34615c81a4e312b0fc6708"><span class="id" title="notation">&quot;</span></a>P ';;' pc '<span class="nowrap">&vert;--</span>' c" := (<a class="idref" href="StaticIFC.html#well_typed:148"><span class="id" title="inductive">well_typed</span></a> <span class="id" title="var">P</span> <span class="id" title="var">pc</span> <span class="id" title="var">c</span>).<br/>
+</div>
+
+<div class="doc">
+We now allow branching on arbitrary boolean expressions in <span class="inlinecode"><span class="id" title="keyword">if</span></span>
+    and <span class="inlinecode"><span class="id" title="var">while</span></span>, but join the label of the branch expression to the
+    <span class="inlinecode"><span class="id" title="var">pc</span></span>. Then in the assignment rule we require that also the <span class="inlinecode"><span class="id" title="var">pc</span></span>
+    label flows to the label of the assigned variable, in order to
+    still prevent implicit flows. 
+<div class="paragraph"> </div>
+
+<a id="lab25"></a><h2 class="section">Typechecker for this <span class="inlinecode"><span class="id" title="var">well_typed</span></span> relation.</h2>
+
+</div>
+<div class="code">
+
 <span class="id" title="keyword">Fixpoint</span> <a id="wt_typechecker" class="idref" href="#wt_typechecker"><span class="id" title="definition">wt_typechecker</span></a> (<a id="P:166" class="idref" href="#P:166"><span class="id" title="binder">P</span></a>:<a class="idref" href="StaticIFC.html#pub_vars"><span class="id" title="definition">pub_vars</span></a>) (<a id="pc:167" class="idref" href="#pc:167"><span class="id" title="binder">pc</span></a>:<a class="idref" href="StaticIFC.html#label"><span class="id" title="definition">label</span></a>) (<a id="c:168" class="idref" href="#c:168"><span class="id" title="binder">c</span></a>:<span class="id" title="inductive">com</span>) : <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Datatypes.html#bool"><span class="id" title="inductive">bool</span></a> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <a class="idref" href="StaticIFC.html#c:168"><span class="id" title="variable">c</span></a> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;| <span class="id" title="notation">&lt;{</span> <span class="id" title="notation">skip</span> <span class="id" title="notation">}&gt;</span> ⇒ <span class="id" title="notation">true</span><br/>
@@ -1165,8 +1248,8 @@ We will later show that <span class="inlinecode"><span class="id" title="var">pc
 <span class="id" title="keyword">Lemma</span> <a id="wt_typechecker_sound" class="idref" href="#wt_typechecker_sound"><span class="id" title="lemma">wt_typechecker_sound</span></a> : <span class="id" title="keyword">∀</span> <a id="P:171" class="idref" href="#P:171"><span class="id" title="binder">P</span></a> <a id="pc:172" class="idref" href="#pc:172"><span class="id" title="binder">pc</span></a> <a id="c:173" class="idref" href="#c:173"><span class="id" title="binder">c</span></a>,<br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#wt_typechecker"><span class="id" title="definition">wt_typechecker</span></a> <a class="idref" href="StaticIFC.html#P:171"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#pc:172"><span class="id" title="variable">pc</span></a> <a class="idref" href="StaticIFC.html#c:173"><span class="id" title="variable">c</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <span class="id" title="notation">true</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:171"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#3431c6a3af34615c81a4e312b0fc6708"><span class="id" title="notation">;;</span></a> <a class="idref" href="StaticIFC.html#pc:172"><span class="id" title="variable">pc</span></a> <a class="idref" href="StaticIFC.html#3431c6a3af34615c81a4e312b0fc6708"><span class="id" title="notation"><span class="nowrap">&vert;--</span></span></a> <a class="idref" href="StaticIFC.html#c:173"><span class="id" title="variable">c</span></a>.<br/>
-<div class="togglescript" id="proofcontrol11" onclick="toggleDisplay('proof11');toggleDisplay('proofcontrol11')"><span class="show"></span></div>
-<div class="proofscript" id="proof11" onclick="toggleDisplay('proof11');toggleDisplay('proofcontrol11')">
+<div class="togglescript" id="proofcontrol12" onclick="toggleDisplay('proof12');toggleDisplay('proofcontrol12')"><span class="show"></span></div>
+<div class="proofscript" id="proof12" onclick="toggleDisplay('proof12');toggleDisplay('proofcontrol12')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">pc</span> <span class="id" title="var">c</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">pc</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">c</span>; <span class="id" title="tactic">intros</span> <span class="id" title="var">pc</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">simpl</span> <span class="id" title="keyword">in</span> *; <span class="id" title="tactic">econstructor</span>;<br/>
@@ -1180,8 +1263,8 @@ We will later show that <span class="inlinecode"><span class="id" title="var">pc
 <span class="id" title="keyword">Lemma</span> <a id="wt_typechecker_complete" class="idref" href="#wt_typechecker_complete"><span class="id" title="lemma">wt_typechecker_complete</span></a> : <span class="id" title="keyword">∀</span> <a id="P:174" class="idref" href="#P:174"><span class="id" title="binder">P</span></a> <a id="pc:175" class="idref" href="#pc:175"><span class="id" title="binder">pc</span></a> <a id="c:176" class="idref" href="#c:176"><span class="id" title="binder">c</span></a>,<br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#wt_typechecker"><span class="id" title="definition">wt_typechecker</span></a> <a class="idref" href="StaticIFC.html#P:174"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#pc:175"><span class="id" title="variable">pc</span></a> <a class="idref" href="StaticIFC.html#c:176"><span class="id" title="variable">c</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <span class="id" title="notation">false</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">¬</span></a> <a class="idref" href="StaticIFC.html#P:174"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#3431c6a3af34615c81a4e312b0fc6708"><span class="id" title="notation">;;</span></a> <a class="idref" href="StaticIFC.html#pc:175"><span class="id" title="variable">pc</span></a> <a class="idref" href="StaticIFC.html#3431c6a3af34615c81a4e312b0fc6708"><span class="id" title="notation"><span class="nowrap">&vert;--</span></span></a> <a class="idref" href="StaticIFC.html#c:176"><span class="id" title="variable">c</span></a>.<br/>
-<div class="togglescript" id="proofcontrol12" onclick="toggleDisplay('proof12');toggleDisplay('proofcontrol12')"><span class="show"></span></div>
-<div class="proofscript" id="proof12" onclick="toggleDisplay('proof12');toggleDisplay('proofcontrol12')">
+<div class="togglescript" id="proofcontrol13" onclick="toggleDisplay('proof13');toggleDisplay('proofcontrol13')"><span class="show"></span></div>
+<div class="proofscript" id="proof13" onclick="toggleDisplay('proof13');toggleDisplay('proofcontrol13')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">pc</span> <span class="id" title="var">c</span> <span class="id" title="var">H</span> <span class="id" title="var">Hc</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">Hc</span>; <span class="id" title="tactic">simpl</span> <span class="id" title="keyword">in</span> *;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> <span class="id" title="tactic">rewrite</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Bool.Bool.html#andb_false_iff"><span class="id" title="lemma">andb_false_iff</span></a> <span class="id" title="keyword">in</span> *; <span class="id" title="tactic">try</span> <span class="id" title="tactic">tauto</span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">congruence</span>.<br/>
@@ -1246,8 +1329,13 @@ And we still prevent implicit flows:
 </div>
 
 <div class="doc">
-<a id="lab22"></a><h2 class="section">Dealing with unsynchronized executions running different code</h2>
+<a id="lab26"></a><h2 class="section">Dealing with unsynchronized executions running different code</h2>
 
+<div class="paragraph"> </div>
+
+ The <span class="inlinecode"><span class="id" title="var">different_code</span></span> lemma below is crucial for proving that the
+    type system above still enforces noninterference even if it allows
+    branching on secrets, and its proof relies on the following lemma: 
 </div>
 <div class="code">
 
@@ -1255,8 +1343,8 @@ And we still prevent implicit flows:
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:181"><span class="id" title="variable">P</span></a><a class="idref" href="StaticIFC.html#3431c6a3af34615c81a4e312b0fc6708"><span class="id" title="notation">;;</span></a> <a class="idref" href="StaticIFC.html#secret"><span class="id" title="definition">secret</span></a> <a class="idref" href="StaticIFC.html#3431c6a3af34615c81a4e312b0fc6708"><span class="id" title="notation"><span class="nowrap">&vert;--</span></span></a> <a class="idref" href="StaticIFC.html#c:182"><span class="id" title="variable">c</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#s:183"><span class="id" title="variable">s</span></a> <span class="id" title="notation">=[</span> <a class="idref" href="StaticIFC.html#c:182"><span class="id" title="variable">c</span></a> <span class="id" title="notation">]=&gt;</span> <a class="idref" href="StaticIFC.html#s':184"><span class="id" title="variable">s'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#pub_equiv"><span class="id" title="definition">pub_equiv</span></a> <a class="idref" href="StaticIFC.html#P:181"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#s:183"><span class="id" title="variable">s</span></a> <a class="idref" href="StaticIFC.html#s':184"><span class="id" title="variable">s'</span></a>.<br/>
-<div class="togglescript" id="proofcontrol13" onclick="toggleDisplay('proof13');toggleDisplay('proofcontrol13')"><span class="show"></span></div>
-<div class="proofscript" id="proof13" onclick="toggleDisplay('proof13');toggleDisplay('proofcontrol13')">
+<div class="togglescript" id="proofcontrol14" onclick="toggleDisplay('proof14');toggleDisplay('proofcontrol14')"><span class="show"></span></div>
+<div class="proofscript" id="proof14" onclick="toggleDisplay('proof14');toggleDisplay('proofcontrol14')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">c</span> <span class="id" title="var">s</span> <span class="id" title="var">s'</span> <span class="id" title="var">Hwt</span> <span class="id" title="var">Heval</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">Heval</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">Hwt</span>; <span class="id" title="tactic">subst</span>.<br/>
 &nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <a class="idref" href="StaticIFC.html#pub_equiv_refl"><span class="id" title="lemma">pub_equiv_refl</span></a>.<br/>
@@ -1279,8 +1367,8 @@ And we still prevent implicit flows:
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#s<sub>1</sub>:188"><span class="id" title="variable">s<sub>1</sub></span></a> <span class="id" title="notation">=[</span> <a class="idref" href="StaticIFC.html#c<sub>1</sub>:186"><span class="id" title="variable">c<sub>1</sub></span></a> <span class="id" title="notation">]=&gt;</span> <a class="idref" href="StaticIFC.html#s<sub>1</sub>':190"><span class="id" title="variable">s<sub>1</sub>'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#s<sub>2</sub>:189"><span class="id" title="variable">s<sub>2</sub></span></a> <span class="id" title="notation">=[</span> <a class="idref" href="StaticIFC.html#c<sub>2</sub>:187"><span class="id" title="variable">c<sub>2</sub></span></a> <span class="id" title="notation">]=&gt;</span> <a class="idref" href="StaticIFC.html#s<sub>2</sub>':191"><span class="id" title="variable">s<sub>2</sub>'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#pub_equiv"><span class="id" title="definition">pub_equiv</span></a> <a class="idref" href="StaticIFC.html#P:185"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#s<sub>1</sub>':190"><span class="id" title="variable">s<sub>1</sub>'</span></a> <a class="idref" href="StaticIFC.html#s<sub>2</sub>':191"><span class="id" title="variable">s<sub>2</sub>'</span></a>.<br/>
-<div class="togglescript" id="proofcontrol14" onclick="toggleDisplay('proof14');toggleDisplay('proofcontrol14')"><span class="show"></span></div>
-<div class="proofscript" id="proof14" onclick="toggleDisplay('proof14');toggleDisplay('proofcontrol14')">
+<div class="togglescript" id="proofcontrol15" onclick="toggleDisplay('proof15');toggleDisplay('proofcontrol15')"><span class="show"></span></div>
+<div class="proofscript" id="proof15" onclick="toggleDisplay('proof15');toggleDisplay('proofcontrol15')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">c<sub>1</sub></span> <span class="id" title="var">c<sub>2</sub></span> <span class="id" title="var">s<sub>1</sub></span> <span class="id" title="var">s<sub>2</sub></span> <span class="id" title="var">s<sub>1</sub>'</span> <span class="id" title="var">s<sub>2</sub>'</span> <span class="id" title="var">Hwt1</span> <span class="id" title="var">Hwt2</span> <span class="id" title="var">Hequiv</span> <span class="id" title="var">Heval1</span> <span class="id" title="var">Heval2</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <a class="idref" href="StaticIFC.html#secret_run"><span class="id" title="lemma">secret_run</span></a> <span class="id" title="keyword">in</span> <span class="id" title="var">Hwt1</span>; [| <span class="id" title="var">eassumption</span>].<br/>
@@ -1293,7 +1381,7 @@ And we still prevent implicit flows:
 </div>
 
 <div class="doc">
-<a id="lab23"></a><h2 class="section">We show that <span class="inlinecode"><span class="id" title="var">well_typed</span></span> commands are <span class="inlinecode"><span class="id" title="var">noninterferent</span></span>.</h2>
+<a id="lab27"></a><h2 class="section">We show that <span class="inlinecode"><span class="id" title="var">well_typed</span></span> commands are <span class="inlinecode"><span class="id" title="var">noninterferent</span></span>.</h2>
 
 </div>
 <div class="code">
@@ -1301,8 +1389,8 @@ And we still prevent implicit flows:
 <span class="id" title="keyword">Theorem</span> <a id="well_typed_noninterferent" class="idref" href="#well_typed_noninterferent"><span class="id" title="lemma">well_typed_noninterferent</span></a> : <span class="id" title="keyword">∀</span> <a id="P:192" class="idref" href="#P:192"><span class="id" title="binder">P</span></a> <a id="c:193" class="idref" href="#c:193"><span class="id" title="binder">c</span></a>,<br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:192"><span class="id" title="variable">P</span></a><a class="idref" href="StaticIFC.html#3431c6a3af34615c81a4e312b0fc6708"><span class="id" title="notation">;;</span></a> <a class="idref" href="StaticIFC.html#public"><span class="id" title="definition">public</span></a> <a class="idref" href="StaticIFC.html#3431c6a3af34615c81a4e312b0fc6708"><span class="id" title="notation"><span class="nowrap">&vert;--</span></span></a> <a class="idref" href="StaticIFC.html#c:193"><span class="id" title="variable">c</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#noninterferent"><span class="id" title="definition">noninterferent</span></a> <a class="idref" href="StaticIFC.html#P:192"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#c:193"><span class="id" title="variable">c</span></a>.<br/>
-<div class="togglescript" id="proofcontrol15" onclick="toggleDisplay('proof15');toggleDisplay('proofcontrol15')"><span class="show"></span></div>
-<div class="proofscript" id="proof15" onclick="toggleDisplay('proof15');toggleDisplay('proofcontrol15')">
+<div class="togglescript" id="proofcontrol16" onclick="toggleDisplay('proof16');toggleDisplay('proofcontrol16')"><span class="show"></span></div>
+<div class="proofscript" id="proof16" onclick="toggleDisplay('proof16');toggleDisplay('proofcontrol16')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">c</span> <span class="id" title="var">Hwt</span> <span class="id" title="var">s<sub>1</sub></span> <span class="id" title="var">s<sub>2</sub></span> <span class="id" title="var">s<sub>1</sub>'</span> <span class="id" title="var">s<sub>2</sub>'</span> <span class="id" title="var">Heq</span> <span class="id" title="var">Heval1</span> <span class="id" title="var">Heval2</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">s<sub>2</sub>'</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">s<sub>2</sub></span>.<br/>
@@ -1358,10 +1446,10 @@ The noninterference proof is still relatively simple, since the
 <div class="paragraph"> </div>
 
     Another key ingredient for having a simple noninterference proof
-    is working with a big-step semantics. 
+    is working with a big-step semantics for Imp. 
 <div class="paragraph"> </div>
 
-<a id="lab24"></a><h1 class="section">Type system for termination-sensitive noninterference</h1>
+<a id="lab28"></a><h1 class="section">Type system for termination-sensitive noninterference</h1>
 
 <div class="paragraph"> </div>
 
@@ -1380,13 +1468,14 @@ The noninterference proof is still relatively simple, since the
 </div>
 
 <div class="doc">
-We could prove that <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span> enforces TSNI, but that
-    typing relation is too restrictive, since for TSNI we can allow
+We could prove that <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span> enforces TSNI, but that typing
+    relation is too restrictive, since for TSNI we can allow
     if-then-else conditions to depend on secrets. So we define a new
-    type system that only prevents <i>loop</i> conditions to depend on secrets. 
+    type system that only prevents <i>loop</i> conditions from depending on
+    secrets. 
 <div class="paragraph"> </div>
 
-<a id="lab25"></a><h2 class="section">We just need to update the while rule of <span class="inlinecode"><span class="id" title="var">well_typed</span></span>:</h2>
+<a id="lab29"></a><h2 class="section">We just need to update the while rule of <span class="inlinecode"><span class="id" title="var">well_typed</span></span>:</h2>
 
 <div class="paragraph"> </div>
 
@@ -1424,8 +1513,8 @@ We could prove that <span class="inlinecode"><span class="id" title="var">pc_wel
 </table></center>
 <div class="paragraph"> </div>
 
-   Beyond requiring the label of <span class="inlinecode"><span class="id" title="var">b</span></span> to be <span class="inlinecode"><span class="id" title="var">public</span></span>, we also require
-   that once one branches on secrets with if-then-else
+   Beyond requiring the label of <span class="inlinecode"><span class="id" title="var">b</span></span> to be <span class="inlinecode"><span class="id" title="var">public</span></span>, this rule also
+   requires that once one branches on secrets with if-then-else
    (i.e. pc=secret) no while loops are allowed.
 
 </div>
@@ -1457,7 +1546,7 @@ We could prove that <span class="inlinecode"><span class="id" title="var">pc_wel
 </div>
 
 <div class="doc">
-<a id="lab26"></a><h2 class="section">We prove that <span class="inlinecode"><span class="id" title="var">ts_well_typed</span></span> enforces TSNI.</h2>
+<a id="lab30"></a><h2 class="section">We prove that <span class="inlinecode"><span class="id" title="var">ts_well_typed</span></span> enforces TSNI.</h2>
 
 <div class="paragraph"> </div>
 
@@ -1470,7 +1559,7 @@ We could prove that <span class="inlinecode"><span class="id" title="var">pc_wel
 
 <div class="paragraph"> </div>
 
-    Then we show that <span class="inlinecode"><span class="id" title="var">ts_well_typed</span></span> implies equitermination, which
+    We use this to show that <span class="inlinecode"><span class="id" title="var">ts_well_typed</span></span> implies equitermination, which
     together with noninterference implies termination-sensitive noninterference.
  
 </div>
@@ -1548,8 +1637,8 @@ We could prove that <span class="inlinecode"><span class="id" title="var">pc_wel
 <span class="id" title="keyword">Corollary</span> <a id="ts_well_typed_tsni" class="idref" href="#ts_well_typed_tsni"><span class="id" title="lemma">ts_well_typed_tsni</span></a> : <span class="id" title="keyword">∀</span> <a id="P:233" class="idref" href="#P:233"><span class="id" title="binder">P</span></a> <a id="c:234" class="idref" href="#c:234"><span class="id" title="binder">c</span></a>,<br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:233"><span class="id" title="variable">P</span></a><a class="idref" href="StaticIFC.html#19786c1a041289c14b532d161e5dfab9"><span class="id" title="notation">;;</span></a> <a class="idref" href="StaticIFC.html#public"><span class="id" title="definition">public</span></a> <a class="idref" href="StaticIFC.html#19786c1a041289c14b532d161e5dfab9"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#19786c1a041289c14b532d161e5dfab9"><span class="id" title="notation">ts</span></a><a class="idref" href="StaticIFC.html#19786c1a041289c14b532d161e5dfab9"><span class="id" title="notation">-</span></a> <a class="idref" href="StaticIFC.html#c:234"><span class="id" title="variable">c</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#tsni"><span class="id" title="definition">tsni</span></a> <a class="idref" href="StaticIFC.html#P:233"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#c:234"><span class="id" title="variable">c</span></a>.<br/>
-<div class="togglescript" id="proofcontrol16" onclick="toggleDisplay('proof16');toggleDisplay('proofcontrol16')"><span class="show"></span></div>
-<div class="proofscript" id="proof16" onclick="toggleDisplay('proof16');toggleDisplay('proofcontrol16')">
+<div class="togglescript" id="proofcontrol17" onclick="toggleDisplay('proof17');toggleDisplay('proofcontrol17')"><span class="show"></span></div>
+<div class="proofscript" id="proof17" onclick="toggleDisplay('proof17');toggleDisplay('proofcontrol17')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">c</span> <span class="id" title="var">Hwt</span> <span class="id" title="var">s<sub>1</sub></span> <span class="id" title="var">s<sub>2</sub></span> <span class="id" title="var">s<sub>1</sub>'</span> <span class="id" title="var">Heval1</span> <span class="id" title="var">Heq</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<a class="idref" href="StaticIFC.html#ts_well_typed_equitermination"><span class="id" title="lemma">ts_well_typed_equitermination</span></a> <span class="id" title="var">Hwt</span> <span class="id" title="var">Heval1</span> <span class="id" title="var">Heq</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">s<sub>2</sub>'</span> <span class="id" title="var">Heval2</span>].<br/>
@@ -1560,7 +1649,7 @@ We could prove that <span class="inlinecode"><span class="id" title="var">pc_wel
 </div>
 
 <div class="doc">
-<a id="lab27"></a><h1 class="section">Program counter security</h1>
+<a id="lab31"></a><h1 class="section">Program counter security</h1>
 
 <div class="paragraph"> </div>
 
@@ -1585,7 +1674,7 @@ We could prove that <span class="inlinecode"><span class="id" title="var">pc_wel
 </div>
 
 <div class="doc">
-<a id="lab28"></a><h2 class="section">Instrumented semantics with branches</h2>
+<a id="lab32"></a><h2 class="section">Instrumented semantics with branches</h2>
 
 <div class="paragraph"> </div>
 
@@ -1711,7 +1800,7 @@ We could prove that <span class="inlinecode"><span class="id" title="var">pc_wel
 </div>
 
 <div class="doc">
-<a id="lab29"></a><h2 class="section">Program counter security definition</h2>
+<a id="lab33"></a><h2 class="section">Program counter security definition</h2>
 
 <div class="paragraph"> </div>
 
@@ -1741,8 +1830,8 @@ Program counter security is mostly orthogonal to noninterference and
 <span class="id" title="keyword">Theorem</span> <a id="pc_well_typed_pc_secure" class="idref" href="#pc_well_typed_pc_secure"><span class="id" title="lemma">pc_well_typed_pc_secure</span></a> : <span class="id" title="keyword">∀</span> <a id="P:277" class="idref" href="#P:277"><span class="id" title="binder">P</span></a> <a id="c:278" class="idref" href="#c:278"><span class="id" title="binder">c</span></a>,<br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#P:277"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">&#x22A2;</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">pc</span></a><a class="idref" href="StaticIFC.html#d14a14cbe43755d0c5387962d2da5148"><span class="id" title="notation">-</span></a> <a class="idref" href="StaticIFC.html#c:278"><span class="id" title="variable">c</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#pc_secure"><span class="id" title="definition">pc_secure</span></a> <a class="idref" href="StaticIFC.html#P:277"><span class="id" title="variable">P</span></a> <a class="idref" href="StaticIFC.html#c:278"><span class="id" title="variable">c</span></a>.<br/>
-<div class="togglescript" id="proofcontrol17" onclick="toggleDisplay('proof17');toggleDisplay('proofcontrol17')"><span class="show"></span></div>
-<div class="proofscript" id="proof17" onclick="toggleDisplay('proof17');toggleDisplay('proofcontrol17')">
+<div class="togglescript" id="proofcontrol18" onclick="toggleDisplay('proof18');toggleDisplay('proofcontrol18')"><span class="show"></span></div>
+<div class="proofscript" id="proof18" onclick="toggleDisplay('proof18');toggleDisplay('proofcontrol18')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">c</span> <span class="id" title="var">Hwt</span> <span class="id" title="var">s<sub>1</sub></span> <span class="id" title="var">s<sub>2</sub></span> <span class="id" title="var">s<sub>1</sub>'</span> <span class="id" title="var">s<sub>2</sub>'</span> <span class="id" title="var">bs<sub>1</sub></span> <span class="id" title="var">bs<sub>2</sub></span> <span class="id" title="var">Heq</span> <span class="id" title="var">Heval1</span> <span class="id" title="var">Heval2</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">s<sub>2</sub>'</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">s<sub>2</sub></span>.<br/>
@@ -1774,7 +1863,7 @@ The proof does rely on <span class="inlinecode"><span class="id" title="var">pc_
 </div>
 <div class="code">
 
-<span class="comment">(*&nbsp;2025-04-08&nbsp;14:32&nbsp;*)</span><br/>
+<span class="comment">(*&nbsp;2025-04-08&nbsp;18:44&nbsp;*)</span><br/>
 </div>
 </div>
 
