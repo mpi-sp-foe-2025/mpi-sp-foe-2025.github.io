@@ -260,15 +260,15 @@ Intuitively, even if this program branches on the secret <span class="inlinecode
 <div class="paragraph"> </div>
 
     But first, let's start with something simpler, a type system for
-    arithmetic expressions: our typing judgement <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">&#x22A2;<span class="id" title="var">a</span>-</span> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode">\<span class="id" title="keyword">in</span></span> <span class="inlinecode"><span class="id" title="var">l</span></span>
+    arithmetic expressions: our typing judgement <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">&#x22A2;<span class="id" title="var">a</span>-</span> <span class="inlinecode"><span class="id" title="var">a</span></span> &#x2208; <span class="inlinecode"><span class="id" title="var">l</span></span>
     specifies the label <span class="inlinecode"><span class="id" title="var">l</span></span> of an arithmetic expression <span class="inlinecode"><span class="id" title="var">a</span></span> in terms
     of the labels of the variables read it reads.
 
 <div class="paragraph"> </div>
 
-    In particular, <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">&#x22A2;<span class="id" title="var">a</span>-</span> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode">\<span class="id" title="keyword">in</span></span> <span class="inlinecode"><span class="id" title="var">public</span></span> says that expression <span class="inlinecode"><span class="id" title="var">a</span></span>
+    In particular, <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">&#x22A2;<span class="id" title="var">a</span>-</span> <span class="inlinecode"><span class="id" title="var">a</span></span> &#x2208; <span class="inlinecode"><span class="id" title="var">public</span></span> says that expression <span class="inlinecode"><span class="id" title="var">a</span></span>
     only reads public variables, so it computes a public value.
-    <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">&#x22A2;<span class="id" title="var">a</span>-</span> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode">\<span class="id" title="keyword">in</span></span> <span class="inlinecode"><span class="id" title="var">secret</span></span> says that expression <span class="inlinecode"><span class="id" title="var">a</span></span> reads some secret
+    <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">&#x22A2;<span class="id" title="var">a</span>-</span> <span class="inlinecode"><span class="id" title="var">a</span></span> &#x2208; <span class="inlinecode"><span class="id" title="var">secret</span></span> says that expression <span class="inlinecode"><span class="id" title="var">a</span></span> reads some secret
     variable, so it computes a value that may depend on secrets. 
 <div class="paragraph"> </div>
 
@@ -279,11 +279,11 @@ Intuitively, even if this program branches on the secret <span class="inlinecode
  Here are some examples:
 <ul class="doclist">
 <li> For a variable <span class="inlinecode"><span class="id" title="var">X</span></span> we just look up its label in P, so
-      <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">&#x22A2;<span class="id" title="var">a</span>-</span> <span class="inlinecode"><span class="id" title="var">X</span></span> <span class="inlinecode">\<span class="id" title="keyword">in</span></span> <span class="inlinecode">(<span class="id" title="var">P</span></span> <span class="inlinecode"><span class="id" title="var">X</span>)</span>.
+      <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">&#x22A2;<span class="id" title="var">a</span>-</span> <span class="inlinecode"><span class="id" title="var">X</span></span> &#x2208; <span class="inlinecode">(<span class="id" title="var">P</span></span> <span class="inlinecode"><span class="id" title="var">X</span>)</span>.
 
 </li>
 <li> For a constant <span class="inlinecode"><span class="id" title="var">n</span></span> the label is <span class="inlinecode"><span class="id" title="var">public</span></span>, so
-      <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">&#x22A2;<span class="id" title="var">a</span></span> <span class="inlinecode"><span class="id" title="var">n</span></span> <span class="inlinecode">\<span class="id" title="keyword">in</span></span> <span class="inlinecode"><span class="id" title="var">public</span></span>.
+      <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">&#x22A2;<span class="id" title="var">a</span></span> <span class="inlinecode"><span class="id" title="var">n</span></span> &#x2208; <span class="inlinecode"><span class="id" title="var">public</span></span>.
 
 </li>
 <li> Given variable <span class="inlinecode"><span class="id" title="var">X<sub>1</sub></span></span> with label <span class="inlinecode"><span class="id" title="var">l<sub>1</sub></span></span> and variable <span class="inlinecode"><span class="id" title="var">X<sub>2</sub></span></span> with
@@ -328,7 +328,7 @@ Intuitively if we add up two expressions <span class="inlinecode"><span class="i
 <div class="paragraph"> </div>
 
  We now define a set of rules for the IFC typing relation for
-    arithmetic expressions <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">&#x22A2;<span class="id" title="var">a</span>-</span> <span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode">\<span class="id" title="keyword">in</span></span> <span class="inlinecode"><span class="id" title="var">l</span></span>, which we read as follows:
+    arithmetic expressions <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">&#x22A2;<span class="id" title="var">a</span>-</span> <span class="inlinecode"><span class="id" title="var">a</span></span> &#x2208; <span class="inlinecode"><span class="id" title="var">l</span></span>, which we read as follows:
     "given the public variables <span class="inlinecode"><span class="id" title="var">P</span></span> expression <span class="inlinecode"><span class="id" title="var">a</span></span> has label <span class="inlinecode"><span class="id" title="var">l</span></span>:" 
 <div class="paragraph"> </div>
 
