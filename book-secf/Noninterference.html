@@ -38,9 +38,8 @@
 <span class="id" title="keyword">From</span> <span class="id" title="var">Coq</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Nat.html#"><span class="id" title="library">Init.Nat</span></a>.<br/>
 <span class="id" title="keyword">From</span> <span class="id" title="var">Coq</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.Arith.html#"><span class="id" title="library">Arith.Arith</span></a>.<br/>
 <span class="id" title="keyword">From</span> <span class="id" title="var">Coq</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.EqNat.html#"><span class="id" title="library">Arith.EqNat</span></a>. <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.PeanoNat.html#Nat"><span class="id" title="module">Nat</span></a>.<br/>
-<span class="id" title="keyword">From</span> <span class="id" title="var">Coq</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.micromega.Lia.html#"><span class="id" title="library">Lia</span></a>.<br/>
-<span class="id" title="keyword">From</span> <span class="id" title="var">Coq</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Lists.List.html#"><span class="id" title="library">Lists.List</span></a>. <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Lists.List.html#ListNotations"><span class="id" title="module">ListNotations</span></a>.<br/>
-<span class="id" title="keyword">From</span> <span class="id" title="var">Coq</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Strings.String.html#"><span class="id" title="library">Strings.String</span></a>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">SECF</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Maps</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">SECF</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Imp</span>.<br/>
 <span class="id" title="keyword">Set</span> <span class="id" title="var">Default</span> <span class="id" title="keyword">Goal</span> <span class="id" title="var">Selector</span> "!".<br/>
 </div>
 
@@ -460,12 +459,6 @@ This is a secure behavior, but it is different from that of the
 </div>
 <div class="code">
 
-<span class="id" title="keyword">From</span> <span class="id" title="var">Coq</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Bool.Bool.html#"><span class="id" title="library">Bool.Bool</span></a>.<br/>
-<span class="id" title="keyword">From</span> <span class="id" title="var">Coq</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Nat.html#"><span class="id" title="library">Init.Nat</span></a>.<br/>
-<span class="id" title="keyword">From</span> <span class="id" title="var">Coq</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.Arith.html#"><span class="id" title="library">Arith.Arith</span></a>.<br/>
-<span class="id" title="keyword">From</span> <span class="id" title="var">Coq</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.EqNat.html#"><span class="id" title="library">Arith.EqNat</span></a>. <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.PeanoNat.html#Nat"><span class="id" title="module">Nat</span></a>.<br/>
-<span class="id" title="keyword">From</span> <span class="id" title="var">SECF</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Maps</span>.<br/>
-<span class="id" title="keyword">From</span> <span class="id" title="var">SECF</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Imp</span>.<br/><hr class='doublespaceincode'/>
 <span class="id" title="keyword">Print</span> <span class="id" title="var">state</span>. <span class="comment">(*&nbsp;state&nbsp;=&nbsp;total_map&nbsp;nat&nbsp;=&nbsp;string&nbsp;<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>&nbsp;nat&nbsp;*)</span><br/><hr class='doublespaceincode'/>
 <span class="id" title="keyword">Definition</span> <a id="pub_vars" class="idref" href="#pub_vars"><span class="id" title="definition">pub_vars</span></a> := <span class="id" title="definition">total_map</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Datatypes.html#bool"><span class="id" title="inductive">bool</span></a>. <span class="comment">(*&nbsp;=&nbsp;string&nbsp;<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>&nbsp;bool&nbsp;*)</span><br/>
 </div>
@@ -1218,7 +1211,7 @@ Unfortunately <span class="inlinecode"><span class="id" title="var">sme_while</s
 </div>
 <div class="code">
 
-<span class="comment">(*&nbsp;2025-04-09&nbsp;13:06&nbsp;*)</span><br/>
+<span class="comment">(*&nbsp;2025-04-09&nbsp;13:22&nbsp;*)</span><br/>
 </div>
 </div>
 
