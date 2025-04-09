@@ -1,4 +1,4 @@
-COQMFFLAGS := -Q . LF
+COQMFFLAGS := -Q . PLF
 
 ALLVFILES := $(wildcard *.v)
 

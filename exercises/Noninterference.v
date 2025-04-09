@@ -5,8 +5,8 @@ From Coq Require Import Bool.Bool.
 From Coq Require Import Init.Nat.
 From Coq Require Import Arith.Arith.
 From Coq Require Import Arith.EqNat. Import Nat.
-From SECF Require Import Maps.
-From SECF Require Import Imp.
+From PLF Require Import Maps.
+From PLF Require Import Imp.
 Set Default Goal Selector "!".
 
 (** Programmers have to be very careful about how information flows in
