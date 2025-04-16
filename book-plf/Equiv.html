@@ -458,7 +458,7 @@ Of course, no (human) programmer would write a conditional whose
 <div class="doc"> 
 <div class="paragraph"> </div>
 
-<a id="lab17"></a><h4 class="section">Exercise: 3 stars, standard (swap_if_branches)</h4>
+<a id="lab17"></a><h4 class="section">Exercise: 3 stars, standard, optional (swap_if_branches)</h4>
  Show that we can swap the branches of an <span class="inlinecode"><span class="id" title="keyword">if</span></span> if we also negate its
     condition. 
 </div>
@@ -570,7 +570,6 @@ Of course, no (human) programmer would write a conditional whose
 &nbsp;&nbsp;<a class="idref" href="Equiv.html#bequiv"><span class="id" title="definition">bequiv</span></a> <a class="idref" href="Equiv.html#b:30"><span class="id" title="variable">b</span></a> <span class="id" title="notation">&lt;{</span><span class="id" title="notation">true</span><span class="id" title="notation">}&gt;</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">~(</span></a> <a class="idref" href="Equiv.html#st:32"><span class="id" title="variable">st</span></a> <span class="id" title="notation">=[</span> <span class="id" title="notation">while</span> <a class="idref" href="Equiv.html#b:30"><span class="id" title="variable">b</span></a> <span class="id" title="notation">do</span> <a class="idref" href="Equiv.html#c:31"><span class="id" title="variable">c</span></a> <span class="id" title="notation">end</span> <span class="id" title="notation">]=&gt;</span> <a class="idref" href="Equiv.html#st':33"><span class="id" title="variable">st'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">)</span></a>.<br/>
 <span class="id" title="keyword">Proof</span>.<br/>
-&nbsp;&nbsp;<span class="comment">(*&nbsp;WORKED&nbsp;IN&nbsp;CLASS&nbsp;*)</span><br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">b</span> <span class="id" title="var">c</span> <span class="id" title="var">st</span> <span class="id" title="var">st'</span> <span class="id" title="var">Hb</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">H</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">remember</span> <span class="id" title="notation">&lt;{</span> <span class="id" title="notation">while</span> <span class="id" title="var">b</span> <span class="id" title="notation">do</span> <span class="id" title="var">c</span> <span class="id" title="notation">end</span> <span class="id" title="notation">}&gt;</span> <span class="id" title="keyword">as</span> <span class="id" title="var">cw</span> <span class="id" title="var">eqn</span>:<span class="id" title="var">Heqcw</span>.<br/>
@@ -630,7 +629,6 @@ Of course, no (human) programmer would write a conditional whose
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">&lt;{</span> <span class="id" title="notation">while</span> <a class="idref" href="Equiv.html#b:36"><span class="id" title="variable">b</span></a> <span class="id" title="notation">do</span> <a class="idref" href="Equiv.html#c:37"><span class="id" title="variable">c</span></a> <span class="id" title="notation">end</span> <span class="id" title="notation">}&gt;</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">&lt;{</span> <span class="id" title="notation">if</span> <a class="idref" href="Equiv.html#b:36"><span class="id" title="variable">b</span></a> <span class="id" title="notation">then</span> <a class="idref" href="Equiv.html#c:37"><span class="id" title="variable">c</span></a> <span class="id" title="notation">;</span> <span class="id" title="notation">while</span> <a class="idref" href="Equiv.html#b:36"><span class="id" title="variable">b</span></a> <span class="id" title="notation">do</span> <a class="idref" href="Equiv.html#c:37"><span class="id" title="variable">c</span></a> <span class="id" title="notation">end</span> <span class="id" title="notation">else</span> <span class="id" title="notation">skip</span> <span class="id" title="notation">end</span> <span class="id" title="notation">}&gt;</span>.<br/>
 <span class="id" title="keyword">Proof</span>.<br/>
-&nbsp;&nbsp;<span class="comment">(*&nbsp;WORKED&nbsp;IN&nbsp;CLASS&nbsp;*)</span><br/>
 <div class="togglescript" id="proofcontrol6" onclick="toggleDisplay('proof6');toggleDisplay('proofcontrol6')"><span class="show"></span></div>
 <div class="proofscript" id="proof6" onclick="toggleDisplay('proof6');toggleDisplay('proofcontrol6')">
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">b</span> <span class="id" title="var">c</span> <span class="id" title="var">st</span> <span class="id" title="var">st'</span>.<br/>
@@ -1385,6 +1383,7 @@ To fold constants in a command, we apply the appropriate folding
 
 <span class="id" title="keyword">Theorem</span> <a id="fold_constants_aexp_sound" class="idref" href="#fold_constants_aexp_sound"><span class="id" title="lemma">fold_constants_aexp_sound</span></a> :<br/>
 &nbsp;&nbsp;<a class="idref" href="Equiv.html#atrans_sound"><span class="id" title="definition">atrans_sound</span></a> <a class="idref" href="Equiv.html#fold_constants_aexp"><span class="id" title="definition">fold_constants_aexp</span></a>.<br/>
+<span class="comment">(*&nbsp;WORKED&nbsp;IN&nbsp;CLASS&nbsp;*)</span><br/>
 <div class="togglescript" id="proofcontrol23" onclick="toggleDisplay('proof23');toggleDisplay('proofcontrol23')"><span class="show"></span></div>
 <div class="proofscript" id="proof23" onclick="toggleDisplay('proof23');toggleDisplay('proofcontrol23')">
 <span class="id" title="keyword">Proof</span>.<br/>
@@ -2109,7 +2108,7 @@ If you think they are equivalent, then prove it. If you think they
 
 <div class="paragraph"> </div>
 
-<a id="lab44"></a><h4 class="section">Exercise: 4 stars, advanced (p1_p2_term)</h4>
+<a id="lab44"></a><h4 class="section">Exercise: 4 stars, advanced, optional (p1_p2_term)</h4>
  Consider the following commands: 
 </div>
 <div class="code">
@@ -2146,7 +2145,7 @@ Intuitively, <span class="inlinecode"><span class="id" title="var">p<sub>1</sub>
 <div class="doc"> 
 <div class="paragraph"> </div>
 
-<a id="lab45"></a><h4 class="section">Exercise: 4 stars, advanced (p1_p2_equiv)</h4>
+<a id="lab45"></a><h4 class="section">Exercise: 4 stars, advanced, optional (p1_p2_equiv)</h4>
  Use these two lemmas to prove that <span class="inlinecode"><span class="id" title="var">p<sub>1</sub></span></span> and <span class="inlinecode"><span class="id" title="var">p<sub>2</sub></span></span> are actually
     equivalent. 
 </div>
@@ -2160,7 +2159,7 @@ Intuitively, <span class="inlinecode"><span class="id" title="var">p<sub>1</sub>
 <div class="doc"> 
 <div class="paragraph"> </div>
 
-<a id="lab46"></a><h4 class="section">Exercise: 4 stars, advanced (p3_p4_inequiv)</h4>
+<a id="lab46"></a><h4 class="section">Exercise: 4 stars, advanced, optional (p3_p4_inequiv)</h4>
  Prove that the following programs are <i>not</i> equivalent.  (Hint:
     What should the value of <span class="inlinecode"><span class="id" title="var">Z</span></span> be when <span class="inlinecode"><span class="id" title="var">p<sub>3</sub></span></span> terminates?  What about
     <span class="inlinecode"><span class="id" title="var">p<sub>4</sub></span></span>?) 
@@ -2328,7 +2327,7 @@ Finally, find a non-trivial property which is preserved by
 
 <div class="code">
 
-<span class="comment">(*&nbsp;2025-04-04&nbsp;14:48&nbsp;*)</span><br/>
+<span class="comment">(*&nbsp;2025-04-16&nbsp;16:25&nbsp;*)</span><br/>
 </div>
 </div>
 
