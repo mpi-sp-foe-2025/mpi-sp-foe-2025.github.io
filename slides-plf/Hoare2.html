@@ -106,7 +106,7 @@ Write down a (useful) specification for the following program:
 </div> <!-- /quiz -->
 
 <div class="doc">
-<a id="lab105"></a><h1 class="section">Decorated Programs</h1>
+<a id="lab107"></a><h1 class="section">Decorated Programs</h1>
 
 <div class="paragraph"> </div>
 
@@ -125,7 +125,7 @@ Write down a (useful) specification for the following program:
     its own correctness. 
 <div class="paragraph"> </div>
 
-<a id="lab106"></a><h3 class="section"> </h3>
+<a id="lab108"></a><h3 class="section"> </h3>
  For example, consider the program:
 <br/>
 <span class="inlinecode">&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">X</span> := <span class="id" title="var">m</span>;<br/>
@@ -134,7 +134,7 @@ Write down a (useful) specification for the following program:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Z</span> := <span class="id" title="var">Z</span> - 1;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">X</span> := <span class="id" title="var">X</span> - 1<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">end</span>
-</span><a id="lab107"></a><h3 class="section"> </h3>
+</span><a id="lab109"></a><h3 class="section"> </h3>
  Here is one possible specification for this program, in the
     form of a Hoare triple:
 <br/>
@@ -149,7 +149,7 @@ Write down a (useful) specification for the following program:
 </span>
 <div class="paragraph"> </div>
 
-<a id="lab108"></a><h3 class="section"> </h3>
+<a id="lab110"></a><h3 class="section"> </h3>
  Here is a decorated version of this program, embodying a
     proof of this specification:
 <br/>
@@ -179,7 +179,7 @@ Write down a (useful) specification for the following program:
     separated by implications). 
 <div class="paragraph"> </div>
 
-<a id="lab109"></a><h3 class="section"> </h3>
+<a id="lab111"></a><h3 class="section"> </h3>
  A decorated program can be viewed as a compact representation of a
     proof in Hoare Logic: the assertions surrounding each command
     specify the Hoare triple to be proved for that part of the program
@@ -189,7 +189,7 @@ Write down a (useful) specification for the following program:
 </div>
 
 <div class="doc">
-<a id="lab110"></a><h2 class="section">Example: Swapping</h2>
+<a id="lab112"></a><h2 class="section">Example: Swapping</h2>
 
 <div class="paragraph"> </div>
 
@@ -208,7 +208,7 @@ Write down a (useful) specification for the following program:
 </div>
 
 <div class="doc">
-<a id="lab111"></a><h2 class="section">Example: Simple Conditionals</h2>
+<a id="lab113"></a><h2 class="section">Example: Simple Conditionals</h2>
 
 <div class="paragraph"> </div>
 
@@ -230,7 +230,7 @@ Write down a (useful) specification for the following program:
 </div>
 
 <div class="doc">
-<a id="lab112"></a><h2 class="section">Example: Reduce to Zero</h2>
+<a id="lab114"></a><h2 class="section">Example: Reduce to Zero</h2>
 
 <div class="paragraph"> </div>
 
@@ -249,7 +249,7 @@ Write down a (useful) specification for the following program:
 </div>
 
 <div class="doc">
-<a id="lab113"></a><h2 class="section">Example: Division</h2>
+<a id="lab115"></a><h2 class="section">Example: Division</h2>
 
 <div class="paragraph"> </div>
 
@@ -268,7 +268,7 @@ Write down a (useful) specification for the following program:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">end</span>;
 </span>    If we replace <span class="inlinecode"><span class="id" title="var">m</span></span> and <span class="inlinecode"><span class="id" title="var">n</span></span> by concrete numbers and execute the program, it
     will terminate with the variable <span class="inlinecode"><span class="id" title="var">X</span></span> set to the remainder when <span class="inlinecode"><span class="id" title="var">m</span></span>
-    is divided by <span class="inlinecode"><span class="id" title="var">n</span></span> and <span class="inlinecode"><span class="id" title="var">Y</span></span> set to the quotient. <a id="lab114"></a><h3 class="section"> </h3>
+    is divided by <span class="inlinecode"><span class="id" title="var">n</span></span> and <span class="inlinecode"><span class="id" title="var">Y</span></span> set to the quotient. <a id="lab116"></a><h3 class="section"> </h3>
  Here's a possible specification:
 <br/>
 <span class="inlinecode">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">True</span> <span style='letter-spacing:-.4em;'>}</span>}<br/>
@@ -287,7 +287,7 @@ Write down a (useful) specification for the following program:
 </div>
 
 <div class="doc">
-<a id="lab115"></a><h2 class="section">From Decorated Programs to Formal Proofs</h2>
+<a id="lab117"></a><h2 class="section">From Decorated Programs to Formal Proofs</h2>
 
 <div class="paragraph"> </div>
 
@@ -297,7 +297,7 @@ Write down a (useful) specification for the following program:
     can be a bit long and fiddly. 
 <div class="paragraph"> </div>
 
-<a id="lab116"></a><h3 class="section"> </h3>
+<a id="lab118"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -311,7 +311,7 @@ Write down a (useful) specification for the following program:
 </div>
 
 <div class="doc">
-<a id="lab117"></a><h3 class="section"> </h3>
+<a id="lab119"></a><h3 class="section"> </h3>
 
 </div>
 <div class="code">
@@ -343,7 +343,7 @@ Write down a (useful) specification for the following program:
 </div>
 
 <div class="doc">
-<a id="lab118"></a><h3 class="section"> </h3>
+<a id="lab120"></a><h3 class="section"> </h3>
  A little more (OK, quite a bit more) tactic fanciness for
     helping deal with the boring parts of the process of proving
     assertions: 
@@ -389,7 +389,7 @@ Write down a (useful) specification for the following program:
 </div>
 
 <div class="doc">
-<a id="lab119"></a><h3 class="section"> </h3>
+<a id="lab121"></a><h3 class="section"> </h3>
  This makes it pretty easy to verify <span class="inlinecode"><span class="id" title="var">reduce_to_zero</span></span>: 
 </div>
 <div class="code">
@@ -410,7 +410,7 @@ Write down a (useful) specification for the following program:
 </div>
 
 <div class="doc">
-<a id="lab120"></a><h3 class="section"> </h3>
+<a id="lab122"></a><h3 class="section"> </h3>
  This example shows that it is conceptually straightforward to read
     off the main elements of a formal proof from a decorated program.
     Indeed, the process is so straightforward that it can be
@@ -418,7 +418,7 @@ Write down a (useful) specification for the following program:
 </div>
 
 <div class="doc">
-<a id="lab121"></a><h1 class="section">Formal Decorated Programs</h1>
+<a id="lab123"></a><h1 class="section">Formal Decorated Programs</h1>
 
 <div class="paragraph"> </div>
 
@@ -427,7 +427,7 @@ Write down a (useful) specification for the following program:
     steps in proving that the decorations are correct. 
 <div class="paragraph"> </div>
 
-<a id="lab122"></a><h2 class="section">Syntax</h2>
+<a id="lab124"></a><h2 class="section">Syntax</h2>
 
 <div class="paragraph"> </div>
 
@@ -444,7 +444,7 @@ Write down a (useful) specification for the following program:
     something like this... 
 <div class="paragraph"> </div>
 
-<a id="lab123"></a><h3 class="section"> </h3>
+<a id="lab125"></a><h3 class="section"> </h3>
 
 </div>
 <div class="code">
@@ -469,7 +469,7 @@ Write down a (useful) specification for the following program:
 </div>
 
 <div class="doc">
-<a id="lab124"></a><h3 class="section"> </h3>
+<a id="lab126"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -482,7 +482,7 @@ Write down a (useful) specification for the following program:
     pre- and post-conditions on the semicolon! 
 <div class="paragraph"> </div>
 
-<a id="lab125"></a><h3 class="section"> </h3>
+<a id="lab127"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -498,7 +498,7 @@ Write down a (useful) specification for the following program:
     postcondition. 
 <div class="paragraph"> </div>
 
-<a id="lab126"></a><h3 class="section"> </h3>
+<a id="lab128"></a><h3 class="section"> </h3>
 <ul class="doclist">
 <li> The <span class="inlinecode"><span class="id" title="var">skip</span></span> command, for example, is decorated only with its
       postcondition
@@ -518,7 +518,7 @@ Write down a (useful) specification for the following program:
 
 <div class="paragraph"> </div>
 
-<a id="lab127"></a><h3 class="section"> </h3>
+<a id="lab129"></a><h3 class="section"> </h3>
 <ul class="doclist">
 <li> Sequences <span class="inlinecode"><span class="id" title="var">d<sub>1</sub></span></span> <span class="inlinecode">;</span> <span class="inlinecode"><span class="id" title="var">d<sub>2</sub></span></span> need no additional decorations.
 
@@ -540,7 +540,7 @@ Write down a (useful) specification for the following program:
 
 <div class="paragraph"> </div>
 
-<a id="lab128"></a><h3 class="section"> </h3>
+<a id="lab130"></a><h3 class="section"> </h3>
 <ul class="doclist">
 <li> An assignment <span class="inlinecode"><span class="id" title="var">X</span></span> <span class="inlinecode">:=</span> <span class="inlinecode"><span class="id" title="var">a</span></span> is decorated only with its postcondition:
 <br/>
@@ -551,7 +551,7 @@ Write down a (useful) specification for the following program:
 
 <div class="paragraph"> </div>
 
-<a id="lab129"></a><h3 class="section"> </h3>
+<a id="lab131"></a><h3 class="section"> </h3>
 <ul class="doclist">
 <li> A conditional <span class="inlinecode"><span class="id" title="keyword">if</span></span> <span class="inlinecode"><span class="id" title="var">b</span></span> <span class="inlinecode"><span class="id" title="keyword">then</span></span> <span class="inlinecode"><span class="id" title="var">d<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="keyword">else</span></span> <span class="inlinecode"><span class="id" title="var">d<sub>2</sub></span></span> is decorated with a
       postcondition for the entire statement, as well as preconditions
@@ -564,7 +564,7 @@ Write down a (useful) specification for the following program:
 
 <div class="paragraph"> </div>
 
-<a id="lab130"></a><h3 class="section"> </h3>
+<a id="lab132"></a><h3 class="section"> </h3>
 <ul class="doclist">
 <li> A loop <span class="inlinecode"><span class="id" title="var">while</span></span> <span class="inlinecode"><span class="id" title="var">b</span></span> <span class="inlinecode"><span class="id" title="tactic">do</span></span> <span class="inlinecode"><span class="id" title="var">d</span></span> <span class="inlinecode"><span class="id" title="keyword">end</span></span> is decorated with its postcondition
       and a precondition for the body:
@@ -576,7 +576,7 @@ Write down a (useful) specification for the following program:
 
 <div class="paragraph"> </div>
 
-<a id="lab131"></a><h3 class="section"> </h3>
+<a id="lab133"></a><h3 class="section"> </h3>
 <ul class="doclist">
 <li> Implications <span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span><span style='letter-spacing:-.2em;'>></span>></span></span></span> can be added as decorations either for a
       precondition
@@ -593,7 +593,7 @@ Write down a (useful) specification for the following program:
 
 <div class="paragraph"> </div>
 
-<a id="lab132"></a><h3 class="section"> </h3>
+<a id="lab134"></a><h3 class="section"> </h3>
  Putting this all together gives us the formal syntax of decorated
     commands: 
 </div>
@@ -623,7 +623,7 @@ Write down a (useful) specification for the following program:
     concrete syntax for <span class="inlinecode"><span class="id" title="var">dcom</span></span>.) 
 <div class="paragraph"> </div>
 
-<a id="lab133"></a><h3 class="section"> </h3>
+<a id="lab135"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -637,7 +637,7 @@ Write down a (useful) specification for the following program:
 </div>
 
 <div class="doc">
-<a id="lab134"></a><h3 class="section"> </h3>
+<a id="lab136"></a><h3 class="section"> </h3>
 
 </div>
 
@@ -660,7 +660,7 @@ An example <span class="inlinecode"><span class="id" title="var">decorated</span
 </div>
 
 <div class="doc">
-<a id="lab135"></a><h3 class="section"> </h3>
+<a id="lab137"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -686,7 +686,7 @@ An example <span class="inlinecode"><span class="id" title="var">decorated</span
 </div>
 
 <div class="doc">
-<a id="lab136"></a><h3 class="section"> </h3>
+<a id="lab138"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -716,7 +716,7 @@ An example <span class="inlinecode"><span class="id" title="var">decorated</span
 </div>
 
 <div class="doc">
-<a id="lab137"></a><h3 class="section"> </h3>
+<a id="lab139"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -747,7 +747,7 @@ For example:
 </div>
 
 <div class="doc">
-<a id="lab138"></a><h3 class="section"> </h3>
+<a id="lab140"></a><h3 class="section"> </h3>
  The outer Hoare triple of a decorated program is just a <span class="inlinecode"><span class="id" title="keyword">Prop</span></span>;
     thus, to show that it is <i>valid</i>, we need to produce a proof of
     this proposition.
@@ -765,7 +765,7 @@ For example:
     validity of the outer triple. 
 <div class="paragraph"> </div>
 
-<a id="lab139"></a><h2 class="section">Extracting Verification Conditions</h2>
+<a id="lab141"></a><h2 class="section">Extracting Verification Conditions</h2>
 
 <div class="paragraph"> </div>
 
@@ -796,7 +796,7 @@ For example:
       applications of the consequence rule. 
 </li>
 </ul>
-<a id="lab140"></a><h3 class="section"> </h3>
+<a id="lab142"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -812,7 +812,7 @@ For example:
 
 </li>
 </ul>
-<a id="lab141"></a><h3 class="section"> </h3>
+<a id="lab143"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -823,7 +823,7 @@ For example:
       the postcondition of <span class="inlinecode"><span class="id" title="var">d<sub>1</sub></span></span>. 
 </li>
 </ul>
-<a id="lab142"></a><h3 class="section"> </h3>
+<a id="lab144"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -837,7 +837,7 @@ For example:
 </span>
 </li>
 </ul>
-<a id="lab143"></a><h3 class="section"> </h3>
+<a id="lab145"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -873,7 +873,7 @@ For example:
 
 </li>
 </ul>
-<a id="lab144"></a><h3 class="section"> </h3>
+<a id="lab146"></a><h3 class="section"> </h3>
 <ul class="doclist">
 <li> A loop
 <br/>
@@ -898,7 +898,7 @@ For example:
 
 </li>
 </ul>
-<a id="lab145"></a><h3 class="section"> </h3>
+<a id="lab147"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -918,7 +918,7 @@ For example:
 
 </li>
 </ul>
-<a id="lab146"></a><h3 class="section"> </h3>
+<a id="lab148"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -941,7 +941,7 @@ For example:
 
 <div class="paragraph"> </div>
 
-<a id="lab147"></a><h3 class="section"> </h3>
+<a id="lab149"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -991,7 +991,7 @@ For example:
 </div>
 
 <div class="doc">
-<a id="lab148"></a><h3 class="section"> </h3>
+<a id="lab150"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -1043,7 +1043,7 @@ For example:
 </div>
 
 <div class="doc">
-<a id="lab149"></a><h3 class="section"> </h3>
+<a id="lab151"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -1076,7 +1076,7 @@ This brings us to the main theorem of this section:
 </div>
 
 <div class="doc">
-<a id="lab150"></a><h2 class="section">More Automation</h2>
+<a id="lab152"></a><h2 class="section">More Automation</h2>
 
 <div class="paragraph"> </div>
 
@@ -1102,7 +1102,7 @@ This brings us to the main theorem of this section:
 </div>
 
 <div class="doc">
-<a id="lab151"></a><h3 class="section"> </h3>
+<a id="lab153"></a><h3 class="section"> </h3>
  Fortunately, our <span class="inlinecode"><span class="id" title="var">verify_assertion</span></span> tactic can generally take care of
     most or all of them. 
 </div>
@@ -1112,7 +1112,7 @@ This brings us to the main theorem of this section:
 </div>
 
 <div class="doc">
-<a id="lab152"></a><h3 class="section"> </h3>
+<a id="lab154"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -1129,7 +1129,7 @@ This brings us to the main theorem of this section:
 </div>
 
 <div class="doc">
-<a id="lab153"></a><h3 class="section"> </h3>
+<a id="lab155"></a><h3 class="section"> </h3>
  Here's the final, formal proof that dec_while is correct. 
 </div>
 <div class="code">
@@ -1140,7 +1140,7 @@ This brings us to the main theorem of this section:
 </div>
 
 <div class="doc">
-<a id="lab154"></a><h1 class="section">Finding Loop Invariants</h1>
+<a id="lab156"></a><h1 class="section">Finding Loop Invariants</h1>
 
 <div class="paragraph"> </div>
 
@@ -1149,7 +1149,7 @@ This brings us to the main theorem of this section:
     the right loop invariants... 
 <div class="paragraph"> </div>
 
-<a id="lab155"></a><h2 class="section">Example: Slow Subtraction</h2>
+<a id="lab157"></a><h2 class="section">Example: Slow Subtraction</h2>
 
 <div class="paragraph"> </div>
 
@@ -1166,7 +1166,7 @@ This brings us to the main theorem of this section:
 </span>
 <div class="paragraph"> </div>
 
-<a id="lab156"></a><h3 class="section"> </h3>
+<a id="lab158"></a><h3 class="section"> </h3>
  To verify this program, we need to find an invariant <span class="inlinecode"><span class="id" title="var">Inv</span></span> for the
     loop.  As a first step we can leave <span class="inlinecode"><span class="id" title="var">Inv</span></span> as an unknown and build a
     <i>skeleton</i> for the proof by applying the rules for local
@@ -1174,7 +1174,7 @@ This brings us to the main theorem of this section:
     as usual, and without any thinking at all yet. 
 <div class="paragraph"> </div>
 
-<a id="lab157"></a><h3 class="section"> </h3>
+<a id="lab159"></a><h3 class="section"> </h3>
  This leads to the following skeleton:
 <br/>
 <span class="inlinecode">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(1)    <span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">X</span> = <span class="id" title="var">m</span> ∧ <span class="id" title="var">Y</span> = <span class="id" title="var">n</span> <span style='letter-spacing:-.4em;'>}</span>}  <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span><span style='letter-spacing:-.2em;'>></span>></span></span>                   (<span class="id" title="var">a</span>)<br/>
@@ -1189,7 +1189,7 @@ This brings us to the main theorem of this section:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">end</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(7)    <span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">Inv</span> ∧ ¬(<span class="id" title="var">X</span> ≠ 0) <span style='letter-spacing:-.4em;'>}</span>}  <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span><span style='letter-spacing:-.2em;'>></span>></span></span>                (<span class="id" title="var">b</span>)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(8)    <span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">Y</span> = <span class="id" title="var">n</span> - <span class="id" title="var">m</span> <span style='letter-spacing:-.4em;'>}</span>}
-</span><a id="lab158"></a><h3 class="section"> </h3>
+</span><a id="lab160"></a><h3 class="section"> </h3>
  By examining this skeleton, we can see that any valid <span class="inlinecode"><span class="id" title="var">Inv</span></span> will
     have to respect three conditions:
 <ul class="doclist">
@@ -1213,12 +1213,12 @@ This brings us to the main theorem of this section:
 </div>
 
 <div class="doc">
-<a id="lab159"></a><h3 class="section"> </h3>
+<a id="lab161"></a><h3 class="section"> </h3>
 
 </div>
 
 <div class="doc">
-<a id="lab160"></a><h2 class="section">Example: Parity</h2>
+<a id="lab162"></a><h2 class="section">Example: Parity</h2>
 
 <div class="paragraph"> </div>
 
@@ -1244,7 +1244,7 @@ This brings us to the main theorem of this section:
 </div>
 
 <div class="doc">
-<a id="lab161"></a><h3 class="section"> </h3>
+<a id="lab163"></a><h3 class="section"> </h3>
 
 </div>
 <div class="code">
@@ -1264,7 +1264,7 @@ This brings us to the main theorem of this section:
 </div>
 
 <div class="doc">
-<a id="lab162"></a><h2 class="section">Example: Finding Square Roots</h2>
+<a id="lab164"></a><h2 class="section">Example: Finding Square Roots</h2>
 
 <div class="paragraph"> </div>
 
@@ -1285,7 +1285,7 @@ This brings us to the main theorem of this section:
 </div>
 
 <div class="doc">
-<a id="lab163"></a><h2 class="section">Example: Squaring</h2>
+<a id="lab165"></a><h2 class="section">Example: Squaring</h2>
 
 <div class="paragraph"> </div>
 
@@ -1309,7 +1309,7 @@ This brings us to the main theorem of this section:
 
 
 <div class="doc">
-<a id="lab164"></a><h1 class="section">Weakest Preconditions (Optional)</h1>
+<a id="lab166"></a><h1 class="section">Weakest Preconditions (Optional)</h1>
 
 <div class="paragraph"> </div>
 
@@ -1331,7 +1331,7 @@ This brings us to the main theorem of this section:
     one that as many states as possible can satisfy. 
 <div class="paragraph"> </div>
 
-<a id="lab165"></a><h3 class="section"> </h3>
+<a id="lab167"></a><h3 class="section"> </h3>
  <span class="inlinecode"><span class="id" title="var">P</span></span> is a weakest precondition of command <span class="inlinecode"><span class="id" title="var">c</span></span> for postcondition <span class="inlinecode"><span class="id" title="var">Q</span></span>
     if
 
@@ -1356,8 +1356,8 @@ This brings us to the main theorem of this section:
 </div>
 
 <div class="doc">
-<a id="lab166"></a><h3 class="section"> </h3>
-<a id="lab167"></a><h4 class="section">Exercise: 1 star, standard, optional (wp)</h4>
+<a id="lab168"></a><h3 class="section"> </h3>
+<a id="lab169"></a><h4 class="section">Exercise: 1 star, standard, optional (wp)</h4>
  What are weakest preconditions of the following commands
     for the following postconditions?
 <br/>
