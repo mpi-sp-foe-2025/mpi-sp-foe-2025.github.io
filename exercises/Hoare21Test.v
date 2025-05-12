@@ -86,15 +86,19 @@ Print Assumptions slow_assignment_formal.
 Goal True.
 idtac " ".
 
-idtac "-------------------  parity  --------------------".
+idtac "-------------------  parity_correct  --------------------".
 idtac " ".
 
-idtac "#> parity".
+idtac "#> parity_correct".
 idtac "Possible points: 3".
-check_type @parity ((nat -> nat)).
+check_type @parity_correct (
+(forall m : nat,
+ {{Hoare11.Aexp_of_aexp (AId X) = Hoare11.Aexp_of_nat m}} 
+ while (ANum 2) <= (AId X) do X := (AId X) - (ANum 2) end
+ {{Hoare11.Aexp_of_aexp (AId X) = Hoare11.Aexp_of_nat (parity m)}})).
 idtac "Assumptions:".
 Abort.
-Print Assumptions parity.
+Print Assumptions parity_correct.
 Goal True.
 idtac " ".
 
@@ -138,12 +142,12 @@ idtac "---------- division_example ---------".
 Print Assumptions division_example.
 idtac "---------- slow_assignment_formal ---------".
 Print Assumptions slow_assignment_formal.
-idtac "---------- parity ---------".
-Print Assumptions parity.
+idtac "---------- parity_correct ---------".
+Print Assumptions parity_correct.
 idtac "---------- parity_decorated_formal ---------".
 idtac "MANUAL".
 idtac "".
 idtac "********** Advanced **********".
 Abort.
 
-(* 2025-05-07 14:00 *)
+(* 2025-05-12 09:41 *)
