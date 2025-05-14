@@ -1,0 +1,871 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="common/css/sf.css" rel="stylesheet" type="text/css" />
+<title>Total: Total Correctness</title>
+<link href="common/jquery-ui/jquery-ui.css" rel="stylesheet">
+<script src="common/jquery-ui/external/jquery/jquery.js"></script>
+<script src="common/jquery-ui/jquery-ui.js"></script>
+<script src="common/toggleproofs.js"></script>
+<link href="common/css/plf.css" rel="stylesheet" type="text/css"/>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+<div id='logoinheader'><a href='https://softwarefoundations.cis.upenn.edu'>
+<img src='common/media/image/sf_logo_sm.png' alt='Software Foundations Logo'></a></div>
+<div class='booktitleinheader'><a href='index.html'>Volume 2: Programming Language Foundations</a></div>
+<ul id='menu'>
+   <li class='section_name'><a href='toc.html'>Table of Contents</a></li>
+   <li class='section_name'><a href='coqindex.html'>Index</a></li>
+   <li class='section_name'><a href='deps.html'>Roadmap</a></li>
+</ul>
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Total<span class="subtitle">Total Correctness</span></h1>
+
+
+<div class="code">
+
+<span class="id" title="keyword">Set</span> <span class="id" title="var">Warnings</span> "-notation-overridden,-parsing,-deprecated-hint-without-locality".<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">PLF</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="library">Maps</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Coq</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Bool.Bool.html#"><span class="id" title="library">Bool</span></a>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Coq</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.Arith.html#"><span class="id" title="library">Arith</span></a>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Coq</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.EqNat.html#"><span class="id" title="library">EqNat</span></a>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Coq</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.PeanoNat.html#"><span class="id" title="library">PeanoNat</span></a>. <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.PeanoNat.html#Nat"><span class="id" title="module">Nat</span></a>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">Coq</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="http://coq.inria.fr/library//Coq.micromega.Lia.html#"><span class="id" title="library">Lia</span></a>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">PLF</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <span class="id" title="library">Imp</span>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">PLF</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="Hoare11.html#"><span class="id" title="library">Hoare11</span></a>.<br/>
+<span class="id" title="keyword">From</span> <span class="id" title="var">PLF</span> <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <a class="idref" href="Hoare12.html#"><span class="id" title="library">Hoare12</span></a>.<br/>
+<span class="id" title="keyword">Set</span> <span class="id" title="var">Default</span> <span class="id" title="keyword">Goal</span> <span class="id" title="var">Selector</span> "!".<br/>
+</div>
+
+<div class="doc">
+<a id="lab149"></a><h1 class="section">Total correctness, Informally</h1>
+
+<div class="paragraph"> </div>
+
+ <i>Total correctness</i> is a claim about the state before and
+    after executing a command. The standard notation is
+<br/>
+<span class="inlinecode">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="id" title="var">P</span>] <span class="id" title="var">c</span> [<span class="id" title="var">Q</span>]
+</span>    meaning:
+
+<div class="paragraph"> </div>
+
+<ul class="doclist">
+<li> If command <span class="inlinecode"><span class="id" title="var">c</span></span> begins execution in a state satisfying assertion <span class="inlinecode"><span class="id" title="var">P</span></span>,
+
+</li>
+<li> then <span class="inlinecode"><span class="id" title="var">c</span></span> terminates in some final state which satisfies the
+        assertion <span class="inlinecode"><span class="id" title="var">Q</span></span>.
+
+</li>
+</ul>
+
+<div class="paragraph"> </div>
+
+    Like for Hoare triples, assertion <span class="inlinecode"><span class="id" title="var">P</span></span> is called the <i>precondition</i>, and <span class="inlinecode"><span class="id" title="var">Q</span></span>
+    is the <i>postcondition</i>.
+
+<div class="paragraph"> </div>
+
+    Notice that <i>Total Correctness</i> is a stronger claim than a <i>Hoare triple</i>
+    since for total correctness we need to prove that the program <span class="inlinecode"><span class="id" title="var">c</span></span> terminates
+    and that the final state satisfies the post-condition, while for Hoare
+    triples the post-condition only holds <i>if</i> the program terminates.
+    This is why <i>Hoare Triples</i> are also called <i>Partial correctness</i>.
+
+<div class="paragraph"> </div>
+
+    Because single and double brackets are already used for other things, we'll
+    write Total Correctness with vertical bars:
+<br/>
+<span class="inlinecode">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<span class="id" title="var">P</span>| <span class="id" title="var">c</span> |<span class="id" title="var">Q</span>|
+</span> 
+<div class="paragraph"> </div>
+
+ For example, <span class="inlinecode">|<span class="id" title="var">X</span></span> <span class="inlinecode">=</span> <span class="inlinecode">0|</span> <span class="inlinecode"><span class="id" title="var">X</span></span> <span class="inlinecode">:=</span> <span class="inlinecode"><span class="id" title="var">X</span></span> <span class="inlinecode">+</span> <span class="inlinecode">1</span> <span class="inlinecode">|<span class="id" title="var">X</span></span> <span class="inlinecode">=</span> <span class="inlinecode">1|</span> is valid Total Correctness judgement,
+    stating when executed in a state in which <span class="inlinecode"><span class="id" title="var">X</span></span> <span class="inlinecode">=</span> <span class="inlinecode">0</span>, command <span class="inlinecode"><span class="id" title="var">X</span></span> <span class="inlinecode">:=</span> <span class="inlinecode"><span class="id" title="var">X</span></span> <span class="inlinecode">+</span> <span class="inlinecode">1</span>
+    terminates in a state with <span class="inlinecode"><span class="id" title="var">X</span></span> <span class="inlinecode">=</span> <span class="inlinecode">1</span> 
+<div class="paragraph"> </div>
+
+<a id="lab150"></a><h4 class="section">Exercise: 1 star, standard, optional (total)</h4>
+ Paraphrase the following Total Correctness statement in English,
+    and tell if there are <i>valid</i> -- i.e., is the claimed relation between
+    <span class="inlinecode"><span class="id" title="var">P</span></span>, <span class="inlinecode"><span class="id" title="var">c</span></span>, and <span class="inlinecode"><span class="id" title="var">Q</span></span> true?
+<br/>
+<span class="inlinecode">&nbsp;&nbsp;&nbsp;1) |<span class="id" title="var">True</span>| <span class="id" title="var">c</span> |<span class="id" title="var">X</span> = 5|<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;2) |<span class="id" title="var">X</span> ≤ <span class="id" title="var">Y</span>| <span class="id" title="var">c</span> |<span class="id" title="var">Y</span> ≤ <span class="id" title="var">X</span>|<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;3) |<span class="id" title="var">True</span>| <span class="id" title="var">c</span> |<span class="id" title="var">False</span>|<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;4) |<span class="id" title="var">False</span>| <span class="id" title="var">skip</span> |<span class="id" title="var">True</span>|<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;5) |<span class="id" title="var">True</span>| <span class="id" title="var">while</span> <span class="id" title="var">true</span> <span class="id" title="tactic">do</span> <span class="id" title="var">skip</span> <span class="id" title="keyword">end</span> |<span class="id" title="var">False</span>|<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;6) |<span class="id" title="var">X</span> = 0|<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">while</span> <span class="id" title="var">X</span> = 0 <span class="id" title="tactic">do</span> <span class="id" title="var">X</span> := <span class="id" title="var">X</span> + 1 <span class="id" title="keyword">end</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<span class="id" title="var">X</span> = 1|
+</span>
+</div>
+<div class="code">
+<span class="comment">(*&nbsp;FILL&nbsp;IN&nbsp;HERE&nbsp;*)</span><br/>
+<font size=-2>&#9744;</font>
+</div>
+
+
+<div class="doc">
+<a id="lab151"></a><h1 class="section">Total correctness, Formally</h1>
+
+<div class="paragraph"> </div>
+
+ We can formalize valid Total Correctness in Coq as follows: 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Definition</span> <a id="valid_total" class="idref" href="#valid_total"><span class="id" title="definition">valid_total</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<a id="P:1" class="idref" href="#P:1"><span class="id" title="binder">P</span></a> : <a class="idref" href="Hoare12.html#Assertion"><span class="id" title="definition">Assertion</span></a>) (<a id="c:2" class="idref" href="#c:2"><span class="id" title="binder">c</span></a> : <span class="id" title="inductive">com</span>) (<a id="Q:3" class="idref" href="#Q:3"><span class="id" title="binder">Q</span></a> : <a class="idref" href="Hoare12.html#Assertion"><span class="id" title="definition">Assertion</span></a>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <a id="st:4" class="idref" href="#st:4"><span class="id" title="binder">st</span></a>, <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">(</span></a><a class="idref" href="Total.html#P:1"><span class="id" title="variable">P</span></a> <a class="idref" href="Total.html#st:4"><span class="id" title="variable">st</span></a><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">∃</span></a> <a id="st':5" class="idref" href="#st':5"><span class="id" title="binder">st'</span></a><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">,</span></a>  <a class="idref" href="Total.html#st:4"><span class="id" title="variable">st</span></a> <span class="id" title="notation">=[</span> <a class="idref" href="Total.html#c:2"><span class="id" title="variable">c</span></a> <span class="id" title="notation">]=&gt;</span> <a class="idref" href="Total.html#st':5"><span class="id" title="variable">st'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a>  <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">(</span></a><a class="idref" href="Total.html#Q:3"><span class="id" title="variable">Q</span></a> <a class="idref" href="Total.html#st':5"><span class="id" title="variable">st'</span></a><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">)</span></a>.<br/>
+</div>
+
+<div class="doc">
+And add a notation for Total Correctness 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Hint Unfold</span> <a class="idref" href="Total.html#valid_total"><span class="id" title="definition">valid_total</span></a> : <span class="id" title="var">core</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Declare Scope</span> <span class="id" title="var">total_spec_scope</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Notation</span> <a id="20a1910451d7dc8b34e196b4996f7b<sub>63</sub>" class="idref" href="#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">&quot;</span></a>| P | c | Q |" := (<a class="idref" href="Total.html#valid_total"><span class="id" title="definition">valid_total</span></a> <span class="id" title="var">P</span> <span class="id" title="var">c</span> <span class="id" title="var">Q</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 90, <span class="id" title="var">c</span> <span class="id" title="var">custom</span> <span class="id" title="var">com</span> <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 99)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <span class="id" title="var">total_spec_scope</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">total_spec_scope</span>.<br/>
+</div>
+
+<div class="doc">
+We start by proving that Total Correctness is equivalent to having both a
+    <i>Hoare Triple</i> {P} c {Q} and a proof that the program terminates under the
+    assumption that the precondition <span class="inlinecode"><span class="id" title="var">P</span></span> holds. 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Lemma</span> <a id="hoare_total" class="idref" href="#hoare_total"><span class="id" title="lemma">hoare_total</span></a> <a id="P:6" class="idref" href="#P:6"><span class="id" title="binder">P</span></a> <a id="Q:7" class="idref" href="#Q:7"><span class="id" title="binder">Q</span></a> <a id="c:8" class="idref" href="#c:8"><span class="id" title="binder">c</span></a> :<br/>
+&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#P:6"><span class="id" title="variable">P</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#c:8"><span class="id" title="variable">c</span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Q:7"><span class="id" title="variable">Q</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'&lt;-&gt;'_x"><span class="id" title="notation">↔</span></a><br/>
+&nbsp;<a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'&lt;-&gt;'_x"><span class="id" title="notation">(</span></a><a class="idref" href="Hoare11.html#a18cbce9fe584a9130c3f34d4f14555f"><span class="id" title="notation"><span style='letter-spacing:-.4em;'>{</span>{</span></a><a class="idref" href="Total.html#P:6"><span class="id" title="variable">P</span></a><a class="idref" href="Hoare11.html#a18cbce9fe584a9130c3f34d4f14555f"><span class="id" title="notation"><span style='letter-spacing:-.4em;'>}</span>}</span></a> <a class="idref" href="Total.html#c:8"><span class="id" title="variable">c</span></a> <a class="idref" href="Hoare11.html#a18cbce9fe584a9130c3f34d4f14555f"><span class="id" title="notation"><span style='letter-spacing:-.4em;'>{</span>{</span></a><a class="idref" href="Total.html#Q:7"><span class="id" title="variable">Q</span></a><a class="idref" href="Hoare11.html#a18cbce9fe584a9130c3f34d4f14555f"><span class="id" title="notation"><span style='letter-spacing:-.4em;'>}</span>}</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <a id="st:9" class="idref" href="#st:9"><span class="id" title="binder">st</span></a> ,  <a class="idref" href="Total.html#P:6"><span class="id" title="variable">P</span></a> <a class="idref" href="Total.html#st:9"><span class="id" title="variable">st</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">(</span></a><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">∃</span></a> <a id="st':10" class="idref" href="#st':10"><span class="id" title="binder">st'</span></a><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#a883bdd010993579f99d60b3775bcf54"><span class="id" title="notation">,</span></a> <a class="idref" href="Total.html#st:9"><span class="id" title="variable">st</span></a> <span class="id" title="notation">=[</span> <a class="idref" href="Total.html#c:8"><span class="id" title="variable">c</span></a> <span class="id" title="notation">]=&gt;</span> <a class="idref" href="Total.html#st':10"><span class="id" title="variable">st'</span></a><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">)</span></a><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'&lt;-&gt;'_x"><span class="id" title="notation">)</span></a>.<br/>
+<div class="togglescript" id="proofcontrol1" onclick="toggleDisplay('proof1');toggleDisplay('proofcontrol1')"><span class="show"></span></div>
+<div class="proofscript" id="proof1" onclick="toggleDisplay('proof1');toggleDisplay('proofcontrol1')">
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">intros</span> <span class="id" title="var">Ht</span>;<span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">intros</span> <span class="id" title="var">st</span> <span class="id" title="var">st'</span> <span class="id" title="var">Heval1</span> <span class="id" title="var">HPre</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">Ht</span> <span class="id" title="var">st</span> <span class="id" title="var">HPre</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">st''</span> (<span class="id" title="var">Heval2</span> &amp; <span class="id" title="var">Hq</span>)].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> (<span class="id" title="lemma">ceval_deterministic</span> <span class="id" title="var">c</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">Heval1</span> <span class="id" title="var">Heval2</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">intros</span> <span class="id" title="var">st</span> <span class="id" title="var">HPre</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">Ht</span> <span class="id" title="var">st</span> <span class="id" title="var">HPre</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">st''</span> (<span class="id" title="var">Heval2</span> &amp; <span class="id" title="var">Hq</span>)].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;+ <span class="id" title="tactic">intros</span> [<span class="id" title="var">Hp</span> <span class="id" title="var">Hf</span>] <span class="id" title="var">st</span> <span class="id" title="var">HPre</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">Hf</span> <span class="id" title="var">st</span> <span class="id" title="var">HPre</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">st'</span> <span class="id" title="var">He</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">st'</span>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">apply</span> (<span class="id" title="var">Hp</span> <span class="id" title="var">st</span>);<span class="id" title="tactic">assumption</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+</div>
+
+<div class="doc">
+<a id="lab152"></a><h1 class="section">Proof Rules</h1>
+
+<div class="paragraph"> </div>
+
+ The goal of Total Correctness is, like for Hoare Logic, to provide
+    a <i>compositional</i> method for proving the validity of specific triples.
+    To this end, in the sections below, we'll introduce a rule for reasoning
+    about each of the different syntactic forms of commands in Imp.
+
+<div class="paragraph"> </div>
+
+    Most rules are close to the rules of Hoare Logic, differing only in
+    notation. Only the rule for <i>while</i> will require some thinking and new
+    concepts. This is to be expected, since the <i>while</i> instruction is the only
+    instruction in the <i>Imp</i> language which can introduce non-termination.
+ 
+</div>
+
+<div class="doc">
+<a id="lab153"></a><h2 class="section">Skip</h2>
+
+<div class="paragraph"> </div>
+
+ Since <span class="inlinecode"><span class="id" title="var">skip</span></span> doesn't change the state, it preserves any
+    assertion <span class="inlinecode"><span class="id" title="var">P</span></span> and is anyway terminating:
+<center><table class="infrule">
+<tr class="infruleassumption">
+  <td class="infrule">&nbsp;&nbsp;</td>
+  <td class="infrulenamecol" rowspan="3">
+    (total_skip) &nbsp;
+  </td></tr>
+<tr class="infrulemiddle">
+  <td class="infrule"><hr /></td>
+</tr>
+<tr class="infruleassumption">
+  <td class="infrule">| P | skip | P |</td>
+  <td></td>
+</tr>
+</table></center>
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Theorem</span> <a id="total_skip" class="idref" href="#total_skip"><span class="id" title="lemma">total_skip</span></a> : <span class="id" title="keyword">∀</span> <a id="P:11" class="idref" href="#P:11"><span class="id" title="binder">P</span></a>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#P:11"><span class="id" title="variable">P</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <span class="id" title="notation">skip</span> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#P:11"><span class="id" title="variable">P</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">st</span> <span class="id" title="var">Pre</span>. <span class="id" title="tactic">∃</span> <span class="id" title="var">st</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="constructor">E_Skip</span> | <span class="id" title="tactic">assumption</span>].<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<div class="doc">
+<a id="lab154"></a><h2 class="section">Sequencing</h2>
+
+<div class="paragraph"> </div>
+
+ If command <span class="inlinecode"><span class="id" title="var">c<sub>1</sub></span></span> is executed in a state where <span class="inlinecode"><span class="id" title="var">P</span></span> holds and terminates
+    in a state where <span class="inlinecode"><span class="id" title="var">Q</span></span> holds, and command <span class="inlinecode"><span class="id" title="var">c<sub>2</sub></span></span> is execuetd in a state where
+    <span class="inlinecode"><span class="id" title="var">Q</span></span> holds and terminates in a state where <span class="inlinecode"><span class="id" title="var">R</span></span> holds, then
+    executing <span class="inlinecode"><span class="id" title="var">c<sub>1</sub></span></span> followed by <span class="inlinecode"><span class="id" title="var">c<sub>2</sub></span></span> in a state where <span class="inlinecode"><span class="id" title="var">P</span></span> holds will terminate
+    in a state where <span class="inlinecode"><span class="id" title="var">R</span></span> holds:
+<center><table class="infrule">
+<tr class="infruleassumption">
+  <td class="infrule">| P | c<sub>1</sub> | Q |</td>
+  <td></td>
+</tr>
+<tr class="infruleassumption">
+  <td class="infrule">| Q | c<sub>2</sub> | R |</td>
+  <td class="infrulenamecol" rowspan="3">
+    (total_seq) &nbsp;
+  </td></tr>
+<tr class="infrulemiddle">
+  <td class="infrule"><hr /></td>
+</tr>
+<tr class="infruleassumption">
+  <td class="infrule">| P | c<sub>1</sub>;c<sub>2</sub> | R |</td>
+  <td></td>
+</tr>
+</table></center>
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Theorem</span> <a id="total_seq" class="idref" href="#total_seq"><span class="id" title="lemma">total_seq</span></a> : <span class="id" title="keyword">∀</span> <a id="P:12" class="idref" href="#P:12"><span class="id" title="binder">P</span></a> <a id="Q:13" class="idref" href="#Q:13"><span class="id" title="binder">Q</span></a> <a id="R:14" class="idref" href="#R:14"><span class="id" title="binder">R</span></a> <a id="c<sub>1</sub>:15" class="idref" href="#c<sub>1</sub>:15"><span class="id" title="binder">c<sub>1</sub></span></a> <a id="c<sub>2</sub>:16" class="idref" href="#c<sub>2</sub>:16"><span class="id" title="binder">c<sub>2</sub></span></a>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Q:13"><span class="id" title="variable">Q</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#c<sub>2</sub>:16"><span class="id" title="variable">c<sub>2</sub></span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#R:14"><span class="id" title="variable">R</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#P:12"><span class="id" title="variable">P</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#c<sub>1</sub>:15"><span class="id" title="variable">c<sub>1</sub></span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Q:13"><span class="id" title="variable">Q</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#P:12"><span class="id" title="variable">P</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#c<sub>1</sub>:15"><span class="id" title="variable">c<sub>1</sub></span></a><span class="id" title="notation">;</span> <a class="idref" href="Total.html#c<sub>2</sub>:16"><span class="id" title="variable">c<sub>2</sub></span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#R:14"><span class="id" title="variable">R</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">Q</span> <span class="id" title="var">R</span> <span class="id" title="var">c<sub>1</sub></span> <span class="id" title="var">c<sub>2</sub></span> <span class="id" title="var">H<sub>2</sub></span> <span class="id" title="var">H<sub>1</sub></span> <span class="id" title="var">st</span> <span class="id" title="var">Pre</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">H<sub>1</sub></span> <span class="id" title="var">st</span> <span class="id" title="var">Pre</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">st''</span> (<span class="id" title="var">He<sub>1</sub></span> &amp; <span class="id" title="var">Hq<sub>1</sub></span>)].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">H<sub>2</sub></span> <span class="id" title="var">st''</span> <span class="id" title="var">Hq<sub>1</sub></span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">st'</span> (<span class="id" title="var">He<sub>2</sub></span> &amp; <span class="id" title="var">Hq<sub>2</sub></span>)].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">st'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>;[<span class="id" title="tactic">eapply</span> <span class="id" title="constructor">E_Seq</span>;<span class="id" title="tactic">eauto</span>| <span class="id" title="tactic">assumption</span>].<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<div class="doc">
+<a id="lab155"></a><h2 class="section">Assignment</h2>
+
+<div class="paragraph"> </div>
+
+ Since the evaluation of an expression
+    and memory update always terminate, <span class="inlinecode"><span class="id" title="var">X</span>:=<span class="id" title="var">a</span></span>
+    will always terminate. Moreover, like for <i>Hoare Logic</i> we
+    can use the substitution operation for the
+    the proof rule for assignment:
+
+<div class="paragraph"> </div>
+
+<center><table class="infrule">
+<tr class="infruleassumption">
+  <td class="infrule">&nbsp;&nbsp;</td>
+  <td class="infrulenamecol" rowspan="3">
+    (total_asgn) &nbsp;
+  </td></tr>
+<tr class="infrulemiddle">
+  <td class="infrule"><hr /></td>
+</tr>
+<tr class="infruleassumption">
+  <td class="infrule">| P[X <span class="nowrap"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>&#x22A2;</span><span style='font-size:90%;'>&gt;</span></span></span></span></span> a] | X:= a | P |</td>
+  <td></td>
+</tr>
+</table></center>
+<div class="paragraph"> </div>
+
+ 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Theorem</span> <a id="total_asgn" class="idref" href="#total_asgn"><span class="id" title="lemma">total_asgn</span></a> : <span class="id" title="keyword">∀</span> <a id="Q:17" class="idref" href="#Q:17"><span class="id" title="binder">Q</span></a> <a id="X:18" class="idref" href="#X:18"><span class="id" title="binder">X</span></a> (<a id="a:19" class="idref" href="#a:19"><span class="id" title="binder">a</span></a>:<span class="id" title="inductive">aexp</span>),<br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Q:17"><span class="id" title="variable">Q</span></a> <a class="idref" href="Hoare11.html#510fc37417e4aa55210e4cfe35fb96ae"><span class="id" title="notation">[</span></a><a class="idref" href="Total.html#X:18"><span class="id" title="variable">X</span></a> <a class="idref" href="Hoare11.html#510fc37417e4aa55210e4cfe35fb96ae"><span class="id" title="notation"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>&#x22A2;</span><span style='font-size:90%;'>&gt;</span></span></span></span></span></a> <a class="idref" href="Total.html#a:19"><span class="id" title="variable">a</span></a><a class="idref" href="Hoare11.html#510fc37417e4aa55210e4cfe35fb96ae"><span class="id" title="notation">]</span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#X:18"><span class="id" title="variable">X</span></a> <span class="id" title="notation">:=</span> <a class="idref" href="Total.html#a:19"><span class="id" title="variable">a</span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Q:17"><span class="id" title="variable">Q</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">Q</span> <span class="id" title="var">X</span> <span class="id" title="var">a</span> <span class="id" title="var">st</span> <span class="id" title="var">HQ</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">∃</span> (<span class="id" title="var">X</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">(</span>(<span class="id" title="var">a</span>:<a class="idref" href="Hoare12.html#Aexp"><span class="id" title="definition">Aexp</span></a>) <span class="id" title="var">st</span><span class="id" title="notation">);</span> <span class="id" title="var">st</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="constructor">E_Asgn</span>; <span class="id" title="tactic">reflexivity</span> | <span class="id" title="tactic">assumption</span>].<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<div class="doc">
+<a id="lab156"></a><h2 class="section">Consequence</h2>
+
+<div class="paragraph"> </div>
+
+ Like for <i>Hoare Logic</i>, we need for <i>Total Correctness</i> a rule that allows
+    weakening the precondition and strengthening the postcondition.
+  <center><table class="infrule">
+<tr class="infruleassumption">
+  <td class="infrule">|P'| c |Q'|</td>
+  <td></td>
+</tr>
+<tr class="infruleassumption">
+  <td class="infrule">P <span class="nowrap"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span><span style='letter-spacing:-.2em;'>></span>></span></span></span> P&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Q' <span class="nowrap"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span><span style='letter-spacing:-.2em;'>></span>></span></span></span> Q</td>
+  <td class="infrulenamecol" rowspan="3">
+    (total_conseq) &nbsp;
+  </td></tr>
+<tr class="infrulemiddle">
+  <td class="infrule"><hr /></td>
+</tr>
+<tr class="infruleassumption">
+  <td class="infrule">|P| c |Q|</td>
+  <td></td>
+</tr>
+</table></center> 
+<div class="paragraph"> </div>
+
+ The proof of this rule is done in three steps. First, we prove the rule for
+    weakening the preconditon. Second, we prove the rule for strengthening
+    the postcondition. Lastly, we combine the two previous rules into one rule.
+ 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Theorem</span> <a id="total_consequence_pre" class="idref" href="#total_consequence_pre"><span class="id" title="lemma">total_consequence_pre</span></a> : <span class="id" title="keyword">∀</span> (<a id="P:20" class="idref" href="#P:20"><span class="id" title="binder">P</span></a> <a id="P':21" class="idref" href="#P':21"><span class="id" title="binder">P'</span></a> <a id="Q:22" class="idref" href="#Q:22"><span class="id" title="binder">Q</span></a> : <a class="idref" href="Hoare12.html#Assertion"><span class="id" title="definition">Assertion</span></a>) <a id="c:23" class="idref" href="#c:23"><span class="id" title="binder">c</span></a>,<br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#P':21"><span class="id" title="variable">P'</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#c:23"><span class="id" title="variable">c</span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Q:22"><span class="id" title="variable">Q</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#P:20"><span class="id" title="variable">P</span></a> <a class="idref" href="Hoare11.html#::hoare_spec_scope:x_'-&gt;&gt;'_x"><span class="id" title="notation"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span><span style='letter-spacing:-.2em;'>></span>></span></span></span></a> <a class="idref" href="Total.html#P':21"><span class="id" title="variable">P'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#P:20"><span class="id" title="variable">P</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#c:23"><span class="id" title="variable">c</span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Q:22"><span class="id" title="variable">Q</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <a class="idref" href="Total.html#valid_total"><span class="id" title="definition">valid_total</span></a>, "<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span><span style='letter-spacing:-.2em;'>></span>></span></span>".<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">P'</span> <span class="id" title="var">Q</span> <span class="id" title="var">c</span> <span class="id" title="var">Hhoare</span> <span class="id" title="var">Himp</span> <span class="id" title="var">st</span> <span class="id" title="var">Hpre</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Hhoare</span> <span class="id" title="keyword">with</span> (<span class="id" title="var">st</span> := <span class="id" title="var">st</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Himp</span>. <span class="id" title="tactic">assumption</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Theorem</span> <a id="total_consequence_post" class="idref" href="#total_consequence_post"><span class="id" title="lemma">total_consequence_post</span></a> : <span class="id" title="keyword">∀</span> (<a id="P:24" class="idref" href="#P:24"><span class="id" title="binder">P</span></a> <a id="Q:25" class="idref" href="#Q:25"><span class="id" title="binder">Q</span></a> <a id="Q':26" class="idref" href="#Q':26"><span class="id" title="binder">Q'</span></a> : <a class="idref" href="Hoare12.html#Assertion"><span class="id" title="definition">Assertion</span></a>) <a id="c:27" class="idref" href="#c:27"><span class="id" title="binder">c</span></a>,<br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#P:24"><span class="id" title="variable">P</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#c:27"><span class="id" title="variable">c</span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Q':26"><span class="id" title="variable">Q'</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#Q':26"><span class="id" title="variable">Q'</span></a> <a class="idref" href="Hoare11.html#::hoare_spec_scope:x_'-&gt;&gt;'_x"><span class="id" title="notation"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span><span style='letter-spacing:-.2em;'>></span>></span></span></span></a> <a class="idref" href="Total.html#Q:25"><span class="id" title="variable">Q</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#P:24"><span class="id" title="variable">P</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#c:27"><span class="id" title="variable">c</span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Q:25"><span class="id" title="variable">Q</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <a class="idref" href="Total.html#valid_total"><span class="id" title="definition">valid_total</span></a>, "<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span><span style='letter-spacing:-.2em;'>></span>></span></span>".<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">Q</span> <span class="id" title="var">Q'</span> <span class="id" title="var">c</span> <span class="id" title="var">Hhoare</span> <span class="id" title="var">Himp</span> <span class="id" title="var">st</span> <span class="id" title="var">Hpre</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">Hhoare</span> <span class="id" title="var">st</span> <span class="id" title="var">Hpre</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">st'</span> (<span class="id" title="var">H<sub>1</sub></span> &amp; <span class="id" title="var">H<sub>2</sub></span>)].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">st'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>;[<span class="id" title="tactic">assumption</span> | <span class="id" title="tactic">apply</span> <span class="id" title="var">Himp</span>;<span class="id" title="tactic">assumption</span>].<br/>
+<span class="id" title="keyword">Qed</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Theorem</span> <a id="total_consequence" class="idref" href="#total_consequence"><span class="id" title="lemma">total_consequence</span></a> : <span class="id" title="keyword">∀</span> (<a id="P:28" class="idref" href="#P:28"><span class="id" title="binder">P</span></a> <a id="P':29" class="idref" href="#P':29"><span class="id" title="binder">P'</span></a> <a id="Q:30" class="idref" href="#Q:30"><span class="id" title="binder">Q</span></a> <a id="Q':31" class="idref" href="#Q':31"><span class="id" title="binder">Q'</span></a> : <a class="idref" href="Hoare12.html#Assertion"><span class="id" title="definition">Assertion</span></a>) <a id="c:32" class="idref" href="#c:32"><span class="id" title="binder">c</span></a>,<br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#P':29"><span class="id" title="variable">P'</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#c:32"><span class="id" title="variable">c</span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Q':31"><span class="id" title="variable">Q'</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#P:28"><span class="id" title="variable">P</span></a> <a class="idref" href="Hoare11.html#::hoare_spec_scope:x_'-&gt;&gt;'_x"><span class="id" title="notation"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span><span style='letter-spacing:-.2em;'>></span>></span></span></span></a> <a class="idref" href="Total.html#P':29"><span class="id" title="variable">P'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#Q':31"><span class="id" title="variable">Q'</span></a> <a class="idref" href="Hoare11.html#::hoare_spec_scope:x_'-&gt;&gt;'_x"><span class="id" title="notation"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span><span style='letter-spacing:-.2em;'>></span>></span></span></span></a> <a class="idref" href="Total.html#Q:30"><span class="id" title="variable">Q</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#P:28"><span class="id" title="variable">P</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#c:32"><span class="id" title="variable">c</span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Q:30"><span class="id" title="variable">Q</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">P'</span> <span class="id" title="var">Q</span> <span class="id" title="var">Q'</span> <span class="id" title="var">c</span> <span class="id" title="var">Htriple</span> <span class="id" title="var">Hpre</span> <span class="id" title="var">Hpost</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <a class="idref" href="Total.html#total_consequence_pre"><span class="id" title="lemma">total_consequence_pre</span></a> <span class="id" title="keyword">with</span> (<span class="id" title="var">P'</span> := <span class="id" title="var">P'</span>).<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <a class="idref" href="Total.html#total_consequence_post"><span class="id" title="lemma">total_consequence_post</span></a> <span class="id" title="keyword">with</span> (<span class="id" title="var">Q'</span> := <span class="id" title="var">Q'</span>); <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">assumption</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<div class="doc">
+<a id="lab157"></a><h2 class="section">Conditionals</h2>
+ If command <span class="inlinecode"><span class="id" title="var">c<sub>1</sub></span></span> is executed in a state where <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">∧</span> <span class="inlinecode"><span class="id" title="var">b</span></span> holds and terminates
+    in a state where <span class="inlinecode"><span class="id" title="var">Q</span></span> holds, and, command <span class="inlinecode"><span class="id" title="var">c<sub>2</sub></span></span> is execuetd in a state where
+    <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode">∧</span> <span class="inlinecode">¬<span class="id" title="var">b</span></span> holds and terminates in a state where <span class="inlinecode"><span class="id" title="var">Q</span></span> holds, then
+    executing the conditon in a state where <span class="inlinecode"><span class="id" title="var">P</span></span> holds will terminate
+    in a state where <span class="inlinecode"><span class="id" title="var">R</span></span> holds:
+
+<div class="paragraph"> </div>
+
+<center><table class="infrule">
+<tr class="infruleassumption">
+  <td class="infrule">|P /\ b| c<sub>1</sub> |Q|</td>
+  <td></td>
+</tr>
+<tr class="infruleassumption">
+  <td class="infrule">|P /\~b| c<sub>2</sub> |Q|</td>
+  <td class="infrulenamecol" rowspan="3">
+    (total_If) &nbsp;
+  </td></tr>
+<tr class="infrulemiddle">
+  <td class="infrule"><hr /></td>
+</tr>
+<tr class="infruleassumption">
+  <td class="infrule">|P| if b then c<sub>1</sub> else c<sub>2</sub> |Q|</td>
+  <td></td>
+</tr>
+</table></center>
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Theorem</span> <a id="total_if" class="idref" href="#total_if"><span class="id" title="lemma">total_if</span></a> : <span class="id" title="keyword">∀</span> <a id="P:33" class="idref" href="#P:33"><span class="id" title="binder">P</span></a> <a id="Q:34" class="idref" href="#Q:34"><span class="id" title="binder">Q</span></a> (<a id="b:35" class="idref" href="#b:35"><span class="id" title="binder">b</span></a>:<span class="id" title="inductive">bexp</span>) <a id="c<sub>1</sub>:36" class="idref" href="#c<sub>1</sub>:36"><span class="id" title="binder">c<sub>1</sub></span></a> <a id="c<sub>2</sub>:37" class="idref" href="#c<sub>2</sub>:37"><span class="id" title="binder">c<sub>2</sub></span></a>,<br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#P:33"><span class="id" title="variable">P</span></a> <a class="idref" href="Hoare11.html#cce4ad113420d0c25c6ce4891bbe5028"><span class="id" title="notation">∧</span></a> <a class="idref" href="Total.html#b:35"><span class="id" title="variable">b</span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#c<sub>1</sub>:36"><span class="id" title="variable">c<sub>1</sub></span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Q:34"><span class="id" title="variable">Q</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#P:33"><span class="id" title="variable">P</span></a> <a class="idref" href="Hoare11.html#cce4ad113420d0c25c6ce4891bbe5028"><span class="id" title="notation">∧</span></a> <a class="idref" href="Hoare11.html#90b84b70bae2a0cf52991d884e146143"><span class="id" title="notation">¬</span></a> <a class="idref" href="Total.html#b:35"><span class="id" title="variable">b</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#c<sub>2</sub>:37"><span class="id" title="variable">c<sub>2</sub></span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Q:34"><span class="id" title="variable">Q</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#P:33"><span class="id" title="variable">P</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <span class="id" title="notation">if</span> <a class="idref" href="Total.html#b:35"><span class="id" title="variable">b</span></a> <span class="id" title="notation">then</span> <a class="idref" href="Total.html#c<sub>1</sub>:36"><span class="id" title="variable">c<sub>1</sub></span></a> <span class="id" title="notation">else</span> <a class="idref" href="Total.html#c<sub>2</sub>:37"><span class="id" title="variable">c<sub>2</sub></span></a> <span class="id" title="notation">end</span> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Q:34"><span class="id" title="variable">Q</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">Q</span> <span class="id" title="var">b</span> <span class="id" title="var">c<sub>1</sub></span> <span class="id" title="var">c<sub>2</sub></span> <span class="id" title="var">HTrue</span> <span class="id" title="var">HFalse</span> <span class="id" title="var">st</span> <span class="id" title="var">HP</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="definition">beval</span> <span class="id" title="var">st</span> <span class="id" title="var">b</span>) <span class="id" title="var">eqn</span>: <span class="id" title="var">Hb</span>.<br/>
+&nbsp;&nbsp;× <span class="id" title="tactic">assert</span> (<span class="id" title="var">HPTrue</span>: <span class="id" title="var">P</span> <span class="id" title="var">st</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Hoare12.html#bassertion"><span class="id" title="definition">bassertion</span></a> <span class="id" title="var">b</span> <span class="id" title="var">st</span>);[<span class="id" title="tactic">split</span>;<span class="id" title="tactic">assumption</span>|].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">HTrue</span> <span class="id" title="var">st</span> <span class="id" title="var">HPTrue</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">st'</span> (<span class="id" title="var">He</span> &amp; <span class="id" title="var">Hq</span>)].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">st'</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">split</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="constructor">E_IfTrue</span>;<span class="id" title="tactic">assumption</span> | <span class="id" title="tactic">assumption</span>].<br/>
+&nbsp;&nbsp;× <span class="id" title="tactic">assert</span> (<span class="id" title="var">HPFalse</span>: <span class="id" title="var">P</span> <span class="id" title="var">st</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">¬</span></a><a class="idref" href="Hoare12.html#bassertion"><span class="id" title="definition">bassertion</span></a> <span class="id" title="var">b</span> <span class="id" title="var">st</span>);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[<span class="id" title="tactic">split</span>;[<span class="id" title="tactic">assumption</span>|<span class="id" title="tactic">apply</span> <a class="idref" href="Hoare12.html#bexp_eval_false"><span class="id" title="lemma">bexp_eval_false</span></a>;<span class="id" title="tactic">assumption</span>] |].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">HFalse</span> <span class="id" title="var">st</span> <span class="id" title="var">HPFalse</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">st'</span> (<span class="id" title="var">He</span> &amp; <span class="id" title="var">Hq</span>)].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">st'</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">split</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="constructor">E_IfFalse</span>;<span class="id" title="tactic">assumption</span> | <span class="id" title="tactic">assumption</span>].<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<div class="doc">
+<a id="lab158"></a><h2 class="section">While Loops</h2>
+
+<div class="paragraph"> </div>
+
+ This is the hard case. In this rule, in addition to prove that
+    the loop invariant is preseved by the loop body, one also proves
+    that the loop terminates. To prove termination we will use
+    a so called termination measure. The value <span class="inlinecode"><span class="id" title="var">m</span></span>
+    of the measure must strictly decreases with respect to a well-founded
+    relation &lt; on some domain set D during each iteration of the loop.
+    Since &lt; is well-founded, a strictly decreasing
+    chain of members of D can have only finite length. Therefore, the loop
+    cannot keep decreasing forever. Example of well-founded relation,
+    is the usual order &lt; on natural numbers N. However, the usual order &lt;
+    is not well-founded neither on the integers Z nor on positive real
+    numbers R+.
+
+<div class="paragraph"> </div>
+
+    Using the measure <span class="inlinecode"><span class="id" title="var">m</span></span> we can give a prove rule for the loop command of
+    Imp. To keep track of the value of the measure in the initial state, we
+    introduce a variable <span class="inlinecode"><span class="id" title="var">z</span></span> and assign it to the mesure in the precondition.
+    In the postcondition we ensure that the value of the measure in the
+    resulting state satisfies the relation &lt; with respect to the value
+    of the measure in the initial state (<span class="inlinecode"><span class="id" title="var">z</span></span>).
+
+<div class="paragraph"> </div>
+
+<center><table class="infrule">
+<tr class="infruleassumption">
+  <td class="infrule">forall z, |P /\ b /\ z = m | c |P /\ m < z|</td>
+  <td class="infrulenamecol" rowspan="3">
+    (total_while) &nbsp;
+  </td></tr>
+<tr class="infrulemiddle">
+  <td class="infrule"><hr /></td>
+</tr>
+<tr class="infruleassumption">
+  <td class="infrule">|P| while b do c end |P /\ ~b|</td>
+  <td></td>
+</tr>
+</table></center>
+<div class="paragraph"> </div>
+
+ For simplicity, we will consider the domain of natural numbers
+    and define the measure as a function from state to natural numbers.
+ 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Definition</span> <a id="measure" class="idref" href="#measure"><span class="id" title="definition">measure</span></a> : <span class="id" title="keyword">Type</span> := <span class="id" title="definition">state</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a>.<br/>
+</div>
+
+<div class="doc">
+The measure can be seen as a natural number we assign to a state at every
+    iteration of the loop. If we make sure that this value strictly decreases
+    with each iteration, we can be sure that the loop terminates i.e.
+    the loop can only do a finate number of iteration. This means,
+    that after a certain number of iteration the loop condition must be false.
+    We will use this fact in the proof of correctness of the while rule by
+    defining a <i>unroll</i> function which unroll the loop. By selecting the
+    right number of unrolling we will be able to
+    show that the loop condition will get false and thus the loop terminate,
+    otherwise we have a contradition.
+
+<div class="paragraph"> </div>
+
+    The following definition of the <i>unroll</i> function may look not natural,
+    but is convenient for proofs by induction.
+ 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Fixpoint</span> <a id="unroll" class="idref" href="#unroll"><span class="id" title="definition">unroll</span></a> (<a id="n:38" class="idref" href="#n:38"><span class="id" title="binder">n</span></a>: <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a>) (<a id="b:39" class="idref" href="#b:39"><span class="id" title="binder">b</span></a>: <span class="id" title="inductive">bexp</span>) (<a id="p:40" class="idref" href="#p:40"><span class="id" title="binder">p</span></a>: <span class="id" title="inductive">com</span>) :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <a class="idref" href="Total.html#n:38"><span class="id" title="variable">n</span></a> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| 0 ⇒ <span class="id" title="constructor">CSkip</span><br/>
+&nbsp;&nbsp;| <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Datatypes.html#S"><span class="id" title="constructor">S</span></a> <span class="id" title="var">n</span> ⇒ <span class="id" title="constructor">CSeq</span> (<a class="idref" href="Total.html#unroll:41"><span class="id" title="definition">unroll</span></a> <a class="idref" href="Total.html#n:38"><span class="id" title="variable">n</span></a> <a class="idref" href="Total.html#b:39"><span class="id" title="variable">b</span></a> <a class="idref" href="Total.html#p:40"><span class="id" title="variable">p</span></a>) (<span class="id" title="constructor">CIf</span> <a class="idref" href="Total.html#b:39"><span class="id" title="variable">b</span></a> <a class="idref" href="Total.html#p:40"><span class="id" title="variable">p</span></a> <span class="id" title="constructor">CSkip</span>)<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+</div>
+
+<div class="doc">
+We can prove certain properties of the <i>unroll</i> function
+    that will be important for what follows. One of these properties
+    is that if the loop body terminates, preserves the loop invariant <span class="inlinecode"><span class="id" title="var">P</span></span>, and
+    a measure decreases, then the command produced by <i>unroll</i>
+    terminates and preserves the invariant <span class="inlinecode"><span class="id" title="var">P</span></span>. In addition, after the command
+    produced by <i>unroll</i> if the loop condition is true, the measure of the
+    resulting state is smaller then the measure of the inital state minus
+    the number of unrolling. This is very important for the proof by
+    contradiction.
+
+<div class="paragraph"> </div>
+
+<center><table class="infrule">
+<tr class="infruleassumption">
+  <td class="infrule">forall z, |P /\ b /\ z = m | c |P /\ m < z|</td>
+  <td class="infrulenamecol" rowspan="3">
+    &nbsp;
+  </td></tr>
+<tr class="infrulemiddle">
+  <td class="infrule"><hr /></td>
+</tr>
+<tr class="infruleassumption">
+  <td class="infrule">forall z, |P /\ m = z /\ b| unroll n b c |P /\ (b <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> m <= z - n)|</td>
+  <td></td>
+</tr>
+</table></center>
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Lemma</span> <a id="total_unroll_c" class="idref" href="#total_unroll_c"><span class="id" title="lemma">total_unroll_c</span></a> <a id="P:43" class="idref" href="#P:43"><span class="id" title="binder">P</span></a> <a id="var:44" class="idref" href="#var:44"><span class="id" title="binder">var</span></a> <a id="c:45" class="idref" href="#c:45"><span class="id" title="binder">c</span></a> <a id="b:46" class="idref" href="#b:46"><span class="id" title="binder">b</span></a>:<br/>
+&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">(</span></a><span class="id" title="keyword">∀</span> <a id="z:47" class="idref" href="#z:47"><span class="id" title="binder">z</span></a>: <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <a id="Pre:49" class="idref" href="#Pre:49"><span class="id" title="binder">Pre</span></a> := (<span class="id" title="keyword">fun</span> <a id="st:48" class="idref" href="#st:48"><span class="id" title="binder">st</span></a> ⇒ <a class="idref" href="Total.html#P:43"><span class="id" title="variable">P</span></a> <a class="idref" href="Total.html#st:48"><span class="id" title="variable">st</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Total.html#var:44"><span class="id" title="variable">var</span></a> <a class="idref" href="Total.html#st:48"><span class="id" title="variable">st</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="Total.html#z:47"><span class="id" title="variable">z</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Hoare12.html#bassertion"><span class="id" title="definition">bassertion</span></a> <a class="idref" href="Total.html#b:46"><span class="id" title="variable">b</span></a> <a class="idref" href="Total.html#st:48"><span class="id" title="variable">st</span></a>) <span class="id" title="keyword">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <a id="Post:51" class="idref" href="#Post:51"><span class="id" title="binder">Post</span></a> := (<span class="id" title="keyword">fun</span> <a id="st':50" class="idref" href="#st':50"><span class="id" title="binder">st'</span></a> ⇒ <a class="idref" href="Total.html#P:43"><span class="id" title="variable">P</span></a> <a class="idref" href="Total.html#st':50"><span class="id" title="variable">st'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Total.html#var:44"><span class="id" title="variable">var</span></a> <a class="idref" href="Total.html#st':50"><span class="id" title="variable">st'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Peano.html#::nat_scope:x_'&lt;'_x"><span class="id" title="notation">&lt;</span></a> <a class="idref" href="Total.html#z:47"><span class="id" title="variable">z</span></a>) <span class="id" title="keyword">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Pre:49"><span class="id" title="variable">Pre</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#c:45"><span class="id" title="variable">c</span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Post:51"><span class="id" title="variable">Post</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <a id="n:52" class="idref" href="#n:52"><span class="id" title="binder">n</span></a> <a id="z:53" class="idref" href="#z:53"><span class="id" title="binder">z</span></a>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <a id="Pre:55" class="idref" href="#Pre:55"><span class="id" title="binder">Pre</span></a> := (<span class="id" title="keyword">fun</span> <a id="st:54" class="idref" href="#st:54"><span class="id" title="binder">st</span></a> ⇒ <a class="idref" href="Total.html#P:43"><span class="id" title="variable">P</span></a> <a class="idref" href="Total.html#st:54"><span class="id" title="variable">st</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Total.html#var:44"><span class="id" title="variable">var</span></a> <a class="idref" href="Total.html#st:54"><span class="id" title="variable">st</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="Total.html#z:53"><span class="id" title="variable">z</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Hoare12.html#bassertion"><span class="id" title="definition">bassertion</span></a> <a class="idref" href="Total.html#b:46"><span class="id" title="variable">b</span></a> <a class="idref" href="Total.html#st:54"><span class="id" title="variable">st</span></a>) <span class="id" title="keyword">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <a id="Post:57" class="idref" href="#Post:57"><span class="id" title="binder">Post</span></a> := (<span class="id" title="keyword">fun</span> <a id="st':56" class="idref" href="#st':56"><span class="id" title="binder">st'</span></a> ⇒ <a class="idref" href="Total.html#P:43"><span class="id" title="variable">P</span></a> <a class="idref" href="Total.html#st':56"><span class="id" title="variable">st'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">(</span></a><a class="idref" href="Hoare12.html#bassertion"><span class="id" title="definition">bassertion</span></a> <a class="idref" href="Total.html#b:46"><span class="id" title="variable">b</span></a> <a class="idref" href="Total.html#st':56"><span class="id" title="variable">st'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a> <a class="idref" href="Total.html#var:44"><span class="id" title="variable">var</span></a> <a class="idref" href="Total.html#st':56"><span class="id" title="variable">st'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Peano.html#cb53cf0ee22c036a03b4a9281c68b5a<sub>3</sub>"><span class="id" title="notation">≤</span></a> <a class="idref" href="Total.html#z:53"><span class="id" title="variable">z</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Nat.html#::nat_scope:x_'-'_x"><span class="id" title="notation">-</span></a> <a class="idref" href="Total.html#n:52"><span class="id" title="variable">n</span></a><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">)</span></a>) <span class="id" title="keyword">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Pre:55"><span class="id" title="variable">Pre</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <span class="id" title="notation">(</span><a class="idref" href="Total.html#unroll"><span class="id" title="definition">unroll</span></a> <a class="idref" href="Total.html#n:52"><span class="id" title="variable">n</span></a> <a class="idref" href="Total.html#b:46"><span class="id" title="variable">b</span></a> <a class="idref" href="Total.html#c:45"><span class="id" title="variable">c</span></a><span class="id" title="notation">)</span> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Post:57"><span class="id" title="variable">Post</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a>.<br/>
+<div class="togglescript" id="proofcontrol2" onclick="toggleDisplay('proof2');toggleDisplay('proofcontrol2')"><span class="show"></span></div>
+<div class="proofscript" id="proof2" onclick="toggleDisplay('proof2');toggleDisplay('proofcontrol2')">
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">Pre</span>, <span class="id" title="var">Post</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">clear</span> <span class="id" title="var">Pre</span> <span class="id" title="var">Post</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">n</span>;<span class="id" title="tactic">intros</span> <span class="id" title="var">st</span> <span class="id" title="var">HPre</span>.<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">∃</span> <span class="id" title="var">st</span>. <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">apply</span> <span class="id" title="constructor">E_Skip</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">destruct</span> <span class="id" title="var">HPre</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">split</span>;[<span class="id" title="tactic">assumption</span>| <span class="id" title="tactic">intros</span>;<span class="id" title="tactic">subst</span>;<span class="id" title="var">Lia.lia</span>].<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">specialize</span> (<span class="id" title="var">IHn</span> <span class="id" title="var">st</span> <span class="id" title="var">HPre</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">st'</span> (<span class="id" title="var">He</span> &amp; <span class="id" title="var">HPre'</span> &amp; <span class="id" title="var">Hm'</span>)].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="definition">beval</span> <span class="id" title="var">st'</span> <span class="id" title="var">b</span>) <span class="id" title="var">eqn</span> : <span class="id" title="var">Hbst'</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">specialize</span> (<span class="id" title="var">Hm'</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#eq_refl"><span class="id" title="constructor">Logic.eq_refl</span></a>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">HPrex</span> : <span class="id" title="var">P</span> <span class="id" title="var">st'</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <span class="id" title="var">var</span> <span class="id" title="var">st'</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <span class="id" title="var">var</span> <span class="id" title="var">st'</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Hoare12.html#bassertion"><span class="id" title="definition">bassertion</span></a> <span class="id" title="var">b</span> <span class="id" title="var">st'</span>);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="id" title="tactic">split</span>;[<span class="id" title="tactic">assumption</span> |]; <span class="id" title="tactic">split</span>;[<span class="id" title="tactic">apply</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#eq_refl"><span class="id" title="constructor">Logic.eq_refl</span></a>| <span class="id" title="tactic">assumption</span>] | ].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">H</span> (<span class="id" title="var">var</span> <span class="id" title="var">st'</span>) <span class="id" title="var">st'</span> <span class="id" title="var">HPrex</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">st''</span> (<span class="id" title="var">He''</span> &amp; <span class="id" title="var">Hq''</span>)].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">st''</span> ;<span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">eapply</span> <span class="id" title="constructor">E_Seq</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="id" title="tactic">apply</span> <span class="id" title="var">He</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="id" title="tactic">apply</span> <span class="id" title="constructor">E_IfTrue</span>;[<span class="id" title="tactic">assumption</span>|<span class="id" title="tactic">apply</span> <span class="id" title="var">He''</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">split</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="var">Hq''</span> | <span class="id" title="tactic">intros</span>; <span class="id" title="var">Lia.lia</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">∃</span> <span class="id" title="var">st'</span>;<span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">eapply</span> <span class="id" title="constructor">E_Seq</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="id" title="tactic">apply</span> <span class="id" title="var">He</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="id" title="tactic">apply</span> <span class="id" title="constructor">E_IfFalse</span> ;[<span class="id" title="tactic">assumption</span>| <span class="id" title="tactic">apply</span> <span class="id" title="constructor">E_Skip</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="id" title="tactic">apply</span> <span class="id" title="var">HPre'</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H<sub>0</sub></span> <span class="id" title="keyword">in</span> <span class="id" title="var">Hbst'</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">Hbst'</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+</div>
+
+<div class="doc">
+We can define an auxiliary lemma <i>aux</i> that avoids making an assertion in
+    the proof, and making the proof shorter.
+ 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Lemma</span> <a id="aux" class="idref" href="#aux"><span class="id" title="lemma">aux</span></a> <a id="P:58" class="idref" href="#P:58"><span class="id" title="binder">P</span></a> (<a id="var:59" class="idref" href="#var:59"><span class="id" title="binder">var</span></a>: <a class="idref" href="Total.html#measure"><span class="id" title="definition">measure</span></a>) <a id="z:60" class="idref" href="#z:60"><span class="id" title="binder">z</span></a> <a id="b:61" class="idref" href="#b:61"><span class="id" title="binder">b</span></a> <a id="st:62" class="idref" href="#st:62"><span class="id" title="binder">st</span></a> :<br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#P:58"><span class="id" title="variable">P</span></a> <a class="idref" href="Total.html#st:62"><span class="id" title="variable">st</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a> <a class="idref" href="Total.html#var:59"><span class="id" title="variable">var</span></a> <a class="idref" href="Total.html#st:62"><span class="id" title="variable">st</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="Total.html#z:60"><span class="id" title="variable">z</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a> <a class="idref" href="Hoare12.html#bassertion"><span class="id" title="definition">bassertion</span></a> <a class="idref" href="Total.html#b:61"><span class="id" title="variable">b</span></a> <a class="idref" href="Total.html#st:62"><span class="id" title="variable">st</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#P:58"><span class="id" title="variable">P</span></a> <a class="idref" href="Total.html#st:62"><span class="id" title="variable">st</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Total.html#var:59"><span class="id" title="variable">var</span></a> <a class="idref" href="Total.html#st:62"><span class="id" title="variable">st</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="Total.html#z:60"><span class="id" title="variable">z</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Hoare12.html#bassertion"><span class="id" title="definition">bassertion</span></a> <a class="idref" href="Total.html#b:61"><span class="id" title="variable">b</span></a> <a class="idref" href="Total.html#st:62"><span class="id" title="variable">st</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>;[<span class="id" title="tactic">assumption</span> |<span class="id" title="tactic">split</span>;<span class="id" title="tactic">assumption</span>].<br/>
+<span class="id" title="keyword">Qed</span>.<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Lemma</span> <a id="total_unroll_c'" class="idref" href="#total_unroll_c'"><span class="id" title="lemma">total_unroll_c'</span></a> <a id="P:63" class="idref" href="#P:63"><span class="id" title="binder">P</span></a> <a id="var:64" class="idref" href="#var:64"><span class="id" title="binder">var</span></a> <a id="c:65" class="idref" href="#c:65"><span class="id" title="binder">c</span></a> <a id="b:66" class="idref" href="#b:66"><span class="id" title="binder">b</span></a>:<br/>
+&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">(</span></a><span class="id" title="keyword">∀</span> <a id="z:67" class="idref" href="#z:67"><span class="id" title="binder">z</span></a>: <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <a id="Pre:69" class="idref" href="#Pre:69"><span class="id" title="binder">Pre</span></a> := (<span class="id" title="keyword">fun</span> <a id="st:68" class="idref" href="#st:68"><span class="id" title="binder">st</span></a> ⇒ <a class="idref" href="Total.html#P:63"><span class="id" title="variable">P</span></a> <a class="idref" href="Total.html#st:68"><span class="id" title="variable">st</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Total.html#var:64"><span class="id" title="variable">var</span></a> <a class="idref" href="Total.html#st:68"><span class="id" title="variable">st</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="Total.html#z:67"><span class="id" title="variable">z</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Hoare12.html#bassertion"><span class="id" title="definition">bassertion</span></a> <a class="idref" href="Total.html#b:66"><span class="id" title="variable">b</span></a> <a class="idref" href="Total.html#st:68"><span class="id" title="variable">st</span></a>) <span class="id" title="keyword">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <a id="Post:71" class="idref" href="#Post:71"><span class="id" title="binder">Post</span></a> := (<span class="id" title="keyword">fun</span> <a id="st':70" class="idref" href="#st':70"><span class="id" title="binder">st'</span></a> ⇒ <a class="idref" href="Total.html#P:63"><span class="id" title="variable">P</span></a> <a class="idref" href="Total.html#st':70"><span class="id" title="variable">st'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Total.html#var:64"><span class="id" title="variable">var</span></a> <a class="idref" href="Total.html#st':70"><span class="id" title="variable">st'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Peano.html#::nat_scope:x_'&lt;'_x"><span class="id" title="notation">&lt;</span></a> <a class="idref" href="Total.html#z:67"><span class="id" title="variable">z</span></a>) <span class="id" title="keyword">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Pre:69"><span class="id" title="variable">Pre</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#c:65"><span class="id" title="variable">c</span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Post:71"><span class="id" title="variable">Post</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <a id="n:72" class="idref" href="#n:72"><span class="id" title="binder">n</span></a> <a id="z:73" class="idref" href="#z:73"><span class="id" title="binder">z</span></a>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <a id="Pre:75" class="idref" href="#Pre:75"><span class="id" title="binder">Pre</span></a> := (<span class="id" title="keyword">fun</span> <a id="st:74" class="idref" href="#st:74"><span class="id" title="binder">st</span></a> ⇒ <a class="idref" href="Total.html#P:63"><span class="id" title="variable">P</span></a> <a class="idref" href="Total.html#st:74"><span class="id" title="variable">st</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Total.html#var:64"><span class="id" title="variable">var</span></a> <a class="idref" href="Total.html#st:74"><span class="id" title="variable">st</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="Total.html#z:73"><span class="id" title="variable">z</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Hoare12.html#bassertion"><span class="id" title="definition">bassertion</span></a> <a class="idref" href="Total.html#b:66"><span class="id" title="variable">b</span></a> <a class="idref" href="Total.html#st:74"><span class="id" title="variable">st</span></a>) <span class="id" title="keyword">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <a id="Post:77" class="idref" href="#Post:77"><span class="id" title="binder">Post</span></a> := (<span class="id" title="keyword">fun</span> <a id="st':76" class="idref" href="#st':76"><span class="id" title="binder">st'</span></a> ⇒ <a class="idref" href="Total.html#P:63"><span class="id" title="variable">P</span></a> <a class="idref" href="Total.html#st':76"><span class="id" title="variable">st'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">(</span></a><a class="idref" href="Hoare12.html#bassertion"><span class="id" title="definition">bassertion</span></a> <a class="idref" href="Total.html#b:66"><span class="id" title="variable">b</span></a> <a class="idref" href="Total.html#st':76"><span class="id" title="variable">st'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a> <a class="idref" href="Total.html#var:64"><span class="id" title="variable">var</span></a> <a class="idref" href="Total.html#st':76"><span class="id" title="variable">st'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Peano.html#cb53cf0ee22c036a03b4a9281c68b5a<sub>3</sub>"><span class="id" title="notation">≤</span></a> <a class="idref" href="Total.html#z:73"><span class="id" title="variable">z</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Nat.html#::nat_scope:x_'-'_x"><span class="id" title="notation">-</span></a> <a class="idref" href="Total.html#n:72"><span class="id" title="variable">n</span></a><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">)</span></a>) <span class="id" title="keyword">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Pre:75"><span class="id" title="variable">Pre</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <span class="id" title="notation">(</span><a class="idref" href="Total.html#unroll"><span class="id" title="definition">unroll</span></a> <a class="idref" href="Total.html#n:72"><span class="id" title="variable">n</span></a> <a class="idref" href="Total.html#b:66"><span class="id" title="variable">b</span></a> <a class="idref" href="Total.html#c:65"><span class="id" title="variable">c</span></a><span class="id" title="notation">)</span> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Post:77"><span class="id" title="variable">Post</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a>.<br/>
+<div class="togglescript" id="proofcontrol3" onclick="toggleDisplay('proof3');toggleDisplay('proofcontrol3')"><span class="show"></span></div>
+<div class="proofscript" id="proof3" onclick="toggleDisplay('proof3');toggleDisplay('proofcontrol3')">
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">Pre</span>, <span class="id" title="var">Post</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">clear</span> <span class="id" title="var">Pre</span> <span class="id" title="var">Post</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">n</span>;<span class="id" title="tactic">intros</span> <span class="id" title="var">st</span> <span class="id" title="var">HPre</span>.<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">∃</span> <span class="id" title="var">st</span>. <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">apply</span> <span class="id" title="constructor">E_Skip</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">destruct</span> <span class="id" title="var">HPre</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">split</span>;[<span class="id" title="tactic">assumption</span>| <span class="id" title="tactic">intros</span>;<span class="id" title="tactic">subst</span>;<span class="id" title="var">Lia.lia</span>].<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">specialize</span> (<span class="id" title="var">IHn</span> <span class="id" title="var">st</span> <span class="id" title="var">HPre</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">st'</span> (<span class="id" title="var">He</span> &amp; <span class="id" title="var">HPre'</span> &amp; <span class="id" title="var">Hm'</span>)].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="definition">beval</span> <span class="id" title="var">st'</span> <span class="id" title="var">b</span>) <span class="id" title="var">eqn</span> : <span class="id" title="var">Hbst'</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">specialize</span> (<span class="id" title="var">Hm'</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#eq_refl"><span class="id" title="constructor">Logic.eq_refl</span></a>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<a class="idref" href="Total.html#aux"><span class="id" title="lemma">aux</span></a> <span class="id" title="var">_</span> <span class="id" title="var">var</span> (<span class="id" title="var">var</span> <span class="id" title="var">st'</span>) <span class="id" title="var">b</span> <span class="id" title="var">st'</span> <span class="id" title="var">HPre'</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#eq_refl"><span class="id" title="constructor">Logic.eq_refl</span></a> <span class="id" title="var">Hbst'</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">HPrex</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">H</span> (<span class="id" title="var">var</span> <span class="id" title="var">st'</span>) <span class="id" title="var">st'</span> <span class="id" title="var">HPrex</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">st''</span> (<span class="id" title="var">He''</span> &amp; <span class="id" title="var">Hq''</span>)].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">st''</span> ;<span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">eapply</span> <span class="id" title="constructor">E_Seq</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="id" title="tactic">apply</span> <span class="id" title="var">He</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="id" title="tactic">apply</span> <span class="id" title="constructor">E_IfTrue</span>;[<span class="id" title="tactic">assumption</span>|<span class="id" title="tactic">apply</span> <span class="id" title="var">He''</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">split</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="var">Hq''</span> | <span class="id" title="tactic">intros</span>; <span class="id" title="var">Lia.lia</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">∃</span> <span class="id" title="var">st'</span>;<span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">eapply</span> <span class="id" title="constructor">E_Seq</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="id" title="tactic">apply</span> <span class="id" title="var">He</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="id" title="tactic">apply</span> <span class="id" title="constructor">E_IfFalse</span> ;[<span class="id" title="tactic">assumption</span>| <span class="id" title="tactic">apply</span> <span class="id" title="constructor">E_Skip</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="id" title="tactic">apply</span> <span class="id" title="var">HPre'</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H<sub>0</sub></span> <span class="id" title="keyword">in</span> <span class="id" title="var">Hbst'</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">Hbst'</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+</div>
+
+<div class="doc">
+A second property we want to show about the <i>unroll</i> function is stated in
+    terms of the operational semantics:
+    Adding the unroll function in front of a <i>while</i> loop with
+    the same body and condition will not influence the resulting state:
+
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Lemma</span> <a id="unroll_while_while" class="idref" href="#unroll_while_while"><span class="id" title="lemma">unroll_while_while</span></a> <a id="n:78" class="idref" href="#n:78"><span class="id" title="binder">n</span></a> <a id="b:79" class="idref" href="#b:79"><span class="id" title="binder">b</span></a> <a id="c:80" class="idref" href="#c:80"><span class="id" title="binder">c</span></a>: <span class="id" title="keyword">∀</span> <a id="st:81" class="idref" href="#st:81"><span class="id" title="binder">st</span></a> <a id="st':82" class="idref" href="#st':82"><span class="id" title="binder">st'</span></a>,<br/>
+&nbsp;&nbsp;&nbsp;<a class="idref" href="Total.html#st:81"><span class="id" title="variable">st</span></a> <span class="id" title="notation">=[</span> <span class="id" title="notation">(</span><span class="id" title="constructor">CSeq</span> <span class="id" title="notation">(</span><a class="idref" href="Total.html#unroll"><span class="id" title="definition">unroll</span></a> <a class="idref" href="Total.html#n:78"><span class="id" title="variable">n</span></a> <a class="idref" href="Total.html#b:79"><span class="id" title="variable">b</span></a> <a class="idref" href="Total.html#c:80"><span class="id" title="variable">c</span></a><span class="id" title="notation">)</span> <span class="id" title="notation">(</span><span class="id" title="constructor">CWhile</span> <a class="idref" href="Total.html#b:79"><span class="id" title="variable">b</span></a> <a class="idref" href="Total.html#c:80"><span class="id" title="variable">c</span></a><span class="id" title="notation">)</span><span class="id" title="notation">)</span> <span class="id" title="notation">]=&gt;</span> <a class="idref" href="Total.html#st':82"><span class="id" title="variable">st'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
+&nbsp;&nbsp;&nbsp;<a class="idref" href="Total.html#st:81"><span class="id" title="variable">st</span></a> <span class="id" title="notation">=[</span> <span class="id" title="notation">(</span><span class="id" title="constructor">CWhile</span> <a class="idref" href="Total.html#b:79"><span class="id" title="variable">b</span></a> <a class="idref" href="Total.html#c:80"><span class="id" title="variable">c</span></a> <span class="id" title="notation">)</span> <span class="id" title="notation">]=&gt;</span> <a class="idref" href="Total.html#st':82"><span class="id" title="variable">st'</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">n</span>;<span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">simpl</span> <span class="id" title="keyword">in</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>;<span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H<sub>2</sub></span>;<span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <span class="id" title="var">IHn</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>;<span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H<sub>2</sub></span>;<span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> (<span class="id" title="constructor">E_Seq</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">H<sub>3</sub></span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H<sub>7</sub></span>;<span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">eapply</span> <span class="id" title="constructor">E_WhileTrue</span>;<span class="id" title="tactic">eauto</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">inversion</span> <span class="id" title="var">H<sub>10</sub></span>;<span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<div class="doc">
+Using the previous two lemmas, we can prove the Total Correctness
+    rule for <i>while</i>. The proof is done in two steps:
+<ul class="doclist">
+<li> First, we use lemma <span class="inlinecode"><span class="id" title="var">hoare_total</span></span> to split the proof in two parts.
+      The first case is the Hoare rule for <i>while</i>, so we apply the
+      lemma we proved in the previous chapter.
+      It remains to prove that the loop terminates.
+
+</li>
+<li> To prove that the loop terminates, we use lemma <i>unroll_while_while</i> to
+      add as many iterations of the loop as the value of measure. Then, we perform a case
+      analysis on the last condition. If the condition is true, we have a
+      contraction, since we have m &lt; 0. If the condition is false,
+      we apply lemma <span class="inlinecode"><span class="id" title="var">E_WhileFalse</span></span> from the <a href="Imp.html"><span class="inlineref">Imp</span></a> chapter.
+
+</li>
+</ul>
+ 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Theorem</span> <a id="total_while" class="idref" href="#total_while"><span class="id" title="lemma">total_while</span></a> : <span class="id" title="keyword">∀</span> <a id="P:83" class="idref" href="#P:83"><span class="id" title="binder">P</span></a> (<a id="b:84" class="idref" href="#b:84"><span class="id" title="binder">b</span></a>:<span class="id" title="inductive">bexp</span>) <a id="c:85" class="idref" href="#c:85"><span class="id" title="binder">c</span></a> <a id="measure:86" class="idref" href="#measure:86"><span class="id" title="binder">measure</span></a>,<br/>
+&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">(</span></a><span class="id" title="keyword">∀</span> <a id="z:87" class="idref" href="#z:87"><span class="id" title="binder">z</span></a>: <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <a id="Pre:89" class="idref" href="#Pre:89"><span class="id" title="binder">Pre</span></a> := (<span class="id" title="keyword">fun</span> <a id="st:88" class="idref" href="#st:88"><span class="id" title="binder">st</span></a> ⇒ <a class="idref" href="Total.html#P:83"><span class="id" title="variable">P</span></a> <a class="idref" href="Total.html#st:88"><span class="id" title="variable">st</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Total.html#measure:86"><span class="id" title="variable">measure</span></a> <a class="idref" href="Total.html#st:88"><span class="id" title="variable">st</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="Total.html#z:87"><span class="id" title="variable">z</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Hoare12.html#bassertion"><span class="id" title="definition">bassertion</span></a> <a class="idref" href="Total.html#b:84"><span class="id" title="variable">b</span></a> <a class="idref" href="Total.html#st:88"><span class="id" title="variable">st</span></a>) <span class="id" title="keyword">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <a id="Post:91" class="idref" href="#Post:91"><span class="id" title="binder">Post</span></a> := (<span class="id" title="keyword">fun</span> <a id="st':90" class="idref" href="#st':90"><span class="id" title="binder">st'</span></a> ⇒ <a class="idref" href="Total.html#P:83"><span class="id" title="variable">P</span></a> <a class="idref" href="Total.html#st':90"><span class="id" title="variable">st'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Total.html#measure:86"><span class="id" title="variable">measure</span></a> <a class="idref" href="Total.html#st':90"><span class="id" title="variable">st'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Peano.html#::nat_scope:x_'&lt;'_x"><span class="id" title="notation">&lt;</span></a> <a class="idref" href="Total.html#z:87"><span class="id" title="variable">z</span></a>) <span class="id" title="keyword">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Pre:89"><span class="id" title="variable">Pre</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <a class="idref" href="Total.html#c:85"><span class="id" title="variable">c</span></a> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#Post:91"><span class="id" title="variable">Post</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#P:83"><span class="id" title="variable">P</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <span class="id" title="notation">while</span> <a class="idref" href="Total.html#b:84"><span class="id" title="variable">b</span></a> <span class="id" title="notation">do</span> <a class="idref" href="Total.html#c:85"><span class="id" title="variable">c</span></a> <span class="id" title="notation">end</span> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><a class="idref" href="Total.html#P:83"><span class="id" title="variable">P</span></a> <a class="idref" href="Hoare11.html#cce4ad113420d0c25c6ce4891bbe5028"><span class="id" title="notation">∧</span></a> <a class="idref" href="Hoare11.html#90b84b70bae2a0cf52991d884e146143"><span class="id" title="notation">¬</span></a> <a class="idref" href="Total.html#b:84"><span class="id" title="variable">b</span></a><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a>.<br/>
+<div class="togglescript" id="proofcontrol4" onclick="toggleDisplay('proof4');toggleDisplay('proofcontrol4')"><span class="show"></span></div>
+<div class="proofscript" id="proof4" onclick="toggleDisplay('proof4');toggleDisplay('proofcontrol4')">
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">b</span> <span class="id" title="var">c</span> <span class="id" title="keyword">measure</span> <span class="id" title="var">Hhoare</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <a class="idref" href="Total.html#hoare_total"><span class="id" title="lemma">hoare_total</span></a>;<span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">assert</span> (<span class="id" title="var">HPP</span>: <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><span class="id" title="var">P</span> <a class="idref" href="Hoare11.html#cce4ad113420d0c25c6ce4891bbe5028"><span class="id" title="notation">∧</span></a> <span class="id" title="var">b</span><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a> <span class="id" title="var">c</span> <a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><span class="id" title="var">P</span><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="id" title="tactic">intros</span> <span class="id" title="var">st</span> (<span class="id" title="var">HPre</span> &amp; <span class="id" title="var">Hb</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<a class="idref" href="Total.html#aux"><span class="id" title="lemma">aux</span></a> <span class="id" title="var">_</span> <span class="id" title="keyword">measure</span> (<span class="id" title="keyword">measure</span> <span class="id" title="var">st</span>) <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">HPre</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#eq_refl"><span class="id" title="constructor">Logic.eq_refl</span></a> <span class="id" title="var">Hb</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">HPre'</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">Hhoare</span> (<span class="id" title="keyword">measure</span> <span class="id" title="var">st</span>) <span class="id" title="var">st</span> <span class="id" title="var">HPre'</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">st'</span> (<span class="id" title="var">He</span> &amp; (<span class="id" title="var">HPre''</span> &amp; <span class="id" title="var">_</span>))].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">st'</span>. <span class="id" title="tactic">auto</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <a class="idref" href="Total.html#hoare_total"><span class="id" title="lemma">hoare_total</span></a> <span class="id" title="keyword">in</span> <span class="id" title="var">HPP</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">HPP</span> <span class="id" title="var">_</span> ].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <a class="idref" href="Hoare12.html#hoare_while"><span class="id" title="lemma">hoare_while</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">intros</span> <span class="id" title="var">st</span> <span class="id" title="var">HPre</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="definition">beval</span> <span class="id" title="var">st</span> <span class="id" title="var">b</span>) <span class="id" title="var">eqn</span>: <span class="id" title="var">Hb</span>;[| <span class="id" title="tactic">∃</span> <span class="id" title="var">st</span>; <span class="id" title="tactic">apply</span> <span class="id" title="constructor">E_WhileFalse</span>;<span class="id" title="tactic">assumption</span>].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<a class="idref" href="Total.html#aux"><span class="id" title="lemma">aux</span></a> <span class="id" title="var">_</span> <span class="id" title="keyword">measure</span> (<span class="id" title="keyword">measure</span> <span class="id" title="var">st</span>) <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">HPre</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#eq_refl"><span class="id" title="constructor">Logic.eq_refl</span></a> <span class="id" title="var">Hb</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">HPTrue</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<a class="idref" href="Total.html#total_unroll_c"><span class="id" title="lemma">total_unroll_c</span></a> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">Hhoare</span> (<span class="id" title="keyword">measure</span> <span class="id" title="var">st</span>) (<span class="id" title="keyword">measure</span> <span class="id" title="var">st</span>) <span class="id" title="var">st</span> <span class="id" title="var">HPTrue</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">as</span> [<span class="id" title="var">st'</span> (<span class="id" title="var">He</span> &amp; (<span class="id" title="var">HPre'</span> &amp; <span class="id" title="var">Hm</span>))].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">∃</span> <span class="id" title="var">st'</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> (<a class="idref" href="Total.html#unroll_while_while"><span class="id" title="lemma">unroll_while_while</span></a> (<span class="id" title="keyword">measure</span> <span class="id" title="var">st</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> (<span class="id" title="constructor">E_Seq</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">He</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="definition">beval</span> <span class="id" title="var">st'</span> <span class="id" title="var">b</span>) <span class="id" title="var">eqn</span>: <span class="id" title="var">Hb'</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">specialize</span> (<span class="id" title="var">Hm</span> <span class="id" title="var">Hb'</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.PeanoNat.html#Nat.sub_diag"><span class="id" title="lemma">sub_diag</span></a> <span class="id" title="keyword">in</span> <span class="id" title="var">Hm</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">Hm</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<a class="idref" href="Total.html#aux"><span class="id" title="lemma">aux</span></a> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">HPre'</span> <span class="id" title="var">H<sub>0</sub></span> <span class="id" title="var">Hb'</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">HP'</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">Hhoare</span> 0 <span class="id" title="var">st'</span> <span class="id" title="var">HP'</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">st''</span> (<span class="id" title="var">_</span> &amp; ( <span class="id" title="var">_</span> &amp; <span class="id" title="var">Hm''</span> ))].<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">Hm''</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">apply</span> <span class="id" title="constructor">E_WhileFalse</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+</div>
+
+<div class="doc">
+<a id="lab159"></a><h1 class="section">Examples</h1>
+
+<div class="paragraph"> </div>
+
+ For the first formal proof using the <span class="inlinecode"><span class="id" title="var">total_while</span></span> rule, we can prove the
+    following example from the previous Chapter. The is increment location
+    <span class="inlinecode"><span class="id" title="var">X</span></span> while the location is small or equal to 2. We want to proof that
+    if the program is executed in a state where <span class="inlinecode"><span class="id" title="var">X</span></span> <span class="inlinecode">≤</span> <span class="inlinecode">3</span> holds then it terminates
+    in a state where <span class="inlinecode"><span class="id" title="var">X</span></span> <span class="inlinecode">=</span> <span class="inlinecode">3</span> holds. If the inital state satisfies <span class="inlinecode"><span class="id" title="var">X</span></span> <span class="inlinecode">≤</span> <span class="inlinecode">3</span>, the
+    loop will require at most 3 iteration. Therefore the measure function will
+    be <span class="inlinecode">(<span class="id" title="keyword">fun</span></span> <span class="inlinecode"><span class="id" title="var">s</span></span> <span class="inlinecode">⇒</span> <span class="inlinecode">3</span> <span class="inlinecode">-</span> <span class="inlinecode">(<span class="id" title="var">s</span></span> <span class="inlinecode"><span class="id" title="var">X</span>))</span>.
+
+<div class="paragraph"> </div>
+
+ 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Example</span> <a id="while_example" class="idref" href="#while_example"><span class="id" title="definition">while_example</span></a> :<br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><span class="id" title="definition">X</span> <a class="idref" href="Hoare11.html#154e85acf24eb57aa8f8a0156c0ba632"><span class="id" title="notation">≤</span></a> 3<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">while</span> <span class="id" title="notation">(</span><span class="id" title="definition">X</span> <span class="id" title="notation">≤</span> 2<span class="id" title="notation">)</span> <span class="id" title="notation">do</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="definition">X</span> <span class="id" title="notation">:=</span> <span class="id" title="definition">X</span> <span class="id" title="notation">+</span> 1<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">end</span><br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><span class="id" title="definition">X</span> <a class="idref" href="Hoare11.html#5ad5c240a08c2b567f422c2e12577e<sub>27</sub>"><span class="id" title="notation">=</span></a> 3<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <a class="idref" href="Total.html#total_consequence_post"><span class="id" title="lemma">total_consequence_post</span></a>.<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <a class="idref" href="Total.html#total_while"><span class="id" title="lemma">total_while</span></a> <span class="id" title="keyword">with</span> (<span class="id" title="keyword">measure</span>:=(<span class="id" title="keyword">fun</span> <a id="s:92" class="idref" href="#s:92"><span class="id" title="binder"><span id="s:93" class="id">s</span></span></a> ⇒ 3 <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Nat.html#::nat_scope:x_'-'_x"><span class="id" title="notation">-</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Nat.html#::nat_scope:x_'-'_x"><span class="id" title="notation">(</span></a><a class="idref" href="Total.html#s:92"><span class="id" title="variable">s</span></a> <span class="id" title="definition">X</span><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Nat.html#::nat_scope:x_'-'_x"><span class="id" title="notation">)</span></a>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">z</span> <span class="id" title="var">Pre</span> <span class="id" title="var">Post</span>;<span class="id" title="tactic">unfold</span> <span class="id" title="var">Pre</span>, <span class="id" title="var">Post</span>; <span class="id" title="tactic">clear</span> <span class="id" title="var">Pre</span> <span class="id" title="var">Post</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <a class="idref" href="Total.html#total_consequence_pre"><span class="id" title="lemma">total_consequence_pre</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">apply</span> <a class="idref" href="Total.html#total_asgn"><span class="id" title="lemma">total_asgn</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">intros</span> <span class="id" title="var">st</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">destruct</span> <span class="id" title="var">H<sub>0</sub></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H<sub>0</sub></span>. <span class="id" title="tactic">apply</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.PeanoNat.html#Nat.leb_le"><span class="id" title="lemma">leb_le</span></a> <span class="id" title="keyword">in</span> <span class="id" title="var">H<sub>1</sub></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="var">assertion_auto''</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">rewrite</span> <span class="id" title="axiom">t_update_eq</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="definition">aeval</span> <span class="id" title="keyword">in</span> ×.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Lia.lia</span>.<br/>
+&nbsp;&nbsp;- <span class="id" title="var">assertion_auto''</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<div class="doc">
+In the following example, we prove that the program computes the greatest
+    common divisor and terminates.
+    For the functional correctness part, we take a mathematical definition
+    of <i>gcd</i> from the standard library as a reference implementation and
+    proof that location <span class="inlinecode"><span class="id" title="var">Z</span></span> contains the greatest common divisor of <span class="inlinecode"><span class="id" title="var">X</span></span> and <span class="inlinecode"><span class="id" title="var">Y</span></span>.
+    For the termination part, we can notice that the number of iteration of
+    the loop can be bounded by <span class="inlinecode"><span class="id" title="var">X</span></span> <span class="inlinecode">+</span> <span class="inlinecode"><span class="id" title="var">Y</span></span>. This is an over-approximation of
+    the maximum number of iteration of the loop, but has the advantage of
+    being simple.
+ 
+</div>
+<div class="code">
+
+<span class="id" title="keyword">Example</span> <a id="gcd_example" class="idref" href="#gcd_example"><span class="id" title="definition">gcd_example</span></a> :<br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a>0 <a class="idref" href="Hoare11.html#::assertion_scope:x_'&lt;'_x"><span class="id" title="notation">&lt;</span></a> <span class="id" title="definition">X</span> <a class="idref" href="Hoare11.html#cce4ad113420d0c25c6ce4891bbe5028"><span class="id" title="notation">∧</span></a> 0 <a class="idref" href="Hoare11.html#::assertion_scope:x_'&lt;'_x"><span class="id" title="notation">&lt;</span></a> <span class="id" title="definition">Y</span><a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="definition">Z</span> <span class="id" title="notation">:=</span> <span class="id" title="definition">X</span><span class="id" title="notation">;</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="definition">W</span> <span class="id" title="notation">:=</span> <span class="id" title="definition">Y</span><span class="id" title="notation">;</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">while</span> <span class="id" title="notation">(</span><span class="id" title="notation">¬</span> <span class="id" title="notation">(</span><span class="id" title="definition">Z</span> <span class="id" title="notation">=</span> <span class="id" title="definition">W</span><span class="id" title="notation">))</span> <span class="id" title="notation">do</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">if</span> <span class="id" title="notation">(</span><span class="id" title="definition">Z</span> <span class="id" title="notation">&gt;</span> <span class="id" title="definition">W</span><span class="id" title="notation">)</span> <span class="id" title="notation">then</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="definition">Z</span> <span class="id" title="notation">:=</span> <span class="id" title="definition">Z</span> <span class="id" title="notation">-</span> <span class="id" title="definition">W</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">else</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="definition">W</span> <span class="id" title="notation">:=</span> <span class="id" title="definition">W</span> <span class="id" title="notation">-</span> <span class="id" title="definition">Z</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">end</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="notation">end</span><br/>
+&nbsp;&nbsp;<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a><span class="id" title="keyword">fun</span> <a id="st:94" class="idref" href="#st:94"><span class="id" title="binder">st</span></a> ⇒ <a class="idref" href="Total.html#st:94"><span class="id" title="variable">st</span></a> <span class="id" title="definition">Z</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.PeanoNat.html#Nat.gcd"><span class="id" title="definition">gcd</span></a> (<a class="idref" href="Total.html#st:94"><span class="id" title="variable">st</span></a> <span class="id" title="definition">X</span>) (<a class="idref" href="Total.html#st:94"><span class="id" title="variable">st</span></a> <span class="id" title="definition">Y</span>)<a class="idref" href="Total.html#20a1910451d7dc8b34e196b4996f7b<sub>63</sub>"><span class="id" title="notation">|</span></a>.<br/>
+<div class="togglescript" id="proofcontrol5" onclick="toggleDisplay('proof5');toggleDisplay('proofcontrol5')"><span class="show"></span></div>
+<div class="proofscript" id="proof5" onclick="toggleDisplay('proof5');toggleDisplay('proofcontrol5')">
+&nbsp;<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;<span class="id" title="tactic">eapply</span> <a class="idref" href="Total.html#total_seq"><span class="id" title="lemma">total_seq</span></a>.<br/>
+&nbsp;- <span class="id" title="tactic">eapply</span> <a class="idref" href="Total.html#total_seq"><span class="id" title="lemma">total_seq</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">eapply</span> <a class="idref" href="Total.html#total_consequence_post"><span class="id" title="lemma">total_consequence_post</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">apply</span> <a class="idref" href="Total.html#total_while"><span class="id" title="lemma">total_while</span></a> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">P</span>:= (<span class="id" title="keyword">fun</span> <a id="st:95" class="idref" href="#st:95"><span class="id" title="binder"><span id="st:97" class="id">st</span></span></a> ⇒ <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.PeanoNat.html#Nat.gcd"><span class="id" title="definition">gcd</span></a> (<a class="idref" href="Total.html#st:95"><span class="id" title="variable">st</span></a> <span class="id" title="definition">Z</span>) (<a class="idref" href="Total.html#st:95"><span class="id" title="variable">st</span></a> <span class="id" title="definition">W</span>) <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.PeanoNat.html#Nat.gcd"><span class="id" title="definition">gcd</span></a> (<a class="idref" href="Total.html#st:95"><span class="id" title="variable">st</span></a> <span class="id" title="definition">X</span>) (<a class="idref" href="Total.html#st:95"><span class="id" title="variable">st</span></a> <span class="id" title="definition">Y</span>) <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="Total.html#st:95"><span class="id" title="variable">st</span></a> <span class="id" title="definition">Z</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Peano.html#::nat_scope:x_'&gt;'_x"><span class="id" title="notation">&gt;</span></a> 0 <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#ba2b0e492d2b4675a0acf3ea92aabadd"><span class="id" title="notation">∧</span></a> <a class="idref" href="Total.html#st:95"><span class="id" title="variable">st</span></a> <span class="id" title="definition">W</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Peano.html#::nat_scope:x_'&gt;'_x"><span class="id" title="notation">&gt;</span></a> 0))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="keyword">measure</span>:=(<span class="id" title="keyword">fun</span> <a id="st:96" class="idref" href="#st:96"><span class="id" title="binder"><span id="st:98" class="id">st</span></span></a> ⇒ <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Nat.html#0dacc1786c5ba797d47dd85006231633"><span class="id" title="notation">(</span></a><a class="idref" href="Total.html#st:96"><span class="id" title="variable">st</span></a> <span class="id" title="definition">Z</span><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Nat.html#0dacc1786c5ba797d47dd85006231633"><span class="id" title="notation">)</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Nat.html#0dacc1786c5ba797d47dd85006231633"><span class="id" title="notation">+</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Nat.html#0dacc1786c5ba797d47dd85006231633"><span class="id" title="notation">(</span></a><a class="idref" href="Total.html#st:96"><span class="id" title="variable">st</span></a> <span class="id" title="definition">W</span><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Nat.html#0dacc1786c5ba797d47dd85006231633"><span class="id" title="notation">)</span></a>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">z</span> <span class="id" title="var">Pre</span> <span class="id" title="var">Post</span>;<span class="id" title="tactic">unfold</span> <span class="id" title="var">Pre</span>, <span class="id" title="var">Post</span>; <span class="id" title="tactic">clear</span> <span class="id" title="var">Pre</span> <span class="id" title="var">Post</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <a class="idref" href="Total.html#total_if"><span class="id" title="lemma">total_if</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="id" title="tactic">eapply</span> <a class="idref" href="Total.html#total_consequence_pre"><span class="id" title="lemma">total_consequence_pre</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;++ <span class="id" title="tactic">apply</span> <a class="idref" href="Total.html#total_asgn"><span class="id" title="lemma">total_asgn</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;++ <span class="id" title="tactic">intros</span> <span class="id" title="var">st</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Bool.Bool.html#negb_true_iff"><span class="id" title="lemma">negb_true_iff</span></a>, <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.Compare_dec.html#leb_complete_conv"><span class="id" title="lemma">leb_complete_conv</span></a> <span class="id" title="keyword">in</span> <span class="id" title="var">H<sub>0</sub></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;** <span class="id" title="var">assertion_auto''</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--- <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H</span>, <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.PeanoNat.html#Nat.gcd_comm"><span class="id" title="definition">gcd_comm</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.PeanoNat.html#Nat.gcd_sub_diag_r"><span class="id" title="lemma">gcd_sub_diag_r</span></a> <span class="id" title="tactic">by</span> <span class="id" title="var">Lia.lia</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.PeanoNat.html#Nat.gcd_comm"><span class="id" title="definition">gcd_comm</span></a>; <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--- <span class="id" title="var">assertion_auto''</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;** <span class="id" title="var">assertion_auto''</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- <span class="id" title="tactic">eapply</span> <a class="idref" href="Total.html#total_consequence_pre"><span class="id" title="lemma">total_consequence_pre</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;++ <span class="id" title="tactic">apply</span> <a class="idref" href="Total.html#total_asgn"><span class="id" title="lemma">total_asgn</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;++ <span class="id" title="tactic">intros</span> <span class="id" title="var">st</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">H<sub>1</sub></span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">H<sub>2</sub></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Bool.Bool.html#eq_true_negb_classical"><span class="id" title="lemma">eq_true_negb_classical</span></a>, <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.Compare_dec.html#leb_complete"><span class="id" title="lemma">leb_complete</span></a> <span class="id" title="keyword">in</span> <span class="id" title="var">H<sub>0</sub></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Bool.Bool.html#negb_true_iff"><span class="id" title="lemma">negb_true_iff</span></a>, <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.PeanoNat.html#Nat.eqb_neq"><span class="id" title="lemma">eqb_neq</span></a> <span class="id" title="keyword">in</span> <span class="id" title="var">H<sub>3</sub></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;** <span class="id" title="var">assertion_auto''</span>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--- <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H</span>, <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.PeanoNat.html#Nat.gcd_sub_diag_r"><span class="id" title="lemma">gcd_sub_diag_r</span></a>; <span class="id" title="var">assertion_auto''</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--- <span class="id" title="var">assertion_auto''</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;** <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">assertion_auto''</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">intros</span> <span class="id" title="var">st</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span> <span class="id" title="keyword">as</span> (<span class="id" title="var">H</span>, <span class="id" title="var">H<sub>1</sub></span>). <span class="id" title="tactic">destruct</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">H<sub>0</sub></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <a class="idref" href="http://coq.inria.fr/library//Coq.Bool.Bool.html#eq_true_negb_classical"><span class="id" title="lemma">eq_true_negb_classical</span></a>, <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.PeanoNat.html#Nat.eqb_eq"><span class="id" title="lemma">eqb_eq</span></a> <span class="id" title="keyword">in</span> <span class="id" title="var">H<sub>1</sub></span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">assertion_auto''</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H<sub>1</sub></span>, <a class="idref" href="http://coq.inria.fr/library//Coq.Arith.PeanoNat.html#Nat.gcd_diag"><span class="id" title="definition">gcd_diag</span></a>; <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">apply</span> <a class="idref" href="Total.html#total_asgn"><span class="id" title="lemma">total_asgn</span></a>.<br/>
+&nbsp;- <span class="id" title="tactic">eapply</span> <a class="idref" href="Total.html#total_consequence_pre"><span class="id" title="lemma">total_consequence_pre</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">apply</span> <a class="idref" href="Total.html#total_asgn"><span class="id" title="lemma">total_asgn</span></a>.<br/>
+&nbsp;&nbsp;&nbsp;+ <span class="id" title="var">assertion_auto''</span>.<br/>
+&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+</div>
+
+<br/>
+<span class="comment">(*&nbsp;2025-05-14&nbsp;18:52&nbsp;*)</span><br/>
+</div>
+</div>
+
+<div id="footer">
+<hr/><a href="coqindex.html">Index</a><hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

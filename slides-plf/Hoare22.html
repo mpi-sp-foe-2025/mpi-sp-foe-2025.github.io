@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link href="common/css/sf.css" rel="stylesheet" type="text/css" />
-<title>Hoare22: Hoare Logic, Part 2.12</title>
+<title>Hoare22: Hoare Logic, Part 2.2</title>
 <link href="common/jquery-ui/jquery-ui.css" rel="stylesheet">
 <script src="common/jquery-ui/external/jquery/jquery.js"></script>
 <script src="common/jquery-ui/jquery-ui.js"></script>
@@ -31,7 +31,7 @@
 
 <div id="main">
 
-<h1 class="libtitle">Hoare22<span class="subtitle">Hoare Logic, Part 2.12</span></h1>
+<h1 class="libtitle">Hoare22<span class="subtitle">Hoare Logic, Part 2.2</span></h1>
 
 
 
@@ -599,28 +599,7 @@ This brings us to the main theorem of this section:
 </div>
 
 <div class="doc">
-<a id="lab164"></a><h2 class="section">Example: Finding Square Roots</h2>
-
-<div class="paragraph"> </div>
-
- The following program computes the integer square root of <span class="inlinecode"><span class="id" title="var">X</span></span>
-    by naive iteration:
-<br/>
-<span class="inlinecode">&nbsp;&nbsp;&nbsp;&nbsp;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">X</span>=<span class="id" title="var">m</span> <span style='letter-spacing:-.4em;'>}</span>}<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Z</span> := 0;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">while</span> (<span class="id" title="var">Z</span>+1)*(<span class="id" title="var">Z</span>+1) ≤ <span class="id" title="var">X</span> <span class="id" title="tactic">do</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Z</span> := <span class="id" title="var">Z</span>+1<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">end</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="var">Z</span>×<span class="id" title="var">Z</span>≤<span class="id" title="var">m</span> ∧ <span class="id" title="var">m</span>&lt;(<span class="id" title="var">Z</span>+1)*(<span class="id" title="var">Z</span>+1) <span style='letter-spacing:-.4em;'>}</span>}
-</span>
-</div>
-<div class="code">
-
-<span class="comment">(*&nbsp;WORK&nbsp;IN&nbsp;CLASS&nbsp;*)</span><br/>
-</div>
-
-<div class="doc">
-<a id="lab165"></a><h2 class="section">Example: Squaring</h2>
+<a id="lab164"></a><h2 class="section">Example: Squaring</h2>
 
 <div class="paragraph"> </div>
 
@@ -644,7 +623,7 @@ This brings us to the main theorem of this section:
 
 
 <div class="doc">
-<a id="lab166"></a><h1 class="section">Weakest Preconditions (Optional)</h1>
+<a id="lab165"></a><h1 class="section">Weakest Preconditions</h1>
 
 <div class="paragraph"> </div>
 
@@ -666,7 +645,7 @@ This brings us to the main theorem of this section:
     one that as many states as possible can satisfy. 
 <div class="paragraph"> </div>
 
-<a id="lab167"></a><h3 class="section"> </h3>
+<a id="lab166"></a><h3 class="section"> </h3>
  <span class="inlinecode"><span class="id" title="var">P</span></span> is a weakest precondition of command <span class="inlinecode"><span class="id" title="var">c</span></span> for postcondition <span class="inlinecode"><span class="id" title="var">Q</span></span>
     if
 
@@ -691,8 +670,8 @@ This brings us to the main theorem of this section:
 </div>
 
 <div class="doc">
-<a id="lab168"></a><h3 class="section"> </h3>
-<a id="lab169"></a><h4 class="section">Exercise: 1 star, standard, optional (wp)</h4>
+<a id="lab167"></a><h3 class="section"> </h3>
+<a id="lab168"></a><h4 class="section">Exercise: 2 stars, standard (wp)</h4>
  What are weakest preconditions of the following commands
     for the following postconditions?
 <br/>
