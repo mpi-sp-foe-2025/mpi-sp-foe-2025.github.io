@@ -582,6 +582,15 @@ In informal notation, the typing relation is often written
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">Contra</span>. <span class="id" title="var">solve_by_inverts</span> 2. <span class="id" title="keyword">Qed</span>.<br/>
 </div>
+
+<br/>
+<span class="id" title="keyword">Example</span> <a id="TM.has_type_not'" class="idref" href="#TM.has_type_not'"><span class="id" title="definition">has_type_not'</span></a> :<br/>
+&nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">¬</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">(</span></a> <a class="idref" href="Types.html#3a0ff81ff05c617e3b019636afe42303"><span class="id" title="notation"><span class="nowrap">&vert;--</span></span></a> <a class="idref" href="Types.html#d0fb5c2ace8d127472c53eefbdee4581"><span class="id" title="notation">&lt;{</span></a> <a class="idref" href="Types.html#TM.:tm:tm_scope:'if'_x_'then'_x_'else'_x"><span class="id" title="notation">if</span></a> <a class="idref" href="Types.html#TM.:tm:tm_scope:'iszero'_x"><span class="id" title="notation">iszero</span></a> <a class="idref" href="Types.html#e6dcc4bae745a293fcd17495036b58ed"><span class="id" title="notation">(</span></a><a class="idref" href="Types.html#TM.:tm:tm_scope:'succ'_x"><span class="id" title="notation">succ</span></a> <a class="idref" href="Types.html#TM.:tm:tm_scope:'0'"><span class="id" title="notation">0</span></a><a class="idref" href="Types.html#e6dcc4bae745a293fcd17495036b58ed"><span class="id" title="notation">)</span></a> <a class="idref" href="Types.html#TM.:tm:tm_scope:'if'_x_'then'_x_'else'_x"><span class="id" title="notation">then</span></a> <a class="idref" href="Types.html#TM.:tm:tm_scope:'succ'_x"><span class="id" title="notation">succ</span></a> <a class="idref" href="Types.html#TM.:tm:tm_scope:'false'"><span class="id" title="notation">false</span></a> <a class="idref" href="Types.html#TM.:tm:tm_scope:'if'_x_'then'_x_'else'_x"><span class="id" title="notation">else</span></a> <a class="idref" href="Types.html#TM.:tm:tm_scope:'true'"><span class="id" title="notation">true</span></a><a class="idref" href="Types.html#d0fb5c2ace8d127472c53eefbdee4581"><span class="id" title="notation">}&gt;</span></a> <a class="idref" href="Types.html#3a0ff81ff05c617e3b019636afe42303"><span class="id" title="notation">\</span></a><a class="idref" href="Types.html#3a0ff81ff05c617e3b019636afe42303"><span class="id" title="notation">in</span></a> <a class="idref" href="Types.html#TM.Bool"><span class="id" title="constructor">Bool</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">)</span></a>.<br/>
+<div class="togglescript" id="proofcontrol3" onclick="toggleDisplay('proof3');toggleDisplay('proofcontrol3')"><span class="show"></span></div>
+<div class="proofscript" id="proof3" onclick="toggleDisplay('proof3');toggleDisplay('proofcontrol3')">
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">Contra</span>. <span class="id" title="var">solve_by_inverts</span> 2. <span class="id" title="keyword">Qed</span>.<br/>
+</div>
 </div>
 
 <div class="doc">
@@ -611,8 +620,8 @@ In informal notation, the typing relation is often written
 
 <span class="id" title="keyword">Lemma</span> <a id="TM.bool_canonical" class="idref" href="#TM.bool_canonical"><span class="id" title="lemma">bool_canonical</span></a> : <span class="id" title="keyword">∀</span> <a id="t:42" class="idref" href="#t:42"><span class="id" title="binder">t</span></a>,<br/>
 &nbsp;&nbsp;<a class="idref" href="Types.html#3a0ff81ff05c617e3b019636afe42303"><span class="id" title="notation"><span class="nowrap">&vert;--</span></span></a> <a class="idref" href="Types.html#t:42"><span class="id" title="variable">t</span></a> <a class="idref" href="Types.html#3a0ff81ff05c617e3b019636afe42303"><span class="id" title="notation">\</span></a><a class="idref" href="Types.html#3a0ff81ff05c617e3b019636afe42303"><span class="id" title="notation">in</span></a> <a class="idref" href="Types.html#TM.Bool"><span class="id" title="constructor">Bool</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a> <a class="idref" href="Types.html#TM.value"><span class="id" title="definition">value</span></a> <a class="idref" href="Types.html#t:42"><span class="id" title="variable">t</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a> <a class="idref" href="Types.html#TM.bvalue"><span class="id" title="inductive">bvalue</span></a> <a class="idref" href="Types.html#t:42"><span class="id" title="variable">t</span></a>.<br/>
-<div class="togglescript" id="proofcontrol3" onclick="toggleDisplay('proof3');toggleDisplay('proofcontrol3')"><span class="show"></span></div>
-<div class="proofscript" id="proof3" onclick="toggleDisplay('proof3');toggleDisplay('proofcontrol3')">
+<div class="togglescript" id="proofcontrol4" onclick="toggleDisplay('proof4');toggleDisplay('proofcontrol4')"><span class="show"></span></div>
+<div class="proofscript" id="proof4" onclick="toggleDisplay('proof4');toggleDisplay('proofcontrol4')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">t</span> <span class="id" title="var">HT</span> [<span class="id" title="var">Hb</span> | <span class="id" title="var">Hn</span>].<br/>
 &nbsp;&nbsp;- <span class="id" title="tactic">assumption</span>.<br/>
@@ -625,8 +634,8 @@ In informal notation, the typing relation is often written
 <br/>
 <span class="id" title="keyword">Lemma</span> <a id="TM.nat_canonical" class="idref" href="#TM.nat_canonical"><span class="id" title="lemma">nat_canonical</span></a> : <span class="id" title="keyword">∀</span> <a id="t:43" class="idref" href="#t:43"><span class="id" title="binder">t</span></a>,<br/>
 &nbsp;&nbsp;<a class="idref" href="Types.html#3a0ff81ff05c617e3b019636afe42303"><span class="id" title="notation"><span class="nowrap">&vert;--</span></span></a> <a class="idref" href="Types.html#t:43"><span class="id" title="variable">t</span></a> <a class="idref" href="Types.html#3a0ff81ff05c617e3b019636afe42303"><span class="id" title="notation">\</span></a><a class="idref" href="Types.html#3a0ff81ff05c617e3b019636afe42303"><span class="id" title="notation">in</span></a> <a class="idref" href="Types.html#TM.Nat"><span class="id" title="constructor">Nat</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a> <a class="idref" href="Types.html#TM.value"><span class="id" title="definition">value</span></a> <a class="idref" href="Types.html#t:43"><span class="id" title="variable">t</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a> <a class="idref" href="Types.html#TM.nvalue"><span class="id" title="inductive">nvalue</span></a> <a class="idref" href="Types.html#t:43"><span class="id" title="variable">t</span></a>.<br/>
-<div class="togglescript" id="proofcontrol4" onclick="toggleDisplay('proof4');toggleDisplay('proofcontrol4')"><span class="show"></span></div>
-<div class="proofscript" id="proof4" onclick="toggleDisplay('proof4');toggleDisplay('proofcontrol4')">
+<div class="togglescript" id="proofcontrol5" onclick="toggleDisplay('proof5');toggleDisplay('proofcontrol5')"><span class="show"></span></div>
+<div class="proofscript" id="proof5" onclick="toggleDisplay('proof5');toggleDisplay('proofcontrol5')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">t</span> <span class="id" title="var">HT</span> [<span class="id" title="var">Hb</span> | <span class="id" title="var">Hn</span>].<br/>
 &nbsp;&nbsp;- <span class="id" title="tactic">inversion</span> <span class="id" title="var">Hb</span>; <span class="id" title="tactic">subst</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">HT</span>.<br/>
@@ -665,8 +674,8 @@ Complete the formal proof of the <span class="inlinecode"><span class="id" title
     time.) 
 </div>
 <div class="code">
-<div class="togglescript" id="proofcontrol5" onclick="toggleDisplay('proof5');toggleDisplay('proofcontrol5')"><span class="show"></span></div>
-<div class="proofscript" id="proof5" onclick="toggleDisplay('proof5');toggleDisplay('proofcontrol5')">
+<div class="togglescript" id="proofcontrol6" onclick="toggleDisplay('proof6');toggleDisplay('proofcontrol6')"><span class="show"></span></div>
+<div class="proofscript" id="proof6" onclick="toggleDisplay('proof6');toggleDisplay('proofcontrol6')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">t</span> <span class="id" title="var">T</span> <span class="id" title="var">HT</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">HT</span>; <span class="id" title="tactic">auto</span>.<br/>
@@ -780,8 +789,8 @@ Complete the formal proof of the <span class="inlinecode"><span class="id" title
 </div>
 <div class="code">
 
-<div class="togglescript" id="proofcontrol6" onclick="toggleDisplay('proof6');toggleDisplay('proofcontrol6')"><span class="show"></span></div>
-<div class="proofscript" id="proof6" onclick="toggleDisplay('proof6');toggleDisplay('proofcontrol6')">
+<div class="togglescript" id="proofcontrol7" onclick="toggleDisplay('proof7');toggleDisplay('proofcontrol7')"><span class="show"></span></div>
+<div class="proofscript" id="proof7" onclick="toggleDisplay('proof7');toggleDisplay('proofcontrol7')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">t</span> <span class="id" title="var">t'</span> <span class="id" title="var">T</span> <span class="id" title="var">HT</span> <span class="id" title="var">HE</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">t'</span>.<br/>
@@ -916,8 +925,8 @@ Complete the formal proof of the <span class="inlinecode"><span class="id" title
 &nbsp;&nbsp;<a class="idref" href="Types.html#3a0ff81ff05c617e3b019636afe42303"><span class="id" title="notation"><span class="nowrap">&vert;--</span></span></a> <a class="idref" href="Types.html#t:53"><span class="id" title="variable">t</span></a> <a class="idref" href="Types.html#3a0ff81ff05c617e3b019636afe42303"><span class="id" title="notation">\</span></a><a class="idref" href="Types.html#3a0ff81ff05c617e3b019636afe42303"><span class="id" title="notation">in</span></a> <a class="idref" href="Types.html#T:55"><span class="id" title="variable">T</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="Types.html#t:53"><span class="id" title="variable">t</span></a> <a class="idref" href="Types.html#ebda40a256fc53fad80986b74c7388c<sub>7</sub>"><span class="id" title="notation"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span><span style='letter-spacing:-.2em;'>&gt;</span><span style='vertical-align:15%;'>*</span></span></span></span></a> <a class="idref" href="Types.html#t':54"><span class="id" title="variable">t'</span></a> <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#::type_scope:x_'-&gt;'_x"><span class="id" title="notation">→</span></a><br/>
 &nbsp;&nbsp;<a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">~(</span></a><a class="idref" href="Types.html#TM.stuck"><span class="id" title="definition">stuck</span></a> <a class="idref" href="Types.html#t':54"><span class="id" title="variable">t'</span></a><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Logic.html#63a68285c81db8f9bc456233bb9ed181"><span class="id" title="notation">)</span></a>.<br/>
-<div class="togglescript" id="proofcontrol7" onclick="toggleDisplay('proof7');toggleDisplay('proofcontrol7')"><span class="show"></span></div>
-<div class="proofscript" id="proof7" onclick="toggleDisplay('proof7');toggleDisplay('proofcontrol7')">
+<div class="togglescript" id="proofcontrol8" onclick="toggleDisplay('proof8');toggleDisplay('proofcontrol8')"><span class="show"></span></div>
+<div class="proofscript" id="proof8" onclick="toggleDisplay('proof8');toggleDisplay('proofcontrol8')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">t</span> <span class="id" title="var">t'</span> <span class="id" title="var">T</span> <span class="id" title="var">HT</span> <span class="id" title="var">P</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">P</span>; <span class="id" title="tactic">intros</span> [<span class="id" title="var">R</span> <span class="id" title="var">S</span>].<br/>
 &nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <a class="idref" href="Types.html#TM.progress"><span class="id" title="axiom">progress</span></a> <span class="id" title="keyword">in</span> <span class="id" title="var">HT</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">HT</span>; <span class="id" title="tactic">auto</span>.<br/>
@@ -1118,7 +1127,7 @@ Complete the formal proof of the <span class="inlinecode"><span class="id" title
 
 <div class="code">
 <span class="id" title="keyword">End</span> <a class="idref" href="Types.html#TM"><span class="id" title="module">TM</span></a>.<br/><hr class='doublespaceincode'/>
-<span class="comment">(*&nbsp;2025-05-14&nbsp;19:00&nbsp;*)</span><br/>
+<span class="comment">(*&nbsp;2025-05-20&nbsp;19:53&nbsp;*)</span><br/>
 </div>
 </div>
 

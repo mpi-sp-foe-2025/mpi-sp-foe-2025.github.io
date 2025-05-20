@@ -42,19 +42,11 @@ In this chapter, we develop the fundamental theory of the Simply
 </div>
 
 <div class="doc">
-<a id="lab292"></a><h1 class="section">Canonical Forms</h1>
+<a id="lab287"></a><h1 class="section">Canonical Forms</h1>
 
 <div class="paragraph"> </div>
 
- As we saw for the very simple language in the <a href="Types.html"><span class="inlineref">Types</span></a>
-    chapter, the first step in establishing basic properties of
-    reduction and types is to identify the possible <i>canonical
-    forms</i> (i.e., well-typed values) belonging to each type.  For
-    <span class="inlinecode"><span class="id" title="var">Bool</span></span>, these are again the boolean values <span class="inlinecode"><span class="id" title="var">true</span></span> and <span class="inlinecode"><span class="id" title="var">false</span></span>; for
-    arrow types, they are lambda-abstractions. 
-<div class="paragraph"> </div>
-
-<a id="lab293"></a><h3 class="section"> </h3>
+<a id="lab288"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -93,7 +85,7 @@ In this chapter, we develop the fundamental theory of the Simply
 </div>
 
 <div class="doc">
-<a id="lab294"></a><h1 class="section">Progress</h1>
+<a id="lab289"></a><h1 class="section">Progress</h1>
 
 <div class="paragraph"> </div>
 
@@ -141,7 +133,7 @@ In this chapter, we develop the fundamental theory of the Simply
 </div>
 
 <div class="doc">
-<a id="lab295"></a><h1 class="section">Preservation</h1>
+<a id="lab290"></a><h1 class="section">Preservation</h1>
 
 <div class="paragraph"> </div>
 
@@ -152,7 +144,8 @@ In this chapter, we develop the fundamental theory of the Simply
 
 <ul class="doclist">
 <li> The <i>preservation theorem</i> is proved by induction on a typing
-        derivation, pretty much as we did in the <a href="Types.html"><span class="inlineref">Types</span></a> chapter.
+        derivation and case analysis on the step relation,
+        pretty much as we did in the <a href="Types.html"><span class="inlineref">Types</span></a> chapter.
 
 <div class="paragraph"> </div>
 
@@ -164,7 +157,7 @@ In this chapter, we develop the fundamental theory of the Simply
         the substitution itself does.  So we prove a... 
 </li>
 </ul>
-<a id="lab296"></a><h3 class="section"> </h3>
+<a id="lab291"></a><h3 class="section"> </h3>
 <ul class="doclist">
 <li> <i>substitution lemma</i>, stating that substituting a (closed,
         well-typed) term <span class="inlinecode"><span class="id" title="var">s</span></span> for a variable <span class="inlinecode"><span class="id" title="var">x</span></span> in a term <span class="inlinecode"><span class="id" title="var">t</span></span>
@@ -191,19 +184,19 @@ In this chapter, we develop the fundamental theory of the Simply
         For this we prove a...
 </li>
 </ul>
-<a id="lab297"></a><h3 class="section"> </h3>
+<a id="lab292"></a><h3 class="section"> </h3>
 <ul class="doclist">
 <li> <i>weakening</i> lemma, showing that typing is preserved under
         "extensions" to the context <span class="inlinecode"><span class="id" title="var">Gamma</span></span>. 
 </li>
 </ul>
-<a id="lab298"></a><h3 class="section"> </h3>
+<a id="lab293"></a><h3 class="section"> </h3>
  To make Coq happy, we need to formalize all this in the opposite
     order... 
 </div>
 
 <div class="doc">
-<a id="lab299"></a><h2 class="section">The Weakening Lemma</h2>
+<a id="lab294"></a><h2 class="section">The Weakening Lemma</h2>
 
 <div class="paragraph"> </div>
 
@@ -228,7 +221,7 @@ In this chapter, we develop the fundamental theory of the Simply
 </div>
 
 <div class="doc">
-<a id="lab300"></a><h3 class="section"> </h3>
+<a id="lab295"></a><h3 class="section"> </h3>
  The following simple corollary is what we actually need below. 
 </div>
 <div class="code">
@@ -247,7 +240,7 @@ In this chapter, we develop the fundamental theory of the Simply
 </div>
 
 <div class="doc">
-<a id="lab301"></a><h2 class="section">The Substitution Lemma</h2>
+<a id="lab296"></a><h2 class="section">The Substitution Lemma</h2>
 
 <div class="paragraph"> </div>
 
@@ -283,7 +276,7 @@ In this chapter, we develop the fundamental theory of the Simply
 
 <div class="paragraph"> </div>
 
-<a id="lab302"></a><h3 class="section"> </h3>
+<a id="lab297"></a><h3 class="section"> </h3>
 
 </div>
 <div class="code">
@@ -295,7 +288,7 @@ In this chapter, we develop the fundamental theory of the Simply
 </div>
 
 <div class="doc">
-<a id="lab303"></a><h2 class="section">Main Theorem</h2>
+<a id="lab298"></a><h2 class="section">Main Theorem</h2>
 
 <div class="paragraph"> </div>
 
