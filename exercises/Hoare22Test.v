@@ -60,15 +60,15 @@ Print Assumptions div_mod_outer_triple_valid.
 Goal True.
 idtac " ".
 
-idtac "-------------------  sqrt_dec  --------------------".
+idtac "-------------------  sqrt_correct  --------------------".
 idtac " ".
 
-idtac "#> sqrt_dec".
+idtac "#> sqrt_correct".
 idtac "Possible points: 2".
-check_type @sqrt_dec ((nat -> decorated)).
+check_type @sqrt_correct (forall m, outer_triple_valid (sqrt_dec m)).
 idtac "Assumptions:".
 Abort.
-Print Assumptions sqrt_dec.
+Print Assumptions sqrt_correct.
 Goal True.
 idtac " ".
 
@@ -162,4 +162,4 @@ idtac "---------- is_wp_example ---------".
 Print Assumptions is_wp_example.
 Abort.
 
-(* 2025-05-14 18:55 *)
+(* 2025-05-23 17:08 *)
