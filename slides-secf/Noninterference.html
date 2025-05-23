@@ -103,7 +103,7 @@ In the last two cases the value of the public output is equal to the value
 <div class="paragraph"> </div>
 
  So a naive security definition, which we'll only use as a strawman, is one
-    that simply compares secret inputs with public outputs: 
+    that simply requires that public outputs are different from secret inputs: 
 </div>
 <div class="code">
 
@@ -180,7 +180,17 @@ This attempt at defining secure information flow by looking at how
 This definition prevents secret inputs from interfering with public
     outputs in any way. At the same time it allows secret inputs to
     influence secret outputs and also public inputs to influence both
-    public and secret outputs. 
+    public and secret outputs:
+<br/>
+<span class="inlinecode">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;┌───╮<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│ <span class="id" title="var">f</span> │<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pi</span> ─&gt;┼───┼─&gt; <span class="id" title="var">po</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│╲  │<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│ ╲ │<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│  ╲│<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">si</span> ─&gt;┼───┼─&gt; <span class="id" title="var">so</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└───╯
+</span>
 <div class="paragraph"> </div>
 
  The definition above defines noninterference for arbitrary types
@@ -194,7 +204,7 @@ This definition prevents secret inputs from interfering with public
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">interferent_insecure_f</span> : ¬<span class="id" title="var">noninterferent</span> <span class="id" title="var">insecure_f</span>.<br/>
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">noninterferent</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">contra</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">contra</span> 0 0 1). <span class="id" title="tactic">discriminate</span> <span class="id" title="var">contra</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">contra</span> 42 0 1). <span class="id" title="tactic">simpl</span> <span class="id" title="keyword">in</span> <span class="id" title="var">contra</span>. <span class="id" title="tactic">discriminate</span> <span class="id" title="var">contra</span>.<br/>
 <span class="id" title="keyword">Qed</span>.<br/>
 </div>
 
@@ -202,7 +212,7 @@ This definition prevents secret inputs from interfering with public
 The <span class="inlinecode"><span class="id" title="var">secure_f</span></span> function above is quite obviously noninterferent,
     because the expression <span class="inlinecode"><span class="id" title="var">pi</span>+1</span> computing the public output doesn't
     syntactically mention the secret input at all. Since
-    noninterference is a semantic property though (not a one syntactic
+    noninterference is a semantic property though (not a syntactic
     one), functions where the expression computing the public input
     does syntactically mention the secret input can still be
     noninterferent. Here is a first example: 
@@ -233,7 +243,15 @@ Here is a second example of a function that is noninterferent, even
 <div class="code">
 
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">less_obvious_f<sub>2</sub></span> (<span class="id" title="var">pi</span> <span class="id" title="var">si</span> : <span class="id" title="var">nat</span>) : <span class="id" title="var">nat</span>×<span class="id" title="var">nat</span> :=<br/>
-&nbsp;&nbsp;(<span class="id" title="keyword">if</span> <span class="id" title="var">Nat.eqb</span> <span class="id" title="var">si</span> 1 <span class="id" title="keyword">then</span> <span class="id" title="var">si</span> × <span class="id" title="var">pi</span> <span class="id" title="keyword">else</span> <span class="id" title="var">pi</span>, <span class="id" title="var">pi</span>+<span class="id" title="var">si</span>).<br/><hr class='doublespaceincode'/>
+&nbsp;&nbsp;(<span class="id" title="keyword">if</span> <span class="id" title="var">Nat.eqb</span> <span class="id" title="var">si</span> 1 <span class="id" title="keyword">then</span> <span class="id" title="var">si</span> × <span class="id" title="var">pi</span> <span class="id" title="keyword">else</span> <span class="id" title="var">pi</span>, <span class="id" title="var">pi</span>+<span class="id" title="var">si</span>).<br/>
+</div>
+
+<div class="doc">
+For proving this we show that the public output of this function
+    is in fact always equal to just its public input: 
+</div>
+<div class="code">
+
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">aux_f<sub>2</sub></span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">si</span> <span class="id" title="var">pi</span>, (<span class="id" title="keyword">if</span> <span class="id" title="var">Nat.eqb</span> <span class="id" title="var">si</span> 1 <span class="id" title="keyword">then</span> <span class="id" title="var">si</span> × <span class="id" title="var">pi</span> <span class="id" title="keyword">else</span> <span class="id" title="var">pi</span>) = <span class="id" title="var">pi</span>.<br/>
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">si</span> <span class="id" title="var">pi</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">si</span>; <span class="id" title="tactic">simpl</span>.<br/>
@@ -262,7 +280,7 @@ Branching on a secret can, however, be dangerous, since one can
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">interferent_less_obvious_f<sub>3</sub></span> : ¬<span class="id" title="var">noninterferent</span> <span class="id" title="var">less_obvious_f<sub>3</sub></span>.<br/>
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">noninterferent</span>, <span class="id" title="var">less_obvious_f<sub>3</sub></span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">contra</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">contra</span> 1 1 0). <span class="id" title="tactic">simpl</span> <span class="id" title="keyword">in</span> <span class="id" title="var">contra</span>. <span class="id" title="tactic">discriminate</span> <span class="id" title="var">contra</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">specialize</span> (<span class="id" title="var">contra</span> 42 0 1). <span class="id" title="tactic">simpl</span> <span class="id" title="keyword">in</span> <span class="id" title="var">contra</span>. <span class="id" title="tactic">discriminate</span> <span class="id" title="var">contra</span>.<br/>
 <span class="id" title="keyword">Qed</span>.<br/>
 </div>
 
