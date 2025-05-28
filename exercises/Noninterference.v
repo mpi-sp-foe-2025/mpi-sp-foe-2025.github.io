@@ -9,6 +9,8 @@ From PLF Require Import Maps.
 From PLF Require Import Imp.
 Set Default Goal Selector "!".
 
+Require Import Lia.
+
 (** Programmers have to be very careful about how information flows in
     the software they develop to prevent leaking secret data. For
     instance in Moodle students shouldn't be able to obtain
@@ -56,7 +58,7 @@ Proof. reflexivity. Qed.
 (** * Naive attempt at defining secrecy *)
 
 (** So a naive security definition, which we'll only use as a strawman, is one
-    that simply compares secret inputs with public outputs: *)
+    that simply requires that public outputs are different from secret inputs: *)
 
 Definition broken_sec_def (f : nat -> nat -> nat*nat) :=
   forall pi si, fst (f pi si) <> si.
@@ -103,25 +105,35 @@ Definition noninterferent {PI SI PO SO : Type} (f:PI->SI->PO*SO) :=
 (** This definition prevents secret inputs from interfering with public
     outputs in any way. At the same time it allows secret inputs to
     influence secret outputs and also public inputs to influence both
-    public and secret outputs. *)
+    public and secret outputs:
+
+                                ┌───╮
+                                │ f │
+                           pi ─>┼───┼─> po
+                                │╲  │
+                                │ ╲ │
+                                │  ╲│
+                           si ─>┼───┼─> so
+                                └───╯
+*)
 
 (** The definition above defines noninterference for arbitrary types
     of inputs and outputs, so we can instantiate them to [nat] when
     looking at our example functions above: *)
 
 Lemma noninterferent_secure_f : noninterferent secure_f.
-Proof. unfold noninterferent. simpl. reflexivity. Qed.
+Proof. unfold noninterferent, secure_f. simpl. reflexivity. Qed.
 
 Lemma interferent_insecure_f : ~noninterferent insecure_f.
 Proof.
   unfold noninterferent. simpl. intros contra.
-  specialize (contra 0 0 1). discriminate contra.
+  specialize (contra 42 0 1). simpl in contra. discriminate contra.
 Qed.
 
 (** The [secure_f] function above is quite obviously noninterferent,
     because the expression [pi+1] computing the public output doesn't
     syntactically mention the secret input at all. Since
-    noninterference is a semantic property though (not a one syntactic
+    noninterference is a semantic property though (not a syntactic
     one), functions where the expression computing the public input
     does syntactically mention the secret input can still be
     noninterferent. Here is a first example: *)
@@ -138,11 +150,16 @@ Proof.
   simpl. repeat rewrite <- mult_n_O. reflexivity.
 Qed.
 
-(** Here is a second example of a function that is noninterferent, even
+
+
+(** Here is another example of a function that is noninterferent, even
     if this is not syntactically obvious: *)
 
 Definition less_obvious_f2 (pi si : nat) : nat*nat :=
   (if Nat.eqb si 1 then si * pi else pi, pi+si).
+
+(** For proving this we show that the public output of this function
+    is in fact always equal to just its public input: *)
 
 Lemma aux_f2 : forall si pi, (if Nat.eqb si 1 then si * pi else pi) = pi.
 Proof.
@@ -170,8 +187,83 @@ Definition less_obvious_f3 (pi si : nat) : nat*nat :=
 Lemma interferent_less_obvious_f3 : ~noninterferent less_obvious_f3.
 Proof.
   unfold noninterferent, less_obvious_f3. simpl. intros contra.
-  specialize (contra 1 1 0). simpl in contra. discriminate contra.
+  specialize (contra 42 0 1). simpl in contra. discriminate contra.
 Qed.
+
+(* ================================================================= *)
+(** ** Noninterference Exercises *)
+
+(** Let's practice with some "prove or disprove noninterference"
+    exercises, for which you are required to give constructive proofs,
+    i.e. the use of classical axioms like excluded middle is not allowed. *)
+
+(** **** Exercise: 1 star, standard (prove_or_disprove_obvious_f1) *)
+Definition obvious_f1 (pi si : nat) : nat*nat := (0,0).
+
+Lemma prove_or_disprove_obvious_f1 :
+  noninterferent obvious_f1 \/ ~noninterferent obvious_f1.
+Proof.
+  (* FILL IN HERE *) Admitted.
+(** [] *)
+
+(** **** Exercise: 1 star, standard (prove_or_disprove_obvious_f2) *)
+Definition obvious_f2 (pi si : nat) : nat*nat := (pi+(2*si),(2*pi)+si).
+
+Lemma prove_or_disprove_obvious_f2 :
+  noninterferent obvious_f2 \/ ~noninterferent obvious_f2.
+Proof.
+  (* FILL IN HERE *) Admitted.
+(** [] *)
+
+(** **** Exercise: 2 stars, standard (prove_or_disprove_less_obvious_f4) *)
+
+Definition less_obvious_f4 (pi si : nat) : nat*nat :=
+  (if Nat.eqb si 0 then si * pi else pi, pi+si).
+
+(** Is the [less_obvious_f4] function noninterferent or not? *)
+
+Lemma prove_or_disprove_less_obvious_f4 :
+  noninterferent less_obvious_f4 \/ ~noninterferent less_obvious_f4.
+Proof.
+  (* FILL IN HERE *) Admitted.
+(** [] *)
+
+(** **** Exercise: 2 stars, standard (prove_or_disprove_less_obvious_f5) *)
+
+Definition less_obvious_f5 (pi si : nat) : nat*nat :=
+  (if Nat.eqb si 0 then si + pi else pi, pi+si).
+
+(** Is the [less_obvious_f5] function noninterferent or not? *)
+
+Lemma prove_or_disprove_less_obvious_f5 :
+  noninterferent less_obvious_f5 \/ ~noninterferent less_obvious_f5.
+Proof.
+  (* FILL IN HERE *) Admitted.
+(** [] *)
+
+(** **** Exercise: 2 stars, standard (prove_or_disprove_less_obvious_f6) *)
+
+Definition less_obvious_f6 (pi si : nat): nat*nat :=
+  (if Nat.ltb si pi then 0 else pi, pi+si).
+
+(** Is the [less_obvious_f6] function noninterferent or not? *)
+
+Lemma prove_or_disprove_less_obvious_f6 :
+  noninterferent less_obvious_f6 \/ ~noninterferent less_obvious_f6.
+Proof.
+  (* FILL IN HERE *) Admitted.
+(** [] *)
+
+(** **** Exercise: 3 stars, standard, optional (prove_or_disprove_less_obvious_f7) *)
+
+Definition less_obvious_f7 (pi si : nat): nat*nat :=
+  if Nat.eqb (si + pi) 0 then (si,pi) else (pi,si).
+
+Lemma prove_or_disprove_less_obvious_f7 :
+  noninterferent less_obvious_f7 \/ ~noninterferent less_obvious_f7.
+Proof.
+  (* FILL IN HERE *) Admitted.
+(** [] *)
 
 (* ################################################################# *)
 (** * A too strong secrecy definition *)
@@ -285,6 +377,42 @@ Proof. reflexivity. Qed.
     original [insecure_f] function. So we are giving up some
     correctness for security. There is no free lunch! *)
 
+(** Of course the public output of sme does not always become, since
+    some functions still use the public input. *)
+
+Definition another_insecure_f (pi si : nat) : nat*nat := (pi+si, pi+si).
+
+Lemma sme_another_insecure_f : forall pi si,
+  sme 0 (another_insecure_f) pi si = (pi,pi+si).
+Proof. unfold sme, another_insecure_f.
+  intros pi si. simpl. rewrite <- plus_n_O. reflexivity. Qed.
+
+(** **** Exercise: 1 star, standard (sme_another_insecure_f2) *)
+Definition another_insecure_f2 (pi si : nat) : nat*nat :=
+  (if Nat.eqb si 0 then si * pi + pi else pi, pi+si).
+
+Lemma sme_another_insecure_f2 : forall pi si,
+    sme 0 (another_insecure_f2) pi si = (pi, pi+si).
+Proof.
+  (* FILL IN HERE *) Admitted.
+(** [] *)
+
+(** **** Exercise: 2 stars, standard (sme_another_insecure_f3) *)
+Definition another_insecure_f3 (pi si : nat) : nat*nat :=
+  (if Nat.eqb si pi then si * pi else pi, pi+si).
+
+Lemma interferent_another_insecure_f3 : ~ noninterferent another_insecure_f3.
+Proof.
+  unfold noninterferent, another_insecure_f3. simpl.
+  intros contra. specialize (contra 8 2 8). simpl in contra. discriminate contra.
+Qed.
+
+Lemma sme_another_insecure_f3 : forall pi si,
+    sme 0 (another_insecure_f3) pi si = (pi, pi+si).
+Proof.
+  (* FILL IN HERE *) Admitted.
+(** [] *)
+
 (** The other downside of [sme] is that we have to run the function
     twice for our two security levels, public and secret. In general,
     we need to run the program as many times as we have security
@@ -312,7 +440,7 @@ Proof. reflexivity. Qed.
 
 (** The development above is quite easy to adapt to Coq functions that
     transform states ([state->state]), where we label each variable as
-    either public or secret. *)
+    either public or secret using a map of type [pub_vars]. *)
 
 Print state. (* state = total_map nat = string -> nat *)
 
@@ -424,21 +552,19 @@ Proof.
     rewrite H. reflexivity.
 Qed.
 
-Definition merge_state_fun (pub : pub_vars) (sf : state -> state -> state*state) :=
-  fun s : state =>
-    let ps := sf (split_state s pub true) (split_state s pub false) in
-    merge_states (fst ps) (snd ps) pub.
-
 (* ################################################################# *)
 (** * SME for state transformers *)
 
 (** We can use the [split_state] and [merge_states] functions above to
-    also define SME for state transformers.  *)
+    also define SME for state transformers. We call the [split_state]
+    below to zero out all secret variables before calling [f] the first
+    time to obtain the final value of the public variables. *)
 
 Definition sme_state (f : state -> state) (pub:pub_vars) :=
   fun s => merge_states (f (split_state s pub true)) (f s) pub.
 
-(** We can prove the same two theorems as for [sme] above: *)
+(** We will see examples of this in an upcoming section, but for now
+    we prove the same two theorems as for [sme] above: *)
 
 Theorem noninterferent_sme_state : forall pub f,
   noninterferent_state pub (sme_state f pub).
@@ -474,12 +600,109 @@ Qed.
     out the explanations about the [reflect] inductive predicate in
     [IndProp]. *)
 
+(* ================================================================= *)
+(** ** Optional: Connection between [sme] and [sme_state]  *)
+
+(** We can formally relate [sme] amd [sme_state], but this gets pretty
+    technical, so the curious reader can directly skip to the two
+    theorems at the end of this subsection. *)
+
+Lemma split_merge_public: forall s pub,
+    split_state s pub true = merge_states s (fun _ => 0) pub.
+Proof.
+  intros. eapply functional_extensionality. intro x.
+  unfold split_state, merge_states.
+  destruct (pub x) eqn:PUB; simpl; reflexivity.
+Qed.
+
+Lemma split_merge_split_true: forall s s' pub,
+    split_state (merge_states s s' pub) pub true = split_state s pub true.
+Proof.
+  intros. eapply functional_extensionality. intro x.
+  unfold split_state, merge_states.
+  destruct (pub x) eqn:PUB; simpl; reflexivity.
+Qed.
+
+Lemma split_merge_split_false: forall s s' pub,
+    split_state (merge_states s s' pub) pub false = split_state s' pub false.
+Proof.
+  intros. eapply functional_extensionality. intro x.
+  unfold split_state, merge_states.
+  destruct (pub x) eqn:PUB; simpl; reflexivity.
+Qed.
+
+Lemma merge_states_same: forall s pub,
+    merge_states s s pub = s.
+Proof.
+  unfold merge_states. intros.
+  eapply functional_extensionality. intro x.
+  destruct (pub x); reflexivity.
+Qed.
+
+Lemma split_state_idem: forall s pub b,
+    split_state (split_state s pub b) pub b = split_state s pub b.
+Proof.
+  unfold split_state. intros.
+  eapply functional_extensionality. intro x.
+  destruct (Bool.eqb (pub x) b); reflexivity.
+Qed.
+
+Lemma eqb_neg_distr_r: forall b1 b2,
+    Bool.eqb b1 (negb b2) = negb (Bool.eqb b1 b2).
+Proof. intros. destruct b1, b2; simpl; reflexivity. Qed.
+
+Lemma split_state_orthogonal: forall s pub b,
+    split_state (split_state s pub b) pub (negb b) = fun _ => 0.
+Proof.
+  unfold split_state. intros.
+  eapply functional_extensionality. intro x.
+  rewrite eqb_neg_distr_r.
+  destruct (Bool.eqb (pub x) b) eqn:BOOL; simpl; reflexivity.
+Qed.
+
+(** First, we show a relationship between [sme] and [sme_state] using [split_state_fun]: *)
+
+Theorem split_sme_state_sme: forall pub f,
+    split_state_fun pub (sme_state f pub) = sme (fun _ => 0) (split_state_fun pub f).
+Proof.
+  intros.
+  eapply functional_extensionality. intro PI.
+  eapply functional_extensionality. intro SI.
+  unfold split_state_fun, sme.
+  rewrite pair_equal_spec. split.
+  - simpl. unfold sme_state.
+    rewrite <- split_merge_public.
+    repeat rewrite split_merge_split_true. reflexivity.
+  - simpl. unfold sme_state.
+    rewrite split_merge_split_false. reflexivity.
+Qed.
+
+(** Second, we also show a relationship between [sme] and [sme_state] using merge_state_fun: *)
+
+Definition merge_state_fun (pub : pub_vars) (sf : state -> state -> state*state) :=
+  fun s : state =>
+    let ps := sf (split_state s pub true) (split_state s pub false) in
+    merge_states (fst ps) (snd ps) pub.
+
+Theorem merge_sme_state_sme: forall pub f,
+    sme_state (merge_state_fun pub f) pub = merge_state_fun pub (sme (fun _ => 0) f).
+Proof.
+  intros.
+  eapply functional_extensionality. intro s.
+  eapply functional_extensionality. intro x.
+  unfold merge_state_fun. simpl.
+  unfold sme_state. unfold merge_states.
+  destruct (pub x) eqn:PUB.
+  - rewrite split_state_idem. rewrite split_state_orthogonal. reflexivity.
+  - reflexivity.
+Qed.
+
 (* ################################################################# *)
 (** * Noninterference for Imp programs without loops *)
 
 (** For programs without loops the "failed attempt" evaluation function from
     [Imp] works well and allows us to easily define a state transformer
-    function for each command. *)
+    function for each Imp command. *)
 
 Print ceval_fun_no_while.
 Definition flip {A B C : Type} (f : A -> B -> C) := fun b a => f a b.
@@ -487,6 +710,13 @@ Definition cinterp : com -> state -> state := flip ceval_fun_no_while.
 
 Definition noninterferent_no_while pub c : Prop :=
   noninterferent_state pub (cinterp c).
+
+(** A command [c] without loops is noninterferent if the state
+    transformer obtained by interpreting the command with [cinterp]
+    maps public-equivalent States to public-equivalent states.
+
+    Let's use this definition to prove that the following command is
+    noninterferent: *)
 
 Definition xpub : pub_vars := (X !-> true; _ !-> false).
 
@@ -507,8 +737,7 @@ Proof.
     + intro contra. subst. contradiction.
 Qed.
 
-(** Here we are using the [t_update_neq] and [t_apply_empty] lemmas that were
-    proved in [Maps] *)
+(** Here we are using the [t_update_neq] and [t_apply_empty] lemmas from [Maps] *)
 
 Lemma xpubX : xpub X = true.
 Proof. reflexivity. Qed.
@@ -518,11 +747,44 @@ Proof. reflexivity. Qed.
 Lemma noninterferent_secure_com :
   noninterferent_no_while xpub secure_com.
 Proof.
-  unfold noninterferent_no_while, noninterferent_state,
-         secure_com, pub_equiv.
-  intros s1 s2 H x Hx. simpl. apply xpub_true in Hx.
-  subst. rewrite (H X xpubX). reflexivity.
+  unfold noninterferent_no_while, noninterferent_state, secure_com.
+  intros s1 s2 PEQUIV x Hx.
+
+  (* Since x is the only public variable in xpub, we know [x = X] *)
+  apply xpub_true in Hx. subst.
+
+  (* From public equivalence we show [s1 X = s2 X]. *)
+  specialize (PEQUIV X xpubX).
+
+  (* We use computation (running [cinterp]) to show that
+     X in [secure_com] depends only on the initial X. *)
+  simpl. rewrite PEQUIV. reflexivity.
 Qed.
+
+(** **** Exercise: 2 stars, standard (noninterferent_secure_com_exercise) *)
+Definition secure_com_exercise :=
+  <{ X := 2 * X + 3;
+     Y := Y - 1;
+     X := 1 }>.
+
+Lemma noninterferent_secure_com_exercise :
+  noninterferent_no_while xpub secure_com_exercise.
+Proof.
+  (* FILL IN HERE *) Admitted.
+(** [] *)
+
+Definition secure_com_branch :=
+  <{ if Y = 0 then
+       X := X + 5
+     else
+       Y := X
+     end;
+     X := 42 }>.
+
+Lemma noninterferent_secure_com_branch :
+  noninterferent_no_while xpub secure_com_branch.
+Proof.
+  (* FILL IN HERE *) Admitted.
 
 (** Now let's look at a couple of insecure commands: *)
 
@@ -537,15 +799,24 @@ Definition insecure_com1 : com :=
 Lemma interferent_insecure_com1 :
   ~noninterferent_no_while xpub insecure_com1.
 Proof.
-  unfold noninterferent_no_while, noninterferent_state,
-         insecure_com1, pub_equiv.
-  intro Hc. simpl in Hc.
-  specialize (Hc (X !-> 0 ; Y !-> 0) (X !-> 0 ; Y !-> 1)).
-  assert (H: forall x, xpub x = true ->
-                       (X !-> 0; Y !-> 0) x = (X !-> 0; Y !-> 1) x).
+  unfold noninterferent_no_while, noninterferent_state, insecure_com1.
+  intro Hc.
+
+  (* Choose [s1] and [s2] that are pub_equiv but have different secret inputs. *)
+  set (s1 := (X !-> 0 ; Y !-> 0)).
+  set (s2 := (X !-> 0 ; Y !-> 1)).
+  specialize (Hc s1 s2).
+
+  (* Prove that s1 and s2 are public equivalent. *)
+  assert (PEQUIV: pub_equiv xpub s1 s2).
   { clear Hc. intros x H. apply xpub_true in H. subst. reflexivity. }
-  specialize (Hc H X xpubX). simpl in Hc.
-  repeat try rewrite t_update_eq in Hc.
+
+  specialize (Hc PEQUIV X xpubX).
+
+  (* Computing reveals that X in [insecure_com1] depends on the initial Y. *)
+  simpl in Hc.
+
+  (* Contradiction: LHS gives X = 1, RHS gives X = 2, but Hc claims they're equal. *)
   discriminate.
 Qed.
 
@@ -569,31 +840,71 @@ Lemma interferent_insecure_com2 :
   ~noninterferent_no_while xpub insecure_com2.
 Proof.
   (* the same insecurity proof as for [insecure_com1] does the job *)
-  unfold noninterferent_no_while, noninterferent_state,
-         insecure_com2, pub_equiv.
-  intro Hc. simpl in Hc.
-  specialize (Hc (X !-> 0 ; Y !-> 0) (X !-> 0 ; Y !-> 1)).
-  assert (H: forall x, xpub x = true ->
-                       (X !-> 0; Y !-> 0) x = (X !-> 0; Y !-> 1) x).
+  unfold noninterferent_no_while, noninterferent_state, insecure_com1.
+  intro Hc.
+
+  (* Choose [s1] and [s2] that are pub_equiv but have different secret inputs. *)
+  set (s1 := (X !-> 0 ; Y !-> 0)).
+  set (s2 := (X !-> 0 ; Y !-> 1)).
+  specialize (Hc s1 s2).
+
+  (* Prove that s1 and s2 are public equivalent. *)
+  assert (PEQUIV: pub_equiv xpub s1 s2).
   { clear Hc. intros x H. apply xpub_true in H. subst. reflexivity. }
-  specialize (Hc H X xpubX). simpl in Hc.
-  repeat try rewrite t_update_eq in Hc.
+
+  specialize (Hc PEQUIV X xpubX).
+
+  (* Computing reveals that X in [insecure_com2] depends on the initial Y. *)
+  simpl in Hc.
+
+  (* Contradiction: LHS gives X = 0, RHS gives X = 1, but Hc claims they're equal. *)
   discriminate.
 Qed.
+
+(** **** Exercise: 2 stars, standard (interferent_insecure_com_explicit) *)
+Definition insecure_com_explicit :=
+  <{ X := Y + X; (* <- bad explicit flow! *)
+     Y := Y - 1;
+     Y := Y + 2 * Y }>.
+
+Lemma interferent_insecure_com_explicit :
+  ~noninterferent_no_while xpub insecure_com_explicit.
+Proof.
+  (* FILL IN HERE *) Admitted.
+(** [] *)
+
+Definition insecure_com_implicit :=
+  <{ if Y = 0 then
+       X := X + 1 (* <- bad implicit flow! *)
+     else
+       X := X - 1 (* <- bad implicit flow! *)
+     end;
+     Y := 2 * Y }>.
+
+Lemma interferent_insecure_com_implicit :
+  ~noninterferent_no_while xpub insecure_com_implicit.
+Proof.
+  (* FILL IN HERE *) Admitted.
+
+(** We will return to explicit and implicit flows in the [StaticIFC] chapter. *)
 
 (* ################################################################# *)
 (** * SME for Imp programs without loops *)
 
-(** We can use [sme_state] to execute such programs to obtain a noninterferent
-    state transformer by running them 2 times, once on a state without secrets
-    and once on the original input state, and then merging the final states. *)
+(** We can use [sme_state] to execute such programs to obtain a
+    noninterferent state transformer by running programs 2 times, once
+    on a state where the secrets were zeroed out and once on the
+    original input state, and then merging the final states. *)
+
+Print sme_state.
+(*  fun f pub s => merge_states (f (split_state s pub true)) (f s) pub. *)
 
 Definition sme_cmd c : pub_vars->state->state := sme_state (cinterp c).
 
-(** The result of applying [sme_cmd] to a program is no longer a
-    program, but a state transformer. We can prove all the state
-    transformers obtained by [sme_cmd] noninterferent using our
-    noninterference theorem about [sme_state]. *)
+(** The result of applying [sme_cmd] to a program is not a program,
+    but a state transformer. We prove noninterference and transparency
+    for the state transformers obtained by [sme_cmd] using our
+    noninterference and transparency theorems about [sme_state]: *)
 
 Theorem noninterferent_sme_cmd : forall c pub,
   noninterferent_state pub (sme_cmd c pub).
@@ -605,6 +916,226 @@ Theorem transparent_sme_cmd : forall c pub,
 Proof.
   unfold sme_cmd. intros c pub NI. apply transparent_sme_state. apply NI.
 Qed.
+
+(** Perhaps more interesting is to look at how [sme_cmd]
+    changes the behavior of some insecure commands: *)
+
+Print insecure_com1. (* <{ X := Y + 1; Y := X - 1 + Y * 2 }> *)
+Definition secure_com1 : com :=
+  <{ X := 1; (* no explicit flow *)
+     Y := Y*3 (* but Y has to be computed in a different way *) }>.
+
+Lemma sme_insecure_com1 : sme_cmd insecure_com1 xpub = cinterp secure_com1.
+Proof.
+  eapply functional_extensionality. intros st.
+  unfold sme_cmd, sme_state, insecure_com1. simpl.
+  eapply functional_extensionality. intros x.
+  unfold merge_states. simpl.
+
+  destruct (xpub x) eqn:HXP.
+  { eapply xpub_true in HXP. subst.
+    rewrite t_update_neq; try (intros Hcontra; discriminate).
+    rewrite t_update_eq; simpl; auto. }
+
+  destruct (eqb x Y) eqn:HY.
+  { rewrite eqb_eq in HY. subst.
+    repeat rewrite t_update_eq.
+    repeat rewrite t_update_neq; try (intros Hcontra; discriminate).
+    lia. }
+
+  assert (HX: x <> X).
+  { intros Hx. subst. rewrite xpubX in HXP. discriminate. }
+
+  rewrite eqb_neq in HY.
+  repeat (rewrite t_update_neq; auto).
+Qed.
+
+(** The example above shows that the effect of applying [sme_cmd] is
+    hard to predict statically and it is not just a simple syntactic
+    transformation of the original command. Here is another example of that: *)
+
+Definition insecure_com2' : com :=
+  <{ if Y = 0 then
+       X := 42  (* <- bad implicit flow! *)
+     else
+       X := X + 1 (* <- bad implicit flow! *)
+     end }>.
+
+Definition secure_com2' : com :=
+  <{ X := 42 (* <- no implicit flow (no branching) *) }>.
+
+Lemma sme_insecure_com2' : sme_cmd insecure_com2' xpub = cinterp secure_com2'.
+Proof.
+  eapply functional_extensionality. intros st.
+  unfold sme_cmd. unfold sme_state. simpl.
+  eapply functional_extensionality. intros x.
+  unfold merge_states. simpl.
+
+  destruct (xpub x) eqn:HXP.
+  { eapply xpub_true in HXP. subst.
+    rewrite t_update_eq; simpl; auto. }
+
+  destruct (eqb x Y) eqn:HY.
+  { rewrite eqb_eq in HY. subst.
+    destruct (st Y =? 0);
+      repeat rewrite t_update_neq;
+      try (intros Hcontra; discriminate); reflexivity. }
+
+  assert (HX: x <> X).
+  { intros Hx. subst. rewrite xpubX in HXP. discriminate. }
+
+  rewrite eqb_neq in HY.
+  destruct (st Y =? 0).
+  - rewrite t_update_neq; auto.
+  - repeat rewrite t_update_neq; auto.
+Qed.
+
+(** For simplicity, above we looked at a modified [insecure_com2'].
+    What about the effect of [sme_cmd] on the _original_ [insecure_com2]? *)
+Print insecure_com2.
+  (* <{ if Y = 0 then *)
+  (*      Y := 42  <- updating Y here *)
+  (*    else *)
+  (*      X := X+1 <- bad implicit flow! *)
+  (*    end }>. *)
+
+(** This is more challenging, but it turns out there is a general and
+    systematic way to characterize the effect of [sme_cmd] as a single
+    program. This program is called a _self-composition_ and it
+    captures two executions of the original program (in this case the
+    two executions performed by [sme_cmd]): *)
+
+Definition pX := "pX"%string.
+Definition pY := "pY"%string.
+Definition secure_com2 :=
+  <{ (* we save a copy of the initial values of public variables *)
+     pX := X;
+     (* we run the original program to simulate the secret run *)
+     if Y = 0 then Y := 42
+              else X := X+1 end; (* <- X later overwritten *)
+     (* for the public run we zero the [p]-version of secret variables *)
+     pY := 0;
+     (* we simulate the effect of the public run using the [p] variables *)
+     if pY = 0 then pY := 42
+               else pX := pX+1 end; (* <- the branching is on pY *)
+     (* we merge the results of the two runs *)
+     X := pX
+}>.
+
+(** Because in our simple Imp language we have no way to restore the
+    [pX] and [pY] variables to their original state, the equivalence
+    lemma below needs to account for the fact that their values will be
+    different. We do this by reusing our old friend [pub_equiv]: *)
+
+Definition psecret := (pX !-> false; pY !-> false; _ !-> true).
+
+Lemma sme_insecure_com2 : forall st,
+    pub_equiv psecret (sme_cmd insecure_com2 xpub st)
+                      (cinterp secure_com2 st).
+Proof.
+  unfold pub_equiv. intros st x PSEC.
+
+  unfold sme_cmd, sme_state, insecure_com2. simpl.
+  unfold merge_states. simpl.
+
+  destruct (xpub x) eqn:HXP.
+  { eapply xpub_true in HXP. subst.
+    rewrite t_update_neq; try discriminate.
+    rewrite t_update_eq.
+    unfold split_state. simpl.
+    repeat (rewrite t_update_neq; try discriminate).
+    destruct (st Y =? 0) eqn:HY0.
+    - rewrite t_update_neq; try discriminate.
+      rewrite t_update_eq. reflexivity.
+    - rewrite t_update_neq; try discriminate.
+      rewrite t_update_eq. reflexivity. }
+
+  destruct (eqb x Y) eqn:HY.
+  { rewrite eqb_eq in HY. subst.
+    destruct (st Y =? 0) eqn:HY0.
+    - rewrite t_update_eq.
+      repeat (rewrite t_update_neq; try discriminate).
+      rewrite HY0.
+      rewrite t_update_eq. reflexivity.
+    - repeat (rewrite t_update_neq; try discriminate).
+      rewrite HY0.
+      repeat (rewrite t_update_neq; try discriminate).
+      reflexivity. }
+
+  rewrite eqb_neq in HY.
+
+  assert (HX: x <> X).
+  { intros Hx. subst. rewrite xpubX in HXP. discriminate. }
+
+  assert (HpXY: x <> pX /\ x <> pY).
+  { clear - PSEC.
+    unfold psecret in PSEC.
+    destruct (eqb x pX) eqn:HpX.
+    - rewrite eqb_eq in HpX. subst.
+      rewrite t_update_eq in PSEC. discriminate.
+    - destruct (eqb x pY) eqn:HpY.
+      + rewrite eqb_eq in HpY. subst.
+        rewrite t_update_neq in PSEC; discriminate.
+      + rewrite eqb_neq in HpX. subst.
+        rewrite eqb_neq in HpY. subst. auto. }
+
+  destruct HpXY as [HpX HpY].
+
+  repeat (rewrite t_update_neq; auto); try discriminate.
+  destruct (st Y =? 0) eqn:HY0.
+  - repeat (rewrite t_update_neq; auto).
+  - repeat (rewrite t_update_neq; auto).
+Qed.
+
+(** By optimizing the self-composition program above quite a bit we
+    can finally figure out what [sme_cmd] does for [insecure_com2]: *)
+
+Definition secure_com2_simple :=
+  <{ if Y = 0 then
+       Y := 42
+     else
+       skip (* <- implicit flow gone *)
+     end
+}>.
+
+Lemma sme_insecure_com2_simple :
+  sme_cmd insecure_com2 xpub = cinterp secure_com2_simple.
+Proof.
+  eapply functional_extensionality. intros st.
+  unfold sme_cmd. unfold sme_state. simpl.
+  eapply functional_extensionality. intros x.
+  unfold merge_states. simpl.
+
+  destruct (xpub x) eqn:HXP.
+  { eapply xpub_true in HXP. subst.
+    rewrite t_update_neq; try discriminate.
+    unfold split_state. simpl.
+    destruct (st Y =? 0).
+    - rewrite t_update_neq; try discriminate.
+      reflexivity.
+    - reflexivity. }
+
+  destruct (eqb x Y) eqn:HY.
+  { rewrite eqb_eq in HY. subst.
+    destruct (st Y =? 0).
+    - repeat rewrite t_update_eq. reflexivity.
+    - rewrite t_update_neq; try discriminate.
+      reflexivity. }
+
+  assert (HX: x <> X).
+  { intros Hx. subst. rewrite xpubX in HXP. discriminate. }
+
+  rewrite eqb_neq in HY.
+  destruct (st Y =? 0).
+  - reflexivity.
+  - rewrite t_update_neq; auto.
+Qed.
+
+(** Self-composition and the more general concept of a _product program_
+    are generally useful techniques of their own (e.g. for reducing
+    relational properties proved by Relational Hoare Logic to regular
+    properties proved by standard Hoare Logic), but we will not
+    discuss them here any further. *)
 
 (* ################################################################# *)
 (** * Noninterference for Imp programs with loops *)
@@ -620,7 +1151,9 @@ Definition noninterferent_while pub c := forall s1 s2 s1' s2',
 
 Ltac invert H := inversion H; subst; clear H.
 
-Lemma noninterferent_secure_com' :
+(** We re-prove noninterference of [secure_com] for this new definition: *)
+
+Lemma noninterferent_secure_com_a_bit_harder :
   noninterferent_while xpub secure_com.
 Proof.
   unfold noninterferent_while, secure_com, pub_equiv.
@@ -632,11 +1165,62 @@ Proof.
   rewrite (H X xpubX). reflexivity.
 Qed.
 
+(** The advantage of the new definition is that it also says something
+    meaningful about programs with while loops. *)
+
+(** For instance, we can prove that [fact_in_coq] from [Imp] does
+    not leak the old value of [Y] and [Z] to [X]: *)
+
+Print fact_in_coq.
+(* Definition fact_in_coq : com := *)
+(*   <{ Z := X;                    *)
+(*      Y := 1;                    *)
+(*      while Z <> 0 do            *)
+(*        Y := Y * Z;              *)
+(*        Z := Z - 1               *)
+(*      end }>.                    *)
+
+Lemma noninterferent_fact_in_coq :
+  noninterferent_while xpub fact_in_coq.
+Proof.
+  unfold noninterferent_while, fact_in_coq, pub_equiv.
+  intros s1 s2 s1' s2' H H1 H2 x Hx.
+  apply xpub_true in Hx. subst.
+  assert (Hs: forall s s', s =[ Z := X; Y := 1; while Z <> 0 do Y := Y * Z; Z := Z - 1 end ]=> s' ->
+                      s X = s' X).
+  { intros. clear -H0. invert H0. invert H5.
+    invert H2. invert H1. simpl in H6.
+    remember (Y !-> 1; Z !-> s X; s) as st.
+    replace (s X) with (st X); cycle 1.
+    { invert Heqst. rewrite t_update_neq; eauto. intros contra.
+      discriminate contra. }
+    clear -H6.
+    remember <{ while Z <> 0 do Y := Y * Z; Z := Z - 1 end }> as loopdef
+      eqn:Heqloopdef.
+    revert Heqloopdef.
+    induction H6; intros.
+    - discriminate Heqloopdef.
+    - discriminate Heqloopdef.
+    - discriminate Heqloopdef.
+    - discriminate Heqloopdef.
+    - discriminate Heqloopdef.
+    - reflexivity.
+    - invert Heqloopdef.
+      rewrite <- IHceval2; eauto.
+      invert H6_. invert H5. invert H2. simpl.
+      rewrite t_update_neq; cycle 1.
+      { intros contra. discriminate contra. }
+      rewrite t_update_neq; eauto.
+      intros contra. discriminate contra. }
+  eapply Hs in H1. eapply Hs in H2. rewrite <- H1, <- H2.
+  rewrite (H X xpubX). reflexivity.
+Qed.
+
 (* ################################################################# *)
 (** * SME for Imp programs with loops *)
 
-(** Now to define SME we also need to use a relation, of a similar type to
-    [ceval]: *)
+(** To define SME in the presence of while loops we also need to use a
+    relation, of a similar type to [ceval]: *)
 
 Check ceval : com -> state -> state -> Prop.
 
@@ -646,8 +1230,8 @@ Definition sme_while (pub:pub_vars) (c:com) (s s':state) : Prop :=
     merge_states ps ss pub = s'.
 
 (** To state that sme_eval is secure, we need to generalize our noninterference
-    definition, so that it works not only with [ceval], but with any evaluation
-    relation, including [sme_while pub]. *)
+    definition, so that we can apply it not only to [ceval], but with
+    any evaluation relation, including [sme_while pub]. *)
 
 Definition noninterferent_while_R (R:com->state->state->Prop) pub c :=
   forall s1 s2 s1' s2',
@@ -715,8 +1299,8 @@ Proof.
   - reflexivity.
 Qed.
 
-(** More specifically, we can only prove that [sme_while] execution implies
-    [ceval]. *)
+(** More specifically, we can only prove that an [sme_while] execution
+    implies a [ceval] execution: *)
 
 Theorem somewhat_transparent_while_sme : forall pub c,
   noninterferent_while pub c ->
@@ -732,7 +1316,7 @@ Qed.
 
 (** But we cannot prove the reverse implication, since a command
     terminating when starting in state [s], does not necessarily still
-    terminates when starting in state [split_state s pub true], as
+    terminate when starting in state [split_state s pub true], as
     would be needed for proving [sme_while]. *)
 
 (** Yet it seems we can still do most of the things as in the setting
@@ -766,7 +1350,7 @@ Definition termination_leak : com :=
 Lemma Y_neq_X : (Y <> X).
 Proof. intro contra. discriminate. Qed.
 
-(** This lemma is a homework exercise in Imp: *)
+(** We use a lemma that is a homework exercise in Imp: *)
 Check loop_never_stops : forall st st',
   ~(st =[ loop ]=> st').
 
@@ -885,7 +1469,7 @@ Proof.
     apply merge_state_pub_equiv in Hni. rewrite Hni. apply Hs.
 Qed.
 
-(** Unfortunately [sme_while] does not _enforce_ TSNI, and this is hard
+(** Unfortunately [sme_while] does not _enforce_ TSNI and this is hard
     to fix in our current setting, where programs only return a result
     in the end, a final state, so we had to merge the public and
     secret inputs into a single final state. Instead, SME is commonly
@@ -894,4 +1478,120 @@ Qed.
     execution. In that setting, it does transparently enforce a
     version of TSNI. *)
 
-(* 2025-04-09 13:06 *)
+(* ================================================================= *)
+(** ** Optional: Counterexample showing that SME doesn't enforce TSNI *)
+
+(** We build a counterexample command that does not satisfy TSNI and
+    for which the same publicly equivalent initial states [s1] and
+    [s2] can be used to show that it still does not satisfy TSNI when
+    run with [sme_while].
+
+    In particular, we choose [s1] below so that the command terminates
+    and so that zeroing out the secret variable Y has no effect on [s1].
+    We choose [s2] so that the command loops, which implies that it
+    will still loop on [s2] also when executed with [sme_while]. *)
+
+Section TSNICOUNTER.
+
+Definition counter : com := <{ while (Y = 1) do skip end; X := 1 }>.
+
+Definition s1: state := X !-> 0; Y !-> 0; empty_st.
+Definition s2: state := X !-> 0; Y !-> 1; empty_st.
+Definition s1': state := X !-> 1; s1.
+
+Lemma counter_s1_terminates_s1': s1 =[ counter ]=> s1'.
+Proof.
+  unfold counter, s1. eapply E_Seq.
+  - eapply E_WhileFalse. simpl. reflexivity.
+  - eapply E_Asgn. simpl. reflexivity.
+Qed.
+
+Lemma counter_s2_loops : forall s2',
+  ~ (s2 =[ counter ]=> s2').
+Proof.
+  unfold counter. intros s2' Hcontra.
+
+  assert (NSTOP: forall s s', s Y = 1 ->
+                         s =[ while Y = 1 do skip end ]=> s' ->
+                         False).
+  { clear. intros.
+    remember <{ while Y = 1 do skip end }> as loopdef
+             eqn:Heqloopdef.
+    generalize dependent H.
+    induction H0; try (discriminate Heqloopdef).
+    (* E_WhileFalse *)
+    - intros HY.
+      injection Heqloopdef as H0 H1. subst.
+      simpl in H. rewrite HY in H. discriminate H.
+    (* E_WhileTrue *)
+    - intros HY.
+      injection Heqloopdef as H0 H1. subst.
+      inversion H0_; subst. eapply IHceval2; eauto. }
+
+  inversion Hcontra; subst. eapply NSTOP in H1; auto.
+Qed.
+
+Lemma initial_pub_equiv: pub_equiv xpub s1 s2.
+Proof.
+  unfold s1, s2, pub_equiv. intros.
+  eapply xpub_true in H. subst.
+  repeat rewrite t_update_eq. reflexivity.
+Qed.
+
+Lemma not_tsni_counter :
+  ~ (tsni_while_R ceval xpub counter).
+Proof.
+  intros Htsni. unfold tsni_while_R in Htsni.
+  specialize (Htsni _ _ _ counter_s1_terminates_s1' initial_pub_equiv).
+  destruct Htsni as [s2' [D _]].
+  eapply counter_s2_loops. eassumption.
+Qed.
+
+Lemma sme_counter_s1_terminates_s1' : sme_while xpub counter s1 s1'.
+Proof.
+  unfold sme_while, counter.
+  exists s1', s1'.
+  split; [|split].
+  - assert (Hsplit: split_state s1 xpub true = s1).
+    { unfold split_state, s1, xpub.
+      eapply functional_extensionality. intros x.
+      destruct (Bool.eqb ((X !-> true; _ !-> false) x) true) eqn: B.
+      - reflexivity.
+      - destruct (eqb x Y) eqn:HY.
+        + rewrite eqb_eq in HY. subst. rewrite t_update_neq.
+          * rewrite t_update_eq. reflexivity.
+          * intros Hcontra. inversion Hcontra.
+        + rewrite eqb_neq in HY.
+          destruct (eqb x X) eqn:HX.
+          * rewrite eqb_eq in HX. subst.
+            rewrite t_update_eq. reflexivity.
+          * rewrite eqb_neq in HX.
+            rewrite t_update_neq; eauto.
+            rewrite t_update_neq; eauto. }
+    rewrite Hsplit. eapply counter_s1_terminates_s1'.
+  - eapply counter_s1_terminates_s1'.
+  - eapply functional_extensionality. intros x.
+    unfold merge_states, xpub.
+    destruct ((X !-> true; _ !-> false) x); reflexivity.
+Qed.
+
+Lemma sme_counter_s2_loops: forall s2',
+  ~ (sme_while xpub counter s2 s2').
+Proof.
+  unfold not, sme_while. intros s2' H.
+  destruct H as [ps [ss [A [B C]]]].
+  eapply counter_s2_loops. eassumption.
+Qed.
+
+Lemma not_tsni_while_sme :
+  ~ (tsni_while_R (sme_while xpub) xpub counter).
+Proof.
+  intros Htsni. unfold tsni_while_R in Htsni.
+  specialize (Htsni _ _ _ sme_counter_s1_terminates_s1' initial_pub_equiv).
+  destruct Htsni as [s2' [D _]].
+  eapply sme_counter_s2_loops. eassumption.
+Qed.
+
+End TSNICOUNTER.
+
+(* 2025-05-28 23:56 *)
