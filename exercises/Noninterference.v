@@ -761,30 +761,30 @@ Proof.
   simpl. rewrite PEQUIV. reflexivity.
 Qed.
 
-(** **** Exercise: 2 stars, standard (noninterferent_secure_com_exercise) *)
-Definition secure_com_exercise :=
-  <{ X := 2 * X + 3;
-     Y := Y - 1;
+(** **** Exercise: 2 stars, standard (noninterferent_secure_ex1) *)
+Definition secure_ex1 :=
+  <{ Y := Y - 1;
      X := 1 }>.
 
-Lemma noninterferent_secure_com_exercise :
-  noninterferent_no_while xpub secure_com_exercise.
+Lemma noninterferent_secure_ex1 :
+  noninterferent_no_while xpub secure_ex1.
 Proof.
   (* FILL IN HERE *) Admitted.
 (** [] *)
 
-Definition secure_com_branch :=
-  <{ if Y = 0 then
+(** **** Exercise: 3 stars, standard, optional (noninterferent_secure_ex2) *)
+Definition secure_ex2 :=
+  <{ if X = 0 then
        X := X + 5
      else
        Y := X
-     end;
-     X := 42 }>.
+     end }>.
 
-Lemma noninterferent_secure_com_branch :
-  noninterferent_no_while xpub secure_com_branch.
+Lemma noninterferent_secure_ex2 :
+  noninterferent_no_while xpub secure_ex2.
 Proof.
   (* FILL IN HERE *) Admitted.
+(** [] *)
 
 (** Now let's look at a couple of insecure commands: *)
 
@@ -794,7 +794,10 @@ Definition insecure_com1 : com :=
 
 (** An _explicit flow_ is when a command directly assigns an expression
     depending on secret variables to a public variable, like the [X := Y+1]
-    assignment above. We can prove that this is insecure: *)
+    assignment above. Explicit flows are easier to find automatically
+    and even simple taint-tracking would be enough for discovering this.
+
+    We prove that [insecure_com1] is interferent as follows: *)
 
 Lemma interferent_insecure_com1 :
   ~noninterferent_no_while xpub insecure_com1.
@@ -807,18 +810,34 @@ Proof.
   set (s2 := (X !-> 0 ; Y !-> 1)).
   specialize (Hc s1 s2).
 
-  (* Prove that s1 and s2 are public equivalent. *)
   assert (PEQUIV: pub_equiv xpub s1 s2).
   { clear Hc. intros x H. apply xpub_true in H. subst. reflexivity. }
 
   specialize (Hc PEQUIV X xpubX).
 
   (* Computing reveals that X in [insecure_com1] depends on the initial Y. *)
-  simpl in Hc.
+  simpl in Hc. unfold s1, s2, t_update in Hc. simpl in Hc.
 
-  (* Contradiction: LHS gives X = 1, RHS gives X = 2, but Hc claims they're equal. *)
-  discriminate.
+  (* Contradiction: LHS gives X = 1, RHS gives X = 2,
+                    but Hc claims they're equal. *)
+  discriminate Hc.
 Qed.
+
+(** As we saw above, the [set] tactic allows us to give names to
+    complex expression, making proofs more readable and
+    manageable. It's particularly useful when constructing concrete
+    counterexamples where one needs to work with specific values. *)
+
+(** **** Exercise: 2 stars, standard (interferent_insecure_com_explicit) *)
+Definition insecure_com_explicit :=
+  <{ X := Y + X; (* <- bad explicit flow! *)
+     Y := Y - 1 }>.
+
+Lemma interferent_insecure_com_explicit :
+  ~noninterferent_no_while xpub insecure_com_explicit.
+Proof.
+  (* FILL IN HERE *) Admitted.
+(** [] *)
 
 (** Noninterference can be violated not only by explicit flows, but also by
     _implicit flows_, which leak secret information via the control-flow of the
@@ -839,7 +858,7 @@ Definition insecure_com2 : com :=
 Lemma interferent_insecure_com2 :
   ~noninterferent_no_while xpub insecure_com2.
 Proof.
-  (* the same insecurity proof as for [insecure_com1] does the job *)
+  (* The same proof as for [insecure_com1] does the job *)
   unfold noninterferent_no_while, noninterferent_state, insecure_com1.
   intro Hc.
 
@@ -848,43 +867,32 @@ Proof.
   set (s2 := (X !-> 0 ; Y !-> 1)).
   specialize (Hc s1 s2).
 
-  (* Prove that s1 and s2 are public equivalent. *)
   assert (PEQUIV: pub_equiv xpub s1 s2).
   { clear Hc. intros x H. apply xpub_true in H. subst. reflexivity. }
 
   specialize (Hc PEQUIV X xpubX).
 
   (* Computing reveals that X in [insecure_com2] depends on the initial Y. *)
-  simpl in Hc.
+  simpl in Hc. unfold s1, s2, t_update in Hc. simpl in Hc.
 
-  (* Contradiction: LHS gives X = 0, RHS gives X = 1, but Hc claims they're equal. *)
-  discriminate.
+  (* Contradiction: LHS gives X = 0, RHS gives X = 1,
+                    but Hc claims they're equal. *)
+  discriminate Hc.
 Qed.
 
-(** **** Exercise: 2 stars, standard (interferent_insecure_com_explicit) *)
-Definition insecure_com_explicit :=
-  <{ X := Y + X; (* <- bad explicit flow! *)
-     Y := Y - 1;
-     Y := Y + 2 * Y }>.
-
-Lemma interferent_insecure_com_explicit :
-  ~noninterferent_no_while xpub insecure_com_explicit.
-Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
-
+(** **** Exercise: 3 stars, standard (interferent_insecure_com_implicit) *)
 Definition insecure_com_implicit :=
-  <{ if Y = 0 then
-       X := X + 1 (* <- bad implicit flow! *)
-     else
+  <{ if Y = 42 then
        X := X - 1 (* <- bad implicit flow! *)
-     end;
-     Y := 2 * Y }>.
+     else
+       Y := 2 * Y
+     end }>.
 
 Lemma interferent_insecure_com_implicit :
   ~noninterferent_no_while xpub insecure_com_implicit.
 Proof.
   (* FILL IN HERE *) Admitted.
+(** [] *)
 
 (** We will return to explicit and implicit flows in the [StaticIFC] chapter. *)
 
@@ -1594,4 +1602,4 @@ Qed.
 
 End TSNICOUNTER.
 
-(* 2025-05-28 23:56 *)
+(* 2025-05-29 10:08 *)

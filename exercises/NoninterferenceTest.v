@@ -130,16 +130,15 @@ Print Assumptions sme_another_insecure_f3.
 Goal True.
 idtac " ".
 
-idtac "-------------------  noninterferent_secure_com_exercise  --------------------".
+idtac "-------------------  noninterferent_secure_ex1  --------------------".
 idtac " ".
 
-idtac "#> noninterferent_secure_com_exercise".
+idtac "#> noninterferent_secure_ex1".
 idtac "Possible points: 2".
-check_type @noninterferent_secure_com_exercise (
-(noninterferent_no_while xpub secure_com_exercise)).
+check_type @noninterferent_secure_ex1 ((noninterferent_no_while xpub secure_ex1)).
 idtac "Assumptions:".
 Abort.
-Print Assumptions noninterferent_secure_com_exercise.
+Print Assumptions noninterferent_secure_ex1.
 Goal True.
 idtac " ".
 
@@ -156,10 +155,23 @@ Print Assumptions interferent_insecure_com_explicit.
 Goal True.
 idtac " ".
 
+idtac "-------------------  interferent_insecure_com_implicit  --------------------".
 idtac " ".
 
-idtac "Max points - standard: 15".
-idtac "Max points - advanced: 15".
+idtac "#> interferent_insecure_com_implicit".
+idtac "Possible points: 3".
+check_type @interferent_insecure_com_implicit (
+(~ noninterferent_no_while xpub insecure_com_implicit)).
+idtac "Assumptions:".
+Abort.
+Print Assumptions interferent_insecure_com_implicit.
+Goal True.
+idtac " ".
+
+idtac " ".
+
+idtac "Max points - standard: 18".
+idtac "Max points - advanced: 18".
 idtac "".
 idtac "Allowed Axioms:".
 idtac "functional_extensionality".
@@ -191,12 +203,14 @@ idtac "---------- sme_another_insecure_f2 ---------".
 Print Assumptions sme_another_insecure_f2.
 idtac "---------- sme_another_insecure_f3 ---------".
 Print Assumptions sme_another_insecure_f3.
-idtac "---------- noninterferent_secure_com_exercise ---------".
-Print Assumptions noninterferent_secure_com_exercise.
+idtac "---------- noninterferent_secure_ex1 ---------".
+Print Assumptions noninterferent_secure_ex1.
 idtac "---------- interferent_insecure_com_explicit ---------".
 Print Assumptions interferent_insecure_com_explicit.
+idtac "---------- interferent_insecure_com_implicit ---------".
+Print Assumptions interferent_insecure_com_implicit.
 idtac "".
 idtac "********** Advanced **********".
 Abort.
 
-(* 2025-05-28 23:56 *)
+(* 2025-05-29 10:08 *)
