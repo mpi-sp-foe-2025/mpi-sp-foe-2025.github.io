@@ -671,9 +671,6 @@
 <a href="SpecCT.html#prefix_heads_and_tails">prefix_heads_and_tails</a> [lemma, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#prefix_nil">prefix_nil</a> [lemma, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#prefix_refl">prefix_refl</a> [lemma, in <a href="SpecCT.html">SpecCT</a>]<br/>
-<a href="SpecCT.html#prog_size_monotonic">prog_size_monotonic</a> [lemma, in <a href="SpecCT.html">SpecCT</a>]<br/>
-<a href="SpecCT.html#prog_size_ind">prog_size_ind</a> [lemma, in <a href="SpecCT.html">SpecCT</a>]<br/>
-<a href="SpecCT.html#prog_size">prog_size</a> [definition, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="Noninterference.html#prove_or_disprove_less_obvious_f<sub>7</sub>">prove_or_disprove_less_obvious_f<sub>7</sub></a> [lemma, in <a href="Noninterference.html">Noninterference</a>]<br/>
 <a href="Noninterference.html#prove_or_disprove_less_obvious_f<sub>6</sub>">prove_or_disprove_less_obvious_f<sub>6</sub></a> [lemma, in <a href="Noninterference.html">Noninterference</a>]<br/>
 <a href="Noninterference.html#prove_or_disprove_less_obvious_f<sub>5</sub>">prove_or_disprove_less_obvious_f<sub>5</sub></a> [lemma, in <a href="Noninterference.html">Noninterference</a>]<br/>
@@ -766,6 +763,9 @@
 <a href="SpecCT.html#sel_slh">sel_slh</a> [definition, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#Seq">Seq</a> [constructor, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#seq_spec_eval">seq_spec_eval</a> [definition, in <a href="SpecCT.html">SpecCT</a>]<br/>
+<a href="SpecCT.html#size">size</a> [definition, in <a href="SpecCT.html">SpecCT</a>]<br/>
+<a href="SpecCT.html#size_monotonic">size_monotonic</a> [lemma, in <a href="SpecCT.html">SpecCT</a>]<br/>
+<a href="SpecCT.html#size_ind">size_ind</a> [lemma, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#Skip">Skip</a> [constructor, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="Noninterference.html#sme">sme</a> [definition, in <a href="Noninterference.html">Noninterference</a>]<br/>
 <a href="Noninterference.html#sme_counter_s2_loops">sme_counter_s2_loops</a> [lemma, in <a href="Noninterference.html">Noninterference</a>]<br/>
@@ -948,13 +948,13 @@
 <a href="SpecCT.html#:com:com_scope:x_x_'..'_x">com:_ _ .. _ (com_scope)</a> [notation, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#:com:com_scope:x">com:_ (com_scope)</a> [notation, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#5a96623d056c293ebbcdf03005796e<sub>09</sub>">com:( _ ) (com_scope)</a> [notation, in <a href="SpecCT.html">SpecCT</a>]<br/>
+<a href="SpecCT.html#e394e4519717f9f211167ad5ddb8b548">com:_ ? _ : _</a> [notation, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#:com::x_'&amp;&amp;'_x">com:_ &amp;&amp; _</a> [notation, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#:com::x_'&lt;&gt;'_x">com:_ &lt;&gt; _</a> [notation, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#9e5b22caf5d7cf490e97976162618c2a">com:_ = _</a> [notation, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#:com::x_'&lt;'_x">com:_ &lt; _</a> [notation, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#:com::x_'&gt;'_x">com:_ &gt; _</a> [notation, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#d43f15edd52d29ae8e0f90730a25ed5c">com:_ &lt;= _</a> [notation, in <a href="SpecCT.html">SpecCT</a>]<br/>
-<a href="SpecCT.html#e394e4519717f9f211167ad5ddb8b548">com:_ ? _ : _</a> [notation, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#a73c7b35e67094dc8ae672f3a93da066">com:_ * _</a> [notation, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#:com::x_'-'_x">com:_ - _</a> [notation, in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#ad27fd091d9c8494ce7e5135135d19a<sub>8</sub>">com:_ + _</a> [notation, in <a href="SpecCT.html">SpecCT</a>]<br/>
@@ -1018,13 +1018,13 @@
 <a href="SpecCT.html#:com:com_scope:x_x_'..'_x">com:_ _ .. _ (com_scope)</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#:com:com_scope:x">com:_ (com_scope)</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#5a96623d056c293ebbcdf03005796e<sub>09</sub>">com:( _ ) (com_scope)</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
+<a href="SpecCT.html#e394e4519717f9f211167ad5ddb8b548">com:_ ? _ : _</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#:com::x_'&amp;&amp;'_x">com:_ &amp;&amp; _</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#:com::x_'&lt;&gt;'_x">com:_ &lt;&gt; _</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#9e5b22caf5d7cf490e97976162618c2a">com:_ = _</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#:com::x_'&lt;'_x">com:_ &lt; _</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#:com::x_'&gt;'_x">com:_ &gt; _</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#d43f15edd52d29ae8e0f90730a25ed5c">com:_ &lt;= _</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
-<a href="SpecCT.html#e394e4519717f9f211167ad5ddb8b548">com:_ ? _ : _</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#a73c7b35e67094dc8ae672f3a93da066">com:_ * _</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#:com::x_'-'_x">com:_ - _</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#ad27fd091d9c8494ce7e5135135d19a<sub>8</sub>">com:_ + _</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
@@ -1188,8 +1188,6 @@
 <a href="SpecCT.html#prefix_heads_and_tails">prefix_heads_and_tails</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#prefix_nil">prefix_nil</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#prefix_refl">prefix_refl</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
-<a href="SpecCT.html#prog_size_monotonic">prog_size_monotonic</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
-<a href="SpecCT.html#prog_size_ind">prog_size_ind</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="Noninterference.html#prove_or_disprove_less_obvious_f<sub>7</sub>">prove_or_disprove_less_obvious_f<sub>7</sub></a> [in <a href="Noninterference.html">Noninterference</a>]<br/>
 <a href="Noninterference.html#prove_or_disprove_less_obvious_f<sub>6</sub>">prove_or_disprove_less_obvious_f<sub>6</sub></a> [in <a href="Noninterference.html">Noninterference</a>]<br/>
 <a href="Noninterference.html#prove_or_disprove_less_obvious_f<sub>5</sub>">prove_or_disprove_less_obvious_f<sub>5</sub></a> [in <a href="Noninterference.html">Noninterference</a>]<br/>
@@ -1241,6 +1239,8 @@
 <a href="SpecCT.html#sel_slh_spec_ct_secure">sel_slh_spec_ct_secure</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#sel_slh_ideal">sel_slh_ideal</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#sel_slh_flag">sel_slh_flag</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
+<a href="SpecCT.html#size_monotonic">size_monotonic</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
+<a href="SpecCT.html#size_ind">size_ind</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="Noninterference.html#sme_counter_s2_loops">sme_counter_s2_loops</a> [in <a href="Noninterference.html">Noninterference</a>]<br/>
 <a href="Noninterference.html#sme_counter_s1_terminates_s<sub>1</sub>'">sme_counter_s1_terminates_s<sub>1</sub>'</a> [in <a href="Noninterference.html">Noninterference</a>]<br/>
 <a href="Noninterference.html#sme_insecure_com2_simple">sme_insecure_com2_simple</a> [in <a href="Noninterference.html">Noninterference</a>]<br/>
@@ -1597,7 +1597,6 @@
 <a href="StaticIFC.html#pc_well_typed_sind">pc_well_typed_sind</a> [in <a href="StaticIFC.html">StaticIFC</a>]<br/>
 <a href="StaticIFC.html#pc_well_typed_ind">pc_well_typed_ind</a> [in <a href="StaticIFC.html">StaticIFC</a>]<br/>
 <a href="SpecCT.html#prefix">prefix</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
-<a href="SpecCT.html#prog_size">prog_size</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="Noninterference.html#psecret">psecret</a> [in <a href="Noninterference.html">Noninterference</a>]<br/>
 <a href="SpecCT.html#public">public</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="StaticIFC.html#public">public</a> [in <a href="StaticIFC.html">StaticIFC</a>]<br/>
@@ -1638,6 +1637,7 @@
 <a href="SpecCT.html#sel_slh_flag_prop">sel_slh_flag_prop</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#sel_slh">sel_slh</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="SpecCT.html#seq_spec_eval">seq_spec_eval</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
+<a href="SpecCT.html#size">size</a> [in <a href="SpecCT.html">SpecCT</a>]<br/>
 <a href="Noninterference.html#sme">sme</a> [in <a href="Noninterference.html">Noninterference</a>]<br/>
 <a href="Noninterference.html#sme_while">sme_while</a> [in <a href="Noninterference.html">Noninterference</a>]<br/>
 <a href="Noninterference.html#sme_cmd">sme_cmd</a> [in <a href="Noninterference.html">Noninterference</a>]<br/>
