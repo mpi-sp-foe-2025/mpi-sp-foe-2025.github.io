@@ -241,7 +241,7 @@ In this chapter, we develop the fundamental theory of the Simply
 </div>
 
 <div class="doc">
-<a id="lab250"></a><h4 class="section">Exercise: 3 stars, advanced (progress_from_term_ind)</h4>
+<a id="lab250"></a><h4 class="section">Exercise: 3 stars, advanced, optional (progress_from_term_ind)</h4>
  Show that progress can also be proved by induction on terms
     instead of induction on typing derivations. 
 </div>
@@ -1489,9 +1489,14 @@ In this extended exercise, your job is to finish formalizing the
 <div class="paragraph"> </div>
 
     Fill in the core definitions for STLCArith, by starting with the rules
-    and terms which are the same as STLC.  Then prove the key lemmas and
-    theorems we provide.  You will need to define and prove helper lemmas,
-    as before.
+    and terms which are the same as STLC.
+
+<div class="paragraph"> </div>
+
+    Then, you can try proving the key lemmas and theorems we provide.
+    Doing so is particularly useful to check that you didn't make a
+    mistake in the definitions.
+    You will need to define and prove helper lemmas, as before.
 
 <div class="paragraph"> </div>
 
@@ -1515,7 +1520,7 @@ In this extended exercise, your job is to finish formalizing the
 </div>
 
 <div class="doc">
-<a id="lab276"></a><h4 class="section">Exercise: 5 stars, standard (STLCArith.subst)</h4>
+<a id="lab276"></a><h4 class="section">Exercise: 5 stars, standard (arith_subst)</h4>
 
 </div>
 <div class="code">
@@ -1563,7 +1568,9 @@ In this extended exercise, your job is to finish formalizing the
 <span class="id" title="keyword">Example</span> <a id="STLCArith.Nat_typing_example" class="idref" href="#STLCArith.Nat_typing_example"><span class="id" title="definition">Nat_typing_example</span></a> :<br/>
 &nbsp;&nbsp;&nbsp;<span class="id" title="definition">empty</span> <a class="idref" href="StlcProp.html#870cb72954f64f46f3d85fe14cc61377"><span class="id" title="notation"><span class="nowrap">&vert;--</span></span></a> <a class="idref" href="StlcProp.html#c64141a2c968875f76b153b3f89e4590"><span class="id" title="notation">(</span></a> <a class="idref" href="StlcProp.html#be974cae9d385d4b1716dcf71390f506"><span class="id" title="notation">\</span></a><a class="idref" href="Stlc.html#STLC.x"><span class="id" title="definition">x</span></a><a class="idref" href="StlcProp.html#be974cae9d385d4b1716dcf71390f506"><span class="id" title="notation">:</span></a> <a class="idref" href="StlcProp.html#STLCArith.:stlc::'Nat'"><span class="id" title="notation">Nat</span></a><a class="idref" href="StlcProp.html#be974cae9d385d4b1716dcf71390f506"><span class="id" title="notation">,</span></a> <a class="idref" href="StlcProp.html#be974cae9d385d4b1716dcf71390f506"><span class="id" title="notation">\</span></a><a class="idref" href="Stlc.html#STLC.y"><span class="id" title="definition">y</span></a><a class="idref" href="StlcProp.html#be974cae9d385d4b1716dcf71390f506"><span class="id" title="notation">:</span></a> <a class="idref" href="StlcProp.html#STLCArith.:stlc::'Nat'"><span class="id" title="notation">Nat</span></a><a class="idref" href="StlcProp.html#be974cae9d385d4b1716dcf71390f506"><span class="id" title="notation">,</span></a> <a class="idref" href="Stlc.html#STLC.x"><span class="id" title="definition">x</span></a> <a class="idref" href="StlcProp.html#9e884fda7db2a03161058fdfd11e2132"><span class="id" title="notation">×</span></a> <a class="idref" href="Stlc.html#STLC.y"><span class="id" title="definition">y</span></a> <a class="idref" href="StlcProp.html#c64141a2c968875f76b153b3f89e4590"><span class="id" title="notation">)</span></a> 3 2 <a class="idref" href="StlcProp.html#870cb72954f64f46f3d85fe14cc61377"><span class="id" title="notation">\</span></a><a class="idref" href="StlcProp.html#870cb72954f64f46f3d85fe14cc61377"><span class="id" title="notation">in</span></a> <a class="idref" href="StlcProp.html#STLCArith.:stlc::'Nat'"><span class="id" title="notation">Nat</span></a>.<br/>
 <span class="id" title="keyword">Proof</span>.<br/>
-&nbsp;&nbsp;<span class="comment">(*&nbsp;FILL&nbsp;IN&nbsp;HERE&nbsp;*)</span> <span class="id" title="var">Admitted</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;FILL&nbsp;IN&nbsp;HERE&nbsp;*)</span> <span class="id" title="var">Admitted</span>.<br/><hr class='doublespaceincode'/>
+<span class="comment">(*&nbsp;Do&nbsp;not&nbsp;modify&nbsp;the&nbsp;following&nbsp;line:&nbsp;*)</span><br/>
+<span class="id" title="keyword">Definition</span> <a id="STLCArith.manual_grade_for_arith_subst" class="idref" href="#STLCArith.manual_grade_for_arith_subst"><span class="id" title="definition">manual_grade_for_arith_subst</span></a> : <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Datatypes.html#option"><span class="id" title="inductive">option</span></a> (<a class="idref" href="http://coq.inria.fr/library//Coq.Init.Datatypes.html#nat"><span class="id" title="inductive">nat</span></a><a class="idref" href="http://coq.inria.fr/library//Coq.Init.Datatypes.html#11c698c8685bb8ab1cf725545c085ac<sub>4</sub>"><span class="id" title="notation">×</span></a><a class="idref" href="http://coq.inria.fr/library//Coq.Strings.String.html#string"><span class="id" title="inductive">string</span></a>) := <a class="idref" href="http://coq.inria.fr/library//Coq.Init.Datatypes.html#None"><span class="id" title="constructor">None</span></a>.<br/>
 <font size=-2>&#9744;</font>
 </div>
 
@@ -1576,7 +1583,7 @@ In this extended exercise, your job is to finish formalizing the
  The next lemmas are proved <i>exactly</i> as before. 
 <div class="paragraph"> </div>
 
-<a id="lab278"></a><h4 class="section">Exercise: 4 stars, standard (STLCArith.weakening)</h4>
+<a id="lab278"></a><h4 class="section">Exercise: 4 stars, standard, optional (STLCArith.weakening)</h4>
 
 </div>
 <div class="code">
@@ -1596,7 +1603,7 @@ In this extended exercise, your job is to finish formalizing the
 </div>
 
 <div class="doc">
-<a id="lab279"></a><h4 class="section">Exercise: 4 stars, standard (STLCArith.preservation)</h4>
+<a id="lab279"></a><h4 class="section">Exercise: 4 stars, standard, optional (STLCArith.preservation)</h4>
 
 </div>
 <div class="code">
@@ -1614,7 +1621,7 @@ In this extended exercise, your job is to finish formalizing the
 </div>
 
 <div class="doc">
-<a id="lab280"></a><h4 class="section">Exercise: 4 stars, standard (STLCArith.progress)</h4>
+<a id="lab280"></a><h4 class="section">Exercise: 4 stars, standard, optional (STLCArith.progress)</h4>
 
 </div>
 <div class="code">
@@ -1628,7 +1635,7 @@ In this extended exercise, your job is to finish formalizing the
 <div class="code">
 
 <span class="id" title="keyword">End</span> <a class="idref" href="StlcProp.html#STLCArith"><span class="id" title="module">STLCArith</span></a>.<br/><hr class='doublespaceincode'/>
-<span class="comment">(*&nbsp;2025-06-16&nbsp;19:18&nbsp;*)</span><br/>
+<span class="comment">(*&nbsp;2025-07-02&nbsp;08:45&nbsp;*)</span><br/>
 </div>
 </div>
 
