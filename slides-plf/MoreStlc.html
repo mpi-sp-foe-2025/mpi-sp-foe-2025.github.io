@@ -353,6 +353,11 @@ Is <span class="inlinecode"><span class="id" title="var">unit</span></span> the 
 
 </div>
 </div> <!-- /quiz -->
+<div class="code"><div class="togglescript" id="proofcontrol1" onclick="toggleDisplay('proof1');toggleDisplay('proofcontrol1')"><span class="show"></span></div>
+<div class="proofscript" id="proof1" onclick="toggleDisplay('proof1');toggleDisplay('proofcontrol1')">
+<span class="comment">(*&nbsp;No!&nbsp;For&nbsp;instance&nbsp;(\x:Unit,x)&nbsp;unit&nbsp;is&nbsp;also&nbsp;a&nbsp;_term_&nbsp;of&nbsp;type&nbsp;unit.&nbsp;*)</span><br/>
+</div>
+</div>
 
 <div class="doc">
 <a id="lab302"></a><h2 class="section">Sums</h2>
@@ -806,7 +811,7 @@ What about this one?
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [xh:=vh,xt:=vt]t<sub>3</sub></td>
+  <td class="infrule"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [xh:=vh][xt:=vt]t<sub>3</sub></td>
   <td></td>
 </tr>
 </table></center>
@@ -989,7 +994,7 @@ What about this one?
 <pre>
     3 * (fix F (pred 3))
 </pre>
-<span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode"><span class="id" title="var">ST_FixAbs</span></span> <span class="inlinecode">+</span> <span class="inlinecode"><span class="id" title="var">ST_Mult2</span></span>
+<span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode"><span class="id" title="var">ST_FixAbs</span></span> <span class="inlinecode">+</span> <span class="inlinecode"><span class="id" title="var">ST_Mult2</span></span> <span class="inlinecode">+</span> <span class="inlinecode"><span class="id" title="var">ST_App1</span></span>
 <pre>
     3 * ((\x. if x=0 then 1 else x * (fix F (pred x))) (pred 3))
 </pre>
@@ -1005,7 +1010,7 @@ What about this one?
 <pre>
     3 * (2 * (fix F (pred 2)))
 </pre>
-<span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode"><span class="id" title="var">ST_FixAbs</span></span> <span class="inlinecode">+</span> <span class="inlinecode">2</span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode"><span class="id" title="var">ST_Mult2</span></span>
+<span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode"><span class="id" title="var">ST_FixAbs</span></span> <span class="inlinecode">+</span> <span class="inlinecode">2</span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode"><span class="id" title="var">ST_Mult2</span></span> <span class="inlinecode">+</span> <span class="inlinecode"><span class="id" title="var">ST_App1</span></span>
 <pre>
     3 * (2 * ((\x. if x=0 then 1 else x * (fix F (pred x))) (pred 2)))
 </pre>
@@ -1021,7 +1026,7 @@ What about this one?
 <pre>
     3 * (2 * (1 * (fix F (pred 1))))
 </pre>
-<span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode"><span class="id" title="var">ST_FixAbs</span></span> <span class="inlinecode">+</span> <span class="inlinecode">3</span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode"><span class="id" title="var">ST_Mult2</span></span>
+<span class="inlinecode"><span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:6%;'><span style='letter-spacing:-.2em;'>-</span><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="inlinecode"><span class="id" title="var">ST_FixAbs</span></span> <span class="inlinecode">+</span> <span class="inlinecode">3</span> <span class="inlinecode"><span class="id" title="var">x</span></span> <span class="inlinecode"><span class="id" title="var">ST_Mult2</span></span> <span class="inlinecode">+</span> <span class="inlinecode"><span class="id" title="var">ST_App1</span></span>
 <pre>
     3 * (2 * (1 * ((\x. if x=0 then 1 else x * (fix F (pred x))) (pred 1))))
 </pre>
