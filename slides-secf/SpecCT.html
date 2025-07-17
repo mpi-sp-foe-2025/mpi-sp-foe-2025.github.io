@@ -81,7 +81,7 @@ This chapter looks at security against side-channel attacks:
 <li> since that would be very hard to do right and
 
 </li>
-<li> that would bring in too many low-level details of the concrete compiler
+<li> that would bring in too many extremely low-level details of the concrete compiler
       (Clang/LLVM 20.1.6) and hardware microarchitecture (Intel Core i<sub>7</sub>-8650U). 
 </li>
 </ul>
@@ -117,9 +117,9 @@ This chapter looks at security against side-channel attacks:
 </ul>
 
 </li>
-<li> <i>the operands of all variable-time operations are leaked</i>;
+<li> <i>the operands influencing timing of variable-time operations are leaked</i>;
 <ul class="doclist">
-<li> we will add a division operation as an exercise. 
+<li> as an exercise we will add a division operation that leaks both operands. 
 </li>
 </ul>
 
@@ -164,7 +164,7 @@ This chapter looks at security against side-channel attacks:
 </ul>
 
 </li>
-<li> <i>the operands of variable-time operations do not depend on secrets</i>.
+<li> <i>the operands leaked by variable-time operations do not depend on secrets</i>.
 <ul class="doclist">
 <li> this prevents leaking information about secrets e.g. via division:
 <br/>
@@ -528,7 +528,7 @@ Let's assume that <span class="inlinecode"><span class="id" title="var">W</span>
 
 <div class="paragraph"> </div>
 
- All rules are exactly the same as for <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span> (from
+ All rules for commands are exactly the same as for <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span> (from
     <a href="StaticIFC.html"><span class="inlineref">StaticIFC</span></a>), except <span class="inlinecode"><span class="id" title="var">CCT_ALoad</span></span> and <span class="inlinecode"><span class="id" title="var">CCT_AStore</span></span>, which are new. 
 <div class="paragraph"> </div>
 
@@ -635,9 +635,9 @@ As an easy exercise you can build a type-checker for this and prove
 
 <div class="paragraph"> </div>
 
- We first show a noninterference lemma, which is not that hard, given that
-    our very restrictive type system ensures the two executions run in
-    lock-step, since it disallows branching on secrets. 
+ To prove the security of our type system, we first show a noninterference
+    lemma, which is not that hard, given that our very restrictive type system
+    ensures the two executions run in lock-step, since it disallows branching on secrets. 
 </div>
 <div class="code">
 
@@ -757,7 +757,7 @@ Most cases of this proof are similar to the security proof for
 
  This second part of the chapter is based on the "Spectre Declassified" paper
     from IEEE SP 2023, just in simplified form (e.g. without
-    declassification). Like in the paper, we only look at a class of
+    declassification). Like in this paper, we only look at a class of
     speculative execution attacks called Spectre v<sub>1</sub>. 
 <div class="paragraph"> </div>
 
@@ -815,7 +815,7 @@ All variables mentioned in the program are again public, so also this
 
  To reason about the security of these examples against Spectre v<sub>1</sub> we will
     introduce a speculative semantics. To model leakage the semantics uses the
-    same observations as above (<span class="inlinecode"><span class="id" title="var">OBranch</span></span>, <span class="inlinecode"><span class="id" title="var">OALoad</span></span>, and <span class="inlinecode"><span class="id" title="var">OAStore</span></span>). 
+    same CCT observations as above (<span class="inlinecode"><span class="id" title="var">OBranch</span></span>, <span class="inlinecode"><span class="id" title="var">OALoad</span></span>, and <span class="inlinecode"><span class="id" title="var">OAStore</span></span>). 
 <div class="paragraph"> </div>
 
  More interestingly, to model speculative execution we add to the semantics
@@ -897,6 +897,30 @@ This gives us a very high-level model of speculation that abstracts away
 </tr>
 </table></center><center><table class="infrule">
 <tr class="infruleassumption">
+  <td class="infrule"><(st,ast,b,ds)> =[ if be then c; while be do c end ]=></td>
+  <td></td>
+</tr>
+<tr class="infruleassumption">
+  <td class="infrule"><(st',ast',b',os)></td>
+  <td class="infrulenamecol" rowspan="3">
+    (Spec_While) &nbsp;
+  </td></tr>
+<tr class="infrulemiddle">
+  <td class="infrule"><hr /></td>
+</tr>
+<tr class="infruleassumption">
+  <td class="infrule"><(st,ast,b,ds)> =[ while be do c end ]=> <(st',ast',b',os)></td>
+  <td></td>
+</tr>
+</table></center>
+<div class="paragraph"> </div>
+
+<a id="lab91"></a><h2 class="section">If Rules of Speculative Semantics</h2>
+
+<div class="paragraph"> </div>
+
+ <center><table class="infrule">
+<tr class="infruleassumption">
   <td class="infrule">let c := if not_zero (eval st be) then c<sub>1</sub> else c<sub>2</sub> in</td>
   <td></td>
 </tr>
@@ -940,28 +964,11 @@ This gives us a very high-level model of speculation that abstracts away
 </table></center>
 <div class="paragraph"> </div>
 
-<a id="lab91"></a><h2 class="section">More Rules of Speculative Semantics</h2>
+<a id="lab92"></a><h2 class="section">Load and Store Rules of Speculative Semantics</h2>
 
 <div class="paragraph"> </div>
 
  <center><table class="infrule">
-<tr class="infruleassumption">
-  <td class="infrule"><(st,ast,b,ds)> =[ if be then c; while be do c end ]=></td>
-  <td></td>
-</tr>
-<tr class="infruleassumption">
-  <td class="infrule"><(st',ast',b',os)></td>
-  <td class="infrulenamecol" rowspan="3">
-    (Spec_While) &nbsp;
-  </td></tr>
-<tr class="infrulemiddle">
-  <td class="infrule"><hr /></td>
-</tr>
-<tr class="infruleassumption">
-  <td class="infrule"><(st,ast,b,ds)> =[ while be do c end ]=> <(st',ast',b',os)></td>
-  <td></td>
-</tr>
-</table></center><center><table class="infrule">
 <tr class="infruleassumption">
   <td class="infrule">eval st ie = i&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i < length(ast a)</td>
   <td class="infrulenamecol" rowspan="3">
@@ -1037,8 +1044,13 @@ This gives us a very high-level model of speculation that abstracts away
 </div>
 
 <div class="doc">
-<a id="lab92"></a><h2 class="section">Speculative constant-time security definition</h2>
+<a id="lab93"></a><h2 class="section">Speculative constant-time security definition</h2>
 
+<div class="paragraph"> </div>
+
+ The definition of speculative constant-time security is very similar to CCT
+    security, just applied to the speculative semantics. The two executions
+    receive the same directions <span class="inlinecode"><span class="id" title="var">ds</span></span>: 
 </div>
 <div class="code">
 
@@ -1052,7 +1064,7 @@ This gives us a very high-level model of speculation that abstracts away
 </div>
 
 <div class="doc">
-<a id="lab93"></a><h2 class="section"> </h2>
+<a id="lab94"></a><h2 class="section"> </h2>
 
 <div class="paragraph"> </div>
 
@@ -1069,21 +1081,14 @@ This gives us a very high-level model of speculation that abstracts away
 </div>
 
 <div class="doc">
-We build a counterexample where the attacker chooses an out-of-bounds index
-    <span class="inlinecode"><span class="id" title="var">Y</span></span> <span class="inlinecode">=</span> <span class="inlinecode">3</span> and then passes the directions: <span class="inlinecode">[<span class="id" title="var">DForce</span>;</span> <span class="inlinecode"><span class="id" title="var">DLoad</span></span> <span class="inlinecode"><span class="id" title="var">AS</span></span> <span class="inlinecode">0;</span> <span class="inlinecode"><span class="id" title="var">DStep</span>]</span>.
-    This causes the two executions to load different values for <span class="inlinecode"><span class="id" title="var">X</span></span>
-    from index <span class="inlinecode">0</span> of secret array <span class="inlinecode"><span class="id" title="var">AS</span></span>.
-    If the different values loaded from <span class="inlinecode"><span class="id" title="var">AS</span>[0]</span> are well chosen
-    (e.g., <span class="inlinecode">4</span> <span class="inlinecode">≤</span> <span class="inlinecode">5</span> in the first execution and <span class="inlinecode">7</span> <span class="inlinecode">&gt;</span> <span class="inlinecode">5</span> in the second)
-    this causes two different observations:
-<ul class="doclist">
-<li> <span class="inlinecode">[<span class="id" title="var">OBranch</span></span> <span class="inlinecode"><span class="id" title="var">false</span>;</span> <span class="inlinecode"><span class="id" title="var">OALoad</span></span> <span class="inlinecode"><span class="id" title="var">AP</span></span> <span class="inlinecode">3;</span> <span class="inlinecode"><span class="id" title="var">OBranch</span></span> <span class="inlinecode"><span class="id" title="var">true</span>]</span> and
-
-</li>
-<li> <span class="inlinecode">[<span class="id" title="var">OBranch</span></span> <span class="inlinecode"><span class="id" title="var">false</span>;</span> <span class="inlinecode"><span class="id" title="var">OALoad</span></span> <span class="inlinecode"><span class="id" title="var">AP</span></span> <span class="inlinecode">3;</span> <span class="inlinecode"><span class="id" title="var">OBranch</span></span> <span class="inlinecode"><span class="id" title="var">false</span>]</span>.  
-
-</li>
-</ul>
+For this we build a counterexample where the attacker chooses an
+    out-of-bounds index <span class="inlinecode"><span class="id" title="var">Y</span></span> <span class="inlinecode">=</span> <span class="inlinecode">3</span> and then passes the directions:
+    <span class="inlinecode">[<span class="id" title="var">DForce</span>;</span> <span class="inlinecode"><span class="id" title="var">DLoad</span></span> <span class="inlinecode"><span class="id" title="var">AS</span></span> <span class="inlinecode">0;</span> <span class="inlinecode"><span class="id" title="var">DStep</span>]</span>.  This causes the two executions to load
+    different values for <span class="inlinecode"><span class="id" title="var">X</span></span> from index <span class="inlinecode">0</span> of secret array <span class="inlinecode"><span class="id" title="var">AS</span></span>.
+    If the different values loaded from <span class="inlinecode"><span class="id" title="var">AS</span>[0]</span> are well chosen (e.g., <span class="inlinecode">4</span> <span class="inlinecode">≤</span> <span class="inlinecode">5</span>
+    in the first execution and <span class="inlinecode">7</span> <span class="inlinecode">&gt;</span> <span class="inlinecode">5</span> in the second) this causes two different
+    observations: - <span class="inlinecode">[<span class="id" title="var">OBranch</span></span> <span class="inlinecode"><span class="id" title="var">false</span>;</span> <span class="inlinecode"><span class="id" title="var">OALoad</span></span> <span class="inlinecode"><span class="id" title="var">AP</span></span> <span class="inlinecode">3;</span> <span class="inlinecode"><span class="id" title="var">OBranch</span></span> <span class="inlinecode"><span class="id" title="var">true</span>]</span> and - <span class="inlinecode">[<span class="id" title="var">OBranch</span></span>
+    <span class="inlinecode"><span class="id" title="var">false</span>;</span> <span class="inlinecode"><span class="id" title="var">OALoad</span></span> <span class="inlinecode"><span class="id" title="var">AP</span></span> <span class="inlinecode">3;</span> <span class="inlinecode"><span class="id" title="var">OBranch</span></span> <span class="inlinecode"><span class="id" title="var">false</span>]</span>.  
 </div>
 <div class="code">
 
@@ -1126,7 +1131,7 @@ We build a counterexample where the attacker chooses an out-of-bounds index
 </div>
 
 <div class="doc">
-<a id="lab94"></a><h2 class="section">Selective SLH transformation</h2>
+<a id="lab95"></a><h2 class="section">Selective SLH transformation</h2>
 
 <div class="paragraph"> </div>
 
@@ -1155,7 +1160,7 @@ We build a counterexample where the attacker chooses an out-of-bounds index
     implement is anyway much more complicated. 
 <div class="paragraph"> </div>
 
-<a id="lab95"></a><h2 class="section">Selective SLH in Coq</h2>
+<a id="lab96"></a><h2 class="section">Selective SLH in Coq</h2>
 
 </div>
 <div class="code">
@@ -1180,7 +1185,7 @@ We build a counterexample where the attacker chooses an out-of-bounds index
 </div>
 
 <div class="doc">
-<a id="lab96"></a><h2 class="section">Securing speculatively-insecure program using Selective SLH</h2>
+<a id="lab97"></a><h2 class="section">Securing speculatively-insecure program using Selective SLH</h2>
 
 </div>
 <div class="code">
@@ -1208,7 +1213,7 @@ We build a counterexample where the attacker chooses an out-of-bounds index
 </div>
 
 <div class="doc">
-<a id="lab97"></a><h2 class="section">Main proof idea: use compiler correctness wrt ideal semantics</h2>
+<a id="lab98"></a><h2 class="section">Main proof idea: use compiler correctness wrt ideal semantics</h2>
 
 <div class="paragraph"> </div>
 
@@ -1228,7 +1233,7 @@ We build a counterexample where the attacker chooses an out-of-bounds index
  
 <div class="paragraph"> </div>
 
-<a id="lab98"></a><h2 class="section"> </h2>
+<a id="lab99"></a><h2 class="section"> </h2>
 
 <div class="paragraph"> </div>
 
@@ -1264,7 +1269,7 @@ forall st<sub>1</sub> st<sub>2</sub> ast1 ast2 st<sub>1</sub>' st<sub>2</sub>' a
     in our compiler correctness proof . 
 <div class="paragraph"> </div>
 
-<a id="lab99"></a><h2 class="section">Ideal semantics definition</h2>
+<a id="lab100"></a><h2 class="section">Ideal semantics definition</h2>
 
 <div class="paragraph"> </div>
 
@@ -1317,7 +1322,7 @@ forall st<sub>1</sub> st<sub>2</sub> ast1 ast2 st<sub>1</sub>' st<sub>2</sub>' a
 </div>
 
 <div class="doc">
-<a id="lab100"></a><h2 class="section">Ideal semantics enforces speculative constant-time</h2>
+<a id="lab101"></a><h2 class="section">Ideal semantics enforces speculative constant-time</h2>
 
 <div class="paragraph"> </div>
 
@@ -1356,7 +1361,7 @@ forall st<sub>1</sub> st<sub>2</sub> ast1 ast2 st<sub>1</sub>' st<sub>2</sub>' a
 </div>
 
 <div class="doc">
-<a id="lab101"></a><h2 class="section"> </h2>
+<a id="lab102"></a><h2 class="section"> </h2>
 
 </div>
 <div class="code">
@@ -1372,7 +1377,7 @@ forall st<sub>1</sub> st<sub>2</sub> ast1 ast2 st<sub>1</sub>' st<sub>2</sub>' a
 </div>
 
 <div class="doc">
-<a id="lab102"></a><h2 class="section">Correctness of sel_slh as a compiler from ideal to speculative semantics</h2>
+<a id="lab103"></a><h2 class="section">Correctness of sel_slh as a compiler from ideal to speculative semantics</h2>
 
 <div class="paragraph"> </div>
 
@@ -1416,7 +1421,7 @@ forall st<sub>1</sub> st<sub>2</sub> ast1 ast2 st<sub>1</sub>' st<sub>2</sub>' a
 </div>
 
 <div class="doc">
-<a id="lab103"></a><h2 class="section"> </h2>
+<a id="lab104"></a><h2 class="section"> </h2>
 
 <div class="paragraph"> </div>
 
@@ -1604,7 +1609,7 @@ The backwards compiler correctness proof uses <span class="inlinecode"><span cla
 </div>
 
 <div class="doc">
-<a id="lab104"></a><h2 class="section">Speculative constant-time security for Selective SLH</h2>
+<a id="lab105"></a><h2 class="section">Speculative constant-time security for Selective SLH</h2>
 
 <div class="paragraph"> </div>
 

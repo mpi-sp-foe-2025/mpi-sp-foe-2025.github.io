@@ -76,7 +76,7 @@ This chapter starts by presenting the cryptographic constant-time (CCT)
 <li> since that would be very hard to do right and
 
 </li>
-<li> that would bring in too many low-level details of the concrete compiler
+<li> that would bring in too many extremely low-level details of the concrete compiler
       (Clang/LLVM 20.1.6) and hardware microarchitecture (Intel Core i<sub>7</sub>-8650U). 
 </li>
 </ul>
@@ -108,9 +108,9 @@ This chapter starts by presenting the cryptographic constant-time (CCT)
 </ul>
 
 </li>
-<li> <i>the operands of all variable-time operations are leaked</i>;
+<li> <i>the operands influencing timing of variable-time operations are leaked</i>;
 <ul class="doclist">
-<li> we will add a division operation as an exercise. 
+<li> as an exercise we will add a division operation that leaks both operands. 
 </li>
 </ul>
 
@@ -151,7 +151,7 @@ This chapter starts by presenting the cryptographic constant-time (CCT)
 </ul>
 
 </li>
-<li> <i>the operands of variable-time operations do not depend on secrets</i>.
+<li> <i>the operands leaked by variable-time operations do not depend on secrets</i>.
 <ul class="doclist">
 <li> this prevents leaking information about secrets e.g. via division:
 <br/>
@@ -864,7 +864,7 @@ Let's assume that <span class="inlinecode"><span class="id" title="var">W</span>
 </div>
 
 <div class="doc">
-All rules are exactly the same as for <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span> (from
+All rules for commands are exactly the same as for <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span> (from
     <a href="StaticIFC.html"><span class="inlineref">StaticIFC</span></a>), except <span class="inlinecode"><span class="id" title="var">CCT_ALoad</span></span> and <span class="inlinecode"><span class="id" title="var">CCT_AStore</span></span>, which are new. 
 <div class="paragraph"> </div>
 
@@ -1134,9 +1134,9 @@ All rules are exactly the same as for <span class="inlinecode"><span class="id" 
 
 <div class="paragraph"> </div>
 
- We first show a noninterference lemma, which is not that hard, given that
-    our very restrictive type system ensures the two executions run in
-    lock-step, since it disallows branching on secrets. 
+ To prove the security of our type system, we first show a noninterference
+    lemma, which is not that hard, given that our very restrictive type system
+    ensures the two executions run in lock-step, since it disallows branching on secrets. 
 </div>
 <div class="code">
 
@@ -1562,7 +1562,7 @@ We add a new rule to the big-step operational semantics that produces an
 
  This second part of the chapter is based on the "Spectre Declassified" paper
     from IEEE SP 2023, just in simplified form (e.g. without
-    declassification). Like in the paper, we only look at a class of
+    declassification). Like in this paper, we only look at a class of
     speculative execution attacks called Spectre v<sub>1</sub>. 
 <div class="paragraph"> </div>
 
@@ -1639,7 +1639,7 @@ All variables mentioned in the program are again public, so also this
 
  To reason about the security of these examples against Spectre v<sub>1</sub> we will
     introduce a speculative semantics. To model leakage the semantics uses the
-    same observations as above (<span class="inlinecode"><span class="id" title="var">OBranch</span></span>, <span class="inlinecode"><span class="id" title="var">OALoad</span></span>, and <span class="inlinecode"><span class="id" title="var">OAStore</span></span>). 
+    same CCT observations as above (<span class="inlinecode"><span class="id" title="var">OBranch</span></span>, <span class="inlinecode"><span class="id" title="var">OALoad</span></span>, and <span class="inlinecode"><span class="id" title="var">OAStore</span></span>). 
 <div class="paragraph"> </div>
 
  More interestingly, to model speculative execution we add to the semantics
@@ -1717,6 +1717,26 @@ This gives us a very high-level model of speculation that abstracts away
 </tr>
 </table></center><center><table class="infrule">
 <tr class="infruleassumption">
+  <td class="infrule"><(st,ast,b,ds)> =[ if be then c; while be do c end ]=></td>
+  <td></td>
+</tr>
+<tr class="infruleassumption">
+  <td class="infrule"><(st',ast',b',os)></td>
+  <td class="infrulenamecol" rowspan="3">
+    (Spec_While) &nbsp;
+  </td></tr>
+<tr class="infrulemiddle">
+  <td class="infrule"><hr /></td>
+</tr>
+<tr class="infruleassumption">
+  <td class="infrule"><(st,ast,b,ds)> =[ while be do c end ]=> <(st',ast',b',os)></td>
+  <td></td>
+</tr>
+</table></center>
+<div class="paragraph"> </div>
+
+ <center><table class="infrule">
+<tr class="infruleassumption">
   <td class="infrule">let c := if not_zero (eval st be) then c<sub>1</sub> else c<sub>2</sub> in</td>
   <td></td>
 </tr>
@@ -1761,23 +1781,6 @@ This gives us a very high-level model of speculation that abstracts away
 <div class="paragraph"> </div>
 
  <center><table class="infrule">
-<tr class="infruleassumption">
-  <td class="infrule"><(st,ast,b,ds)> =[ if be then c; while be do c end ]=></td>
-  <td></td>
-</tr>
-<tr class="infruleassumption">
-  <td class="infrule"><(st',ast',b',os)></td>
-  <td class="infrulenamecol" rowspan="3">
-    (Spec_While) &nbsp;
-  </td></tr>
-<tr class="infrulemiddle">
-  <td class="infrule"><hr /></td>
-</tr>
-<tr class="infruleassumption">
-  <td class="infrule"><(st,ast,b,ds)> =[ while be do c end ]=> <(st',ast',b',os)></td>
-  <td></td>
-</tr>
-</table></center><center><table class="infrule">
 <tr class="infruleassumption">
   <td class="infrule">eval st ie = i&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i < length(ast a)</td>
   <td class="infrulenamecol" rowspan="3">
@@ -1918,6 +1921,11 @@ This gives us a very high-level model of speculation that abstracts away
 <div class="doc">
 <a id="lab75"></a><h2 class="section">Speculative constant-time security definition</h2>
 
+<div class="paragraph"> </div>
+
+ The definition of speculative constant-time security is very similar to CCT
+    security, just applied to the speculative semantics. The two executions
+    receive the same directions <span class="inlinecode"><span class="id" title="var">ds</span></span>: 
 </div>
 <div class="code">
 
@@ -1944,21 +1952,14 @@ We can use this definition to show that our first example is speculatively
 </div>
 
 <div class="doc">
-We build a counterexample where the attacker chooses an out-of-bounds index
-    <span class="inlinecode"><span class="id" title="var">Y</span></span> <span class="inlinecode">=</span> <span class="inlinecode">3</span> and then passes the directions: <span class="inlinecode">[<span class="id" title="var">DForce</span>;</span> <span class="inlinecode"><span class="id" title="var">DLoad</span></span> <span class="inlinecode"><span class="id" title="var">AS</span></span> <span class="inlinecode">0;</span> <span class="inlinecode"><span class="id" title="var">DStep</span>]</span>.
-    This causes the two executions to load different values for <span class="inlinecode"><span class="id" title="var">X</span></span>
-    from index <span class="inlinecode">0</span> of secret array <span class="inlinecode"><span class="id" title="var">AS</span></span>.
-    If the different values loaded from <span class="inlinecode"><span class="id" title="var">AS</span>[0]</span> are well chosen
-    (e.g., <span class="inlinecode">4</span> <span class="inlinecode">≤</span> <span class="inlinecode">5</span> in the first execution and <span class="inlinecode">7</span> <span class="inlinecode">&gt;</span> <span class="inlinecode">5</span> in the second)
-    this causes two different observations:
-<ul class="doclist">
-<li> <span class="inlinecode">[<span class="id" title="var">OBranch</span></span> <span class="inlinecode"><span class="id" title="var">false</span>;</span> <span class="inlinecode"><span class="id" title="var">OALoad</span></span> <span class="inlinecode"><span class="id" title="var">AP</span></span> <span class="inlinecode">3;</span> <span class="inlinecode"><span class="id" title="var">OBranch</span></span> <span class="inlinecode"><span class="id" title="var">true</span>]</span> and
-
-</li>
-<li> <span class="inlinecode">[<span class="id" title="var">OBranch</span></span> <span class="inlinecode"><span class="id" title="var">false</span>;</span> <span class="inlinecode"><span class="id" title="var">OALoad</span></span> <span class="inlinecode"><span class="id" title="var">AP</span></span> <span class="inlinecode">3;</span> <span class="inlinecode"><span class="id" title="var">OBranch</span></span> <span class="inlinecode"><span class="id" title="var">false</span>]</span>.  
-
-</li>
-</ul>
+For this we build a counterexample where the attacker chooses an
+    out-of-bounds index <span class="inlinecode"><span class="id" title="var">Y</span></span> <span class="inlinecode">=</span> <span class="inlinecode">3</span> and then passes the directions:
+    <span class="inlinecode">[<span class="id" title="var">DForce</span>;</span> <span class="inlinecode"><span class="id" title="var">DLoad</span></span> <span class="inlinecode"><span class="id" title="var">AS</span></span> <span class="inlinecode">0;</span> <span class="inlinecode"><span class="id" title="var">DStep</span>]</span>.  This causes the two executions to load
+    different values for <span class="inlinecode"><span class="id" title="var">X</span></span> from index <span class="inlinecode">0</span> of secret array <span class="inlinecode"><span class="id" title="var">AS</span></span>.
+    If the different values loaded from <span class="inlinecode"><span class="id" title="var">AS</span>[0]</span> are well chosen (e.g., <span class="inlinecode">4</span> <span class="inlinecode">≤</span> <span class="inlinecode">5</span>
+    in the first execution and <span class="inlinecode">7</span> <span class="inlinecode">&gt;</span> <span class="inlinecode">5</span> in the second) this causes two different
+    observations: - <span class="inlinecode">[<span class="id" title="var">OBranch</span></span> <span class="inlinecode"><span class="id" title="var">false</span>;</span> <span class="inlinecode"><span class="id" title="var">OALoad</span></span> <span class="inlinecode"><span class="id" title="var">AP</span></span> <span class="inlinecode">3;</span> <span class="inlinecode"><span class="id" title="var">OBranch</span></span> <span class="inlinecode"><span class="id" title="var">true</span>]</span> and - <span class="inlinecode">[<span class="id" title="var">OBranch</span></span>
+    <span class="inlinecode"><span class="id" title="var">false</span>;</span> <span class="inlinecode"><span class="id" title="var">OALoad</span></span> <span class="inlinecode"><span class="id" title="var">AP</span></span> <span class="inlinecode">3;</span> <span class="inlinecode"><span class="id" title="var">OBranch</span></span> <span class="inlinecode"><span class="id" title="var">false</span>]</span>.  
 </div>
 <div class="code">
 
@@ -3597,7 +3598,7 @@ Since manually constructing directions for the proofs of examples is very
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <a class="idref" href="SpecCT.html#pub_equiv_refl"><span class="id" title="lemma">pub_equiv_refl</span></a>.<br/>
 <span class="id" title="keyword">Qed</span>.<br/><hr class='doublespaceincode'/>
 <span class="id" title="keyword">End</span> <a class="idref" href="SpecCT.html#SpecCTInterpreter"><span class="id" title="module">SpecCTInterpreter</span></a>.<br/><hr class='doublespaceincode'/>
-<span class="comment">(*&nbsp;2025-07-16&nbsp;20:12&nbsp;*)</span><br/>
+<span class="comment">(*&nbsp;2025-07-17&nbsp;19:00&nbsp;*)</span><br/>
 </div>
 </div>
 
