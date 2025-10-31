@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link href="common/css/sf.css" rel="stylesheet" type="text/css" />
-<title>SpecCT: Speculative Constant-Time</title>
+<title>SpecCT: Cryptographic Constant-Time and Speculative Constant-Time</title>
 <link href="common/jquery-ui/jquery-ui.css" rel="stylesheet">
 <script src="common/jquery-ui/external/jquery/jquery.js"></script>
 <script src="common/jquery-ui/jquery-ui.js"></script>
@@ -25,12 +25,13 @@
 <ul id='menu'>
    <li class='section_name'><a href='toc.html'>Table of Contents</a></li>
    <li class='section_name'><a href='coqindex.html'>Index</a></li>
+   <li class='section_name'><a href='deps.html'>Roadmap</a></li>
 </ul>
 </div>
 
 <div id="main">
 
-<h1 class="libtitle">SpecCT<span class="subtitle">Speculative Constant-Time</span></h1>
+<h1 class="libtitle">SpecCT<span class="subtitle">Cryptographic Constant-Time and Speculative Constant-Time</span></h1>
 
 
 
@@ -60,13 +61,14 @@ This chapter looks at security against side-channel attacks:
 
 <div class="paragraph"> </div>
 
-<a id="lab71"></a><h1 class="section">Cryptographic constant-time</h1>
+<a id="lab79"></a><h1 class="section">Cryptographic constant-time</h1>
 
 <div class="paragraph"> </div>
 
  Cryptographic constant-time (CCT) is a software countermeasure against
     timing side-channel attacks that is widely deployed for cryptographic
-    implementations, for instance to prevent leakage of crypto keys.
+    implementations, for instance to prevent leakage of crypto keys
+    <a href="Bib.html#Barthe-et al 2019"><span class="inlineref">[Barthe et al 2019]</span></a>.
 
 <div class="paragraph"> </div>
 
@@ -88,7 +90,7 @@ This chapter looks at security against side-channel attacks:
 
 <div class="paragraph"> </div>
 
-<a id="lab72"></a><h2 class="section"> </h2>
+<a id="lab80"></a><h2 class="section"> </h2>
 
 <div class="paragraph"> </div>
 
@@ -101,7 +103,7 @@ This chapter looks at security against side-channel attacks:
         influence how long execution takes
 
 </li>
-<li> this is exactly like in the "program counter" (PC)
+<li> this is exactly like in the Control Flow (CF)
         security model from <a href="StaticIFC.html"><span class="inlineref">StaticIFC</span></a>
 
 </li>
@@ -128,7 +130,7 @@ This chapter looks at security against side-channel attacks:
 
 <div class="paragraph"> </div>
 
-<a id="lab73"></a><h2 class="section"> </h2>
+<a id="lab81"></a><h2 class="section"> </h2>
 
 <div class="paragraph"> </div>
 
@@ -178,7 +180,7 @@ This chapter looks at security against side-channel attacks:
 
 <div class="paragraph"> </div>
 
-<a id="lab74"></a><h2 class="section"> </h2>
+<a id="lab82"></a><h2 class="section"> </h2>
 
 <div class="paragraph"> </div>
 
@@ -186,7 +188,7 @@ This chapter looks at security against side-channel attacks:
     language more realistic by adding arrays. 
 <div class="paragraph"> </div>
 
-<a id="lab75"></a><h2 class="section">Adding constant-time conditional and refactoring expressions</h2>
+<a id="lab83"></a><h2 class="section">Adding constant-time conditional and refactoring expressions</h2>
 
 <div class="paragraph"> </div>
 
@@ -207,7 +209,7 @@ This chapter looks at security against side-channel attacks:
     similar to that of C, where zero means false, and non-zero means true. 
 <div class="paragraph"> </div>
 
-<a id="lab76"></a><h2 class="section"> </h2>
+<a id="lab84"></a><h2 class="section"> </h2>
 
 <div class="paragraph"> </div>
 
@@ -238,7 +240,7 @@ This chapter looks at security against side-channel attacks:
 </div>
 
 <div class="doc">
-<a id="lab77"></a><h2 class="section">Adding arrays</h2>
+<a id="lab85"></a><h2 class="section">Adding arrays</h2>
 
 <div class="paragraph"> </div>
 
@@ -257,11 +259,11 @@ This chapter looks at security against side-channel attacks:
 </div>
 
 <div class="doc">
-<a id="lab78"></a><h2 class="section">Instrumenting semantics with observations</h2>
+<a id="lab86"></a><h2 class="section">Instrumenting semantics with observations</h2>
 
 <div class="paragraph"> </div>
 
- In addition to the boolean branches, which are observable in the PC security
+ In addition to the boolean branches, which are observable in the CF security
     model, for CCT security also the index of array loads and stores are observable: 
 </div>
 <div class="code">
@@ -274,14 +276,14 @@ This chapter looks at security against side-channel attacks:
 </div>
 
 <div class="doc">
-<a id="lab79"></a><h2 class="section"> </h2>
+<a id="lab87"></a><h2 class="section"> </h2>
 
 <div class="paragraph"> </div>
 
  We define an instrumented big-step operational semantics producing these
     observations: 
 <ul class="doclist">
-<li> <span class="inlinecode">&lt;(<span class="id" title="var">st</span>,</span> <span class="inlinecode"><span class="id" title="var">ast</span>)&gt;</span> <span class="inlinecode">=[</span> <span class="inlinecode"><span class="id" title="var">c</span></span> <span class="inlinecode">]=&gt;</span> <span class="inlinecode">&lt;(<span class="id" title="var">st'</span>,</span> <span class="inlinecode"><span class="id" title="var">ast'</span>,</span> <span class="inlinecode"><span class="id" title="var">os</span>)&gt;</span>
+<li> <span class="inlinecode">&lt;(<span class="id" title="var">st</span>,</span> <span class="inlinecode"><span class="id" title="var">m</span>)&gt;</span> <span class="inlinecode">=[</span> <span class="inlinecode"><span class="id" title="var">c</span></span> <span class="inlinecode">]=&gt;</span> <span class="inlinecode">&lt;(<span class="id" title="var">st'</span>,</span> <span class="inlinecode"><span class="id" title="var">m'</span>,</span> <span class="inlinecode"><span class="id" title="var">os</span>)&gt;</span>
 
 </li>
 </ul>
@@ -302,7 +304,7 @@ This chapter looks at security against side-channel attacks:
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st, ast)> =[ skip ]=> <(st, ast, [])></td>
+  <td class="infrule"><(st, m)> =[ skip ]=> <(st, m, [])></td>
   <td></td>
 </tr>
 </table></center><center><table class="infrule">
@@ -315,16 +317,16 @@ This chapter looks at security against side-channel attacks:
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st, ast)> =[ x := e ]=> <(x !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> n; st, ast, [])></td>
+  <td class="infrule"><(st, m)> =[ x := e ]=> <(x !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> n; st, m, [])></td>
   <td></td>
 </tr>
 </table></center><center><table class="infrule">
 <tr class="infruleassumption">
-  <td class="infrule"><(st, ast)> =[ c<sub>1</sub> ]=> <(st', ast', os<sub>1</sub>)></td>
+  <td class="infrule"><(st, m)> =[ c<sub>1</sub> ]=> <(st', m', os<sub>1</sub>)></td>
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st', ast')> =[ c<sub>2</sub> ]=> <(st'', ast'', os<sub>2</sub>)></td>
+  <td class="infrule"><(st', m')> =[ c<sub>2</sub> ]=> <(st'', m'', os<sub>2</sub>)></td>
   <td class="infrulenamecol" rowspan="3">
     (CTE_Seq) &nbsp;
   </td></tr>
@@ -332,7 +334,7 @@ This chapter looks at security against side-channel attacks:
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st, ast)>  =[ c<sub>1</sub> ; c<sub>2</sub> ]=> <(st'', ast'', os<sub>1</sub> ++ os<sub>2</sub>)></td>
+  <td class="infrule"><(st, m)>  =[ c<sub>1</sub> ; c<sub>2</sub> ]=> <(st'', m'', os<sub>1</sub> ++ os<sub>2</sub>)></td>
   <td></td>
 </tr>
 </table></center><center><table class="infrule">
@@ -341,7 +343,7 @@ This chapter looks at security against side-channel attacks:
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st,ast)> =[ c ]=> <(st',ast',os<sub>1</sub>)></td>
+  <td class="infrule"><(st,m)> =[ c ]=> <(st',m',os<sub>1</sub>)></td>
   <td class="infrulenamecol" rowspan="3">
     (CTE_If) &nbsp;
   </td></tr>
@@ -349,16 +351,16 @@ This chapter looks at security against side-channel attacks:
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st, ast)> =[ if be then c<sub>1</sub> else c<sub>2</sub> end]=></td>
+  <td class="infrule"><(st, m)> =[ if be then c<sub>1</sub> else c<sub>2</sub> end]=></td>
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st', ast', [OBranch (not_zero (eval st be))] ++ os<sub>1</sub>)></td>
+  <td class="infrule"><(st', m', [OBranch (not_zero (eval st be))] ++ os<sub>1</sub>)></td>
   <td></td>
 </tr>
 </table></center><center><table class="infrule">
 <tr class="infruleassumption">
-  <td class="infrule"><(st,ast)> =[ if be then c; while be do c end else skip end ]=> <(st',ast',os)></td>
+  <td class="infrule"><(st,m)> =[ if be then c; while be do c end else skip end ]=> <(st',m',os)></td>
   <td class="infrulenamecol" rowspan="3">
     (CTE_While) &nbsp;
   </td></tr>
@@ -366,12 +368,12 @@ This chapter looks at security against side-channel attacks:
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st,ast)> =[ while be do c end ]=> <(st', ast', os)></td>
+  <td class="infrule"><(st,m)> =[ while be do c end ]=> <(st', m', os)></td>
   <td></td>
 </tr>
 </table></center><center><table class="infrule">
 <tr class="infruleassumption">
-  <td class="infrule">eval st ie = i&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i < length (ast a)</td>
+  <td class="infrule">eval st ie = i&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i < length (m a)</td>
   <td class="infrulenamecol" rowspan="3">
     (CTE_ALoad) &nbsp;
   </td></tr>
@@ -379,12 +381,12 @@ This chapter looks at security against side-channel attacks:
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st,ast)> =[ x <- a[[ie]] ]=> <(x!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>nth i (ast a) 0; st, ast,[OALoad a i])></td>
+  <td class="infrule"><(st,m)> =[ x <- a[[ie]] ]=> <(x!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>nth i (m a) 0; st, m,[OALoad a i])></td>
   <td></td>
 </tr>
 </table></center><center><table class="infrule">
 <tr class="infruleassumption">
-  <td class="infrule">eval st e = n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eval st ie = i&nbsp;&nbsp;&nbsp;&nbsp;i < length (ast a)</td>
+  <td class="infrule">eval st e = n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eval st ie = i&nbsp;&nbsp;&nbsp;&nbsp;i < length (m a)</td>
   <td class="infrulenamecol" rowspan="3">
     (CTE_AStore) &nbsp;
   </td></tr>
@@ -392,29 +394,29 @@ This chapter looks at security against side-channel attacks:
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st,ast)> =[ a[ie] <- e ]=> <(st, a!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>upd i (ast a) n; ast,[OAStore a i])></td>
+  <td class="infrule"><(st,m)> =[ a[ie] <- e ]=> <(st, a!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>upd i (m a) n; m,[OAStore a i])></td>
   <td></td>
 </tr>
 </table></center>
 </div>
 
 <div class="doc">
-<a id="lab80"></a><h2 class="section">Constant-time security definition</h2>
+<a id="lab88"></a><h2 class="section">Constant-time security definition</h2>
 
 </div>
 <div class="code">
 <hr class='doublespaceincode'/>
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">cct_secure</span> <span class="id" title="var">P</span> <span class="id" title="var">PA</span> <span class="id" title="var">c</span> :=<br/>
-&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">ast1</span> <span class="id" title="var">ast2</span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">ast1'</span> <span class="id" title="var">ast2'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">m<sub>1</sub></span> <span class="id" title="var">m<sub>2</sub></span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">m<sub>1</sub>'</span> <span class="id" title="var">m<sub>2</sub>'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span>,<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">P</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">ast1</span> <span class="id" title="var">ast2</span> →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>1</sub></span>, <span class="id" title="var">ast1</span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>1</sub>'</span>, <span class="id" title="var">ast1'</span>, <span class="id" title="var">os<sub>1</sub></span>)&gt; →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>2</sub></span>, <span class="id" title="var">ast2</span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>2</sub>'</span>, <span class="id" title="var">ast2'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">m<sub>1</sub></span> <span class="id" title="var">m<sub>2</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>1</sub></span>, <span class="id" title="var">m<sub>1</sub></span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>1</sub>'</span>, <span class="id" title="var">m<sub>1</sub>'</span>, <span class="id" title="var">os<sub>1</sub></span>)&gt; →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>2</sub></span>, <span class="id" title="var">m<sub>2</sub></span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>2</sub>'</span>, <span class="id" title="var">m<sub>2</sub>'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; →<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">os<sub>1</sub></span> = <span class="id" title="var">os<sub>2</sub></span>.<br/>
 </div>
 
 <div class="doc">
-<a id="lab81"></a><h2 class="section">Example PC secure program that is not CCT secure</h2>
+<a id="lab89"></a><h2 class="section">Example CF secure program that is not CCT secure</h2>
 
 </div>
 <div class="code">
@@ -425,7 +427,7 @@ This chapter looks at security against side-channel attacks:
 
 <div class="doc">
 Let's assume that <span class="inlinecode"><span class="id" title="var">W</span></span> and <span class="inlinecode"><span class="id" title="var">V</span></span> are secret variables.
-    This program is trivially PC secure, because it does not branch at all.
+    This program is trivially CF secure, because it does not branch at all.
     But it is not CCT secure. 
 </div>
 <div class="code">
@@ -435,7 +437,7 @@ Let's assume that <span class="inlinecode"><span class="id" title="var">W</span>
 </div>
 
 <div class="doc">
-<a id="lab82"></a><h2 class="section">Type system for cryptographic constant-time programming</h2>
+<a id="lab90"></a><h2 class="section">Type system for cryptographic constant-time programming</h2>
 
 <div class="paragraph"> </div>
 
@@ -524,11 +526,11 @@ Let's assume that <span class="inlinecode"><span class="id" title="var">W</span>
 </div>
 
 <div class="doc">
-<a id="lab83"></a><h2 class="section"> </h2>
+<a id="lab91"></a><h2 class="section"> </h2>
 
 <div class="paragraph"> </div>
 
- All rules for commands are exactly the same as for <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span> (from
+ All rules for commands are exactly the same as for <span class="inlinecode"><span class="id" title="var">cf_well_typed</span></span> (from
     <a href="StaticIFC.html"><span class="inlineref">StaticIFC</span></a>), except <span class="inlinecode"><span class="id" title="var">CCT_ALoad</span></span> and <span class="inlinecode"><span class="id" title="var">CCT_AStore</span></span>, which are new. 
 <div class="paragraph"> </div>
 
@@ -631,7 +633,7 @@ As an easy exercise you can build a type-checker for this and prove
     it sound and complete with respect to the typing rules above. 
 <div class="paragraph"> </div>
 
-<a id="lab84"></a><h2 class="section">Noninterference lemma</h2>
+<a id="lab92"></a><h2 class="section">Noninterference lemma</h2>
 
 <div class="paragraph"> </div>
 
@@ -642,24 +644,24 @@ As an easy exercise you can build a type-checker for this and prove
 <div class="code">
 
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">cct_well_typed_noninterferent</span> :<br/>
-&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">P</span> <span class="id" title="var">PA</span> <span class="id" title="var">c</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">ast1</span> <span class="id" title="var">ast2</span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">ast1'</span> <span class="id" title="var">ast2'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">P</span> <span class="id" title="var">PA</span> <span class="id" title="var">c</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">m<sub>1</sub></span> <span class="id" title="var">m<sub>2</sub></span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">m<sub>1</sub>'</span> <span class="id" title="var">m<sub>2</sub>'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span>,<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">P</span> ;; <span class="id" title="var">PA</span> &#x22A2;<span class="id" title="var">ct</span>- <span class="id" title="var">c</span> →<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">P</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">ast1</span> <span class="id" title="var">ast2</span> →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>1</sub></span>, <span class="id" title="var">ast1</span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>1</sub>'</span>, <span class="id" title="var">ast1'</span>, <span class="id" title="var">os<sub>1</sub></span>)&gt; →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>2</sub></span>, <span class="id" title="var">ast2</span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>2</sub>'</span>, <span class="id" title="var">ast2'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">P</span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> ∧ <span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">ast1'</span> <span class="id" title="var">ast2'</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">m<sub>1</sub></span> <span class="id" title="var">m<sub>2</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>1</sub></span>, <span class="id" title="var">m<sub>1</sub></span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>1</sub>'</span>, <span class="id" title="var">m<sub>1</sub>'</span>, <span class="id" title="var">os<sub>1</sub></span>)&gt; →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>2</sub></span>, <span class="id" title="var">m<sub>2</sub></span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>2</sub>'</span>, <span class="id" title="var">m<sub>2</sub>'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">P</span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> ∧ <span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">m<sub>1</sub>'</span> <span class="id" title="var">m<sub>2</sub>'</span>.<br/>
 <div class="togglescript" id="proofcontrol7" onclick="toggleDisplay('proof7');toggleDisplay('proofcontrol7')"><span class="show"></span></div>
 <div class="proofscript" id="proof7" onclick="toggleDisplay('proof7');toggleDisplay('proofcontrol7')">
 <span class="id" title="keyword">Proof</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">PA</span> <span class="id" title="var">c</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">ast1</span> <span class="id" title="var">ast2</span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">ast1'</span> <span class="id" title="var">ast2'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">PA</span> <span class="id" title="var">c</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">m<sub>1</sub></span> <span class="id" title="var">m<sub>2</sub></span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">m<sub>1</sub>'</span> <span class="id" title="var">m<sub>2</sub>'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Hwt</span> <span class="id" title="var">Heq</span> <span class="id" title="var">Haeq</span> <span class="id" title="var">Heval1</span> <span class="id" title="var">Heval2</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">st<sub>2</sub>'</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">st<sub>2</sub></span>.<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">ast2'</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">ast2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">m<sub>2</sub>'</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">m<sub>2</sub></span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">os<sub>2</sub></span>.<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">Heval1</span>; <span class="id" title="tactic">intros</span> <span class="id" title="var">os<sub>2</sub>'</span> <span class="id" title="var">ast2</span> <span class="id" title="var">Haeq</span> <span class="id" title="var">ast2'</span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">Heq</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">Heval2</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">Heval1</span>; <span class="id" title="tactic">intros</span> <span class="id" title="var">os<sub>2</sub>'</span> <span class="id" title="var">m<sub>2</sub></span> <span class="id" title="var">Haeq</span> <span class="id" title="var">m<sub>2</sub>'</span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">Heq</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">Heval2</span>;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">Heval2</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">Hwt</span>; <span class="id" title="tactic">subst</span>.<br/>
-&nbsp;&nbsp;<span class="comment">(*&nbsp;Most&nbsp;cases&nbsp;are&nbsp;similar&nbsp;as&nbsp;for&nbsp;<span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span>&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Most&nbsp;cases&nbsp;are&nbsp;similar&nbsp;as&nbsp;for&nbsp;<span class="inlinecode"><span class="id" title="var">cf_well_typed</span></span>&nbsp;*)</span><br/>
 &nbsp;&nbsp;- <span class="id" title="tactic">split</span>; <span class="id" title="tactic">auto</span>.<br/>
 &nbsp;&nbsp;- <span class="id" title="tactic">split</span>; <span class="id" title="tactic">auto</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">l</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">rewrite</span> (<span class="id" title="var">noninterferent_exp</span> <span class="id" title="var">Heq</span> <span class="id" title="var">H<sub>10</sub></span>).<br/>
@@ -694,17 +696,17 @@ As an easy exercise you can build a type-checker for this and prove
 </div>
 
 <div class="doc">
-<a id="lab85"></a><h2 class="section">Final theorem: cryptographic constant-time security</h2>
+<a id="lab93"></a><h2 class="section">Final theorem: cryptographic constant-time security</h2>
 
 </div>
 <div class="code">
 
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">cct_secure</span> <span class="id" title="var">P</span> <span class="id" title="var">PA</span> <span class="id" title="var">c</span> :=<br/>
-&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">ast1</span> <span class="id" title="var">ast2</span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">ast1'</span> <span class="id" title="var">ast2'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">m<sub>1</sub></span> <span class="id" title="var">m<sub>2</sub></span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">m<sub>1</sub>'</span> <span class="id" title="var">m<sub>2</sub>'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span>,<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">P</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">ast1</span> <span class="id" title="var">ast2</span> →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>1</sub></span>, <span class="id" title="var">ast1</span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>1</sub>'</span>, <span class="id" title="var">ast1'</span>, <span class="id" title="var">os<sub>1</sub></span>)&gt; →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>2</sub></span>, <span class="id" title="var">ast2</span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>2</sub>'</span>, <span class="id" title="var">ast2'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">m<sub>1</sub></span> <span class="id" title="var">m<sub>2</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>1</sub></span>, <span class="id" title="var">m<sub>1</sub></span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>1</sub>'</span>, <span class="id" title="var">m<sub>1</sub>'</span>, <span class="id" title="var">os<sub>1</sub></span>)&gt; →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>2</sub></span>, <span class="id" title="var">m<sub>2</sub></span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>2</sub>'</span>, <span class="id" title="var">m<sub>2</sub>'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; →<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">os<sub>1</sub></span> = <span class="id" title="var">os<sub>2</sub></span>.<br/><hr class='doublespaceincode'/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">cct_well_typed_secure</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">P</span> <span class="id" title="var">PA</span> <span class="id" title="var">c</span>,<br/>
 &nbsp;&nbsp;<span class="id" title="var">P</span> ;; <span class="id" title="var">PA</span> &#x22A2;<span class="id" title="var">ct</span>- <span class="id" title="var">c</span> →<br/>
@@ -713,10 +715,10 @@ As an easy exercise you can build a type-checker for this and prove
 <div class="proofscript" id="proof8" onclick="toggleDisplay('proof8');toggleDisplay('proofcontrol8')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">cct_secure</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">PA</span> <span class="id" title="var">c</span> <span class="id" title="var">Hwt</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">ast1</span> <span class="id" title="var">ast2</span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">ast1'</span> <span class="id" title="var">ast2'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">PA</span> <span class="id" title="var">c</span> <span class="id" title="var">Hwt</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">m<sub>1</sub></span> <span class="id" title="var">m<sub>2</sub></span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">m<sub>1</sub>'</span> <span class="id" title="var">m<sub>2</sub>'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Heq</span> <span class="id" title="var">Haeq</span> <span class="id" title="var">Heval1</span> <span class="id" title="var">Heval2</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">st<sub>2</sub>'</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">st<sub>2</sub></span>.<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">ast2'</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">ast2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">m<sub>2</sub>'</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">m<sub>2</sub></span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">os<sub>2</sub></span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">Heval1</span>; <span class="id" title="tactic">intros</span> <span class="id" title="var">os<sub>2</sub>'</span> <span class="id" title="var">a<sub>2</sub></span> <span class="id" title="var">Haeq</span> <span class="id" title="var">a<sub>2</sub>'</span> <span class="id" title="var">s<sub>2</sub></span> <span class="id" title="var">Heq</span> <span class="id" title="var">s<sub>2</sub>'</span> <span class="id" title="var">Heval2</span>;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">Heval2</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">Hwt</span>; <span class="id" title="tactic">subst</span>.<br/>
@@ -741,7 +743,7 @@ As an easy exercise you can build a type-checker for this and prove
 
 <div class="doc">
 Most cases of this proof are similar to the security proof for
-    <span class="inlinecode"><span class="id" title="var">pc_well_typed</span></span> from <a href="StaticIFC.html"><span class="inlineref">StaticIFC</span></a>. In particular, <span class="inlinecode"><span class="id" title="var">noninterference</span></span> is
+    <span class="inlinecode"><span class="id" title="var">cf_well_typed</span></span> from <a href="StaticIFC.html"><span class="inlineref">StaticIFC</span></a>. In particular, <span class="inlinecode"><span class="id" title="var">noninterference</span></span> is
     used to prove the sequence case in both proofs.
 
 <div class="paragraph"> </div>
@@ -751,17 +753,17 @@ Most cases of this proof are similar to the security proof for
     array indices to be public. 
 <div class="paragraph"> </div>
 
-<a id="lab86"></a><h1 class="section">Speculative constant-time</h1>
+<a id="lab94"></a><h1 class="section">Speculative constant-time</h1>
 
 <div class="paragraph"> </div>
 
- This second part of the chapter is based on the "Spectre Declassified" paper
-    from IEEE SP 2023, just in simplified form (e.g. without
+ This second part of the chapter is based on the Spectre Declassified paper
+    <a href="Bib.html#Shivakumar-et al 2023"><span class="inlineref">[Shivakumar et al 2023]</span></a>, just in simplified form (e.g. without
     declassification). Like in this paper, we only look at a class of
     speculative execution attacks called Spectre v<sub>1</sub>. 
 <div class="paragraph"> </div>
 
-<a id="lab87"></a><h2 class="section">CCT programs can be insecure under speculative execution</h2>
+<a id="lab95"></a><h2 class="section">CCT programs can be insecure under speculative execution</h2>
 
 <div class="paragraph"> </div>
 
@@ -784,7 +786,7 @@ Most cases of this proof are similar to the security proof for
 </div>
 
 <div class="doc">
-<a id="lab88"></a><h2 class="section"> </h2>
+<a id="lab96"></a><h2 class="section"> </h2>
 
 <div class="paragraph"> </div>
 
@@ -800,7 +802,38 @@ Most cases of this proof are similar to the security proof for
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">X</span> := <span class="id" title="var">X</span> + <span class="id" title="var">Z</span>;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Y</span> := <span class="id" title="var">Y</span> + 1<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">end</span>;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">if</span> <span class="id" title="var">X</span> ≤ 5 <span class="id" title="keyword">then</span> <span class="id" title="var">X</span> := 5 <span class="id" title="keyword">else</span> <span class="id" title="var">skip</span> <span class="id" title="keyword">end</span> <span style='letter-spacing:-.4em;'>}</span>}&gt; .<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">if</span> <span class="id" title="var">X</span> ≤ 5 <span class="id" title="keyword">then</span> <span class="id" title="var">X</span> := 5 <span class="id" title="keyword">else</span> <span class="id" title="var">skip</span> <span class="id" title="keyword">end</span> <span style='letter-spacing:-.4em;'>}</span>}&gt; .<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Example</span> <span class="id" title="var">spec_insecure_prog_2_is_ct_well_typed</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">XYZpub</span> ;; <span class="id" title="var">APpub</span> &#x22A2;<span class="id" title="var">ct</span>- <span class="id" title="var">spec_insecure_prog_2</span>.<br/>
+<div class="togglescript" id="proofcontrol9" onclick="toggleDisplay('proof9');toggleDisplay('proofcontrol9')"><span class="show"></span></div>
+<div class="proofscript" id="proof9" onclick="toggleDisplay('proof9');toggleDisplay('proofcontrol9')">
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">CCT_Seq</span>.<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">eapply</span> <span class="id" title="var">CCT_Asgn</span>; <span class="id" title="tactic">auto</span>.<br/>
+&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <span class="id" title="var">CCT_Seq</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">eapply</span> <span class="id" title="var">CCT_Asgn</span>; <span class="id" title="tactic">auto</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">eapply</span> <span class="id" title="var">CCT_Seq</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="id" title="tactic">apply</span> <span class="id" title="var">CCT_While</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">join_public_l</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">T_Bin</span>; <span class="id" title="tactic">auto</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">join_public_l</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">T_Bin</span>; <span class="id" title="tactic">auto</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">unfold</span> <span class="id" title="var">BFalse</span>. <span class="id" title="tactic">auto</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">eapply</span> <span class="id" title="var">CCT_Seq</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">eapply</span> <span class="id" title="var">CCT_ALoad</span>; <span class="id" title="tactic">auto</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">eapply</span> <span class="id" title="var">CCT_Seq</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">eapply</span> <span class="id" title="var">CCT_Asgn</span> <span class="id" title="keyword">with</span> (<span class="id" title="var">l</span>:= <span class="id" title="var">public</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">join_public_l</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">T_Bin</span>; <span class="id" title="tactic">auto</span>. }<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="id" title="tactic">reflexivity</span>. }<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">eapply</span> <span class="id" title="var">CCT_Asgn</span> <span class="id" title="keyword">with</span> (<span class="id" title="var">l</span>:= <span class="id" title="var">public</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">join_public_l</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">T_Bin</span>; <span class="id" title="tactic">auto</span>. }<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="id" title="tactic">reflexivity</span>. } }<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="id" title="tactic">apply</span> <span class="id" title="var">CCT_If</span>; <span class="id" title="tactic">auto</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">join_public_l</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">T_Bin</span>; <span class="id" title="tactic">auto</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">eapply</span> <span class="id" title="var">CCT_Asgn</span>; <span class="id" title="tactic">auto</span>. }<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+</div>
 </div>
 
 <div class="doc">
@@ -809,7 +842,7 @@ All variables mentioned in the program are again public, so also this
     speculative execution. 
 <div class="paragraph"> </div>
 
-<a id="lab89"></a><h2 class="section">Speculative semantics</h2>
+<a id="lab97"></a><h2 class="section">Speculative semantics</h2>
 
 <div class="paragraph"> </div>
 
@@ -843,7 +876,7 @@ This gives us a very high-level model of speculation that abstracts away
     high-assurance crypto. 
 <div class="paragraph"> </div>
 
-<a id="lab90"></a><h2 class="section">Rules of Speculative Semantics</h2>
+<a id="lab98"></a><h2 class="section">Rules of Speculative Semantics</h2>
 
 <div class="paragraph"> </div>
 
@@ -862,7 +895,7 @@ This gives us a very high-level model of speculation that abstracts away
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st,ast,b,[])> =[skip]=> <(st,ast,b,[])></td>
+  <td class="infrule"><(st,m,b,[])> =[skip]=> <(st,m,b,[])></td>
   <td></td>
 </tr>
 </table></center><center><table class="infrule">
@@ -875,16 +908,16 @@ This gives us a very high-level model of speculation that abstracts away
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st,ast,b,[])> =[x:=e]=> <(x!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>n;st,ast,b,[])></td>
+  <td class="infrule"><(st,m,b,[])> =[x:=e]=> <(x!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>n;st,m,b,[])></td>
   <td></td>
 </tr>
 </table></center><center><table class="infrule">
 <tr class="infruleassumption">
-  <td class="infrule"><(st,ast,b,ds<sub>1</sub>)> =[c<sub>1</sub>]=> <(st',ast',b',os<sub>1</sub>)></td>
+  <td class="infrule"><(st,m,b,ds<sub>1</sub>)> =[c<sub>1</sub>]=> <(st',m',b',os<sub>1</sub>)></td>
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st',ast',b',ds<sub>2</sub>)> =[c<sub>2</sub>]=> <(st'',ast'',b'',os<sub>2</sub>)></td>
+  <td class="infrule"><(st',m',b',ds<sub>2</sub>)> =[c<sub>2</sub>]=> <(st'',m'',b'',os<sub>2</sub>)></td>
   <td class="infrulenamecol" rowspan="3">
     (Spec_Seq) &nbsp;
   </td></tr>
@@ -892,16 +925,16 @@ This gives us a very high-level model of speculation that abstracts away
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st,ast,b,ds<sub>1</sub>++ds<sub>2</sub>)> =[c<sub>1</sub>;c<sub>2</sub>]=> <(st'',ast'',b'',os<sub>1</sub>++os<sub>2</sub>)></td>
+  <td class="infrule"><(st,m,b,ds<sub>1</sub>++ds<sub>2</sub>)> =[c<sub>1</sub>;c<sub>2</sub>]=> <(st'',m'',b'',os<sub>1</sub>++os<sub>2</sub>)></td>
   <td></td>
 </tr>
 </table></center><center><table class="infrule">
 <tr class="infruleassumption">
-  <td class="infrule"><(st,ast,b,ds)> =[ if be then c; while be do c end ]=></td>
+  <td class="infrule"><(st,m,b,ds)> =[ if be then c; while be do c end ]=></td>
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st',ast',b',os)></td>
+  <td class="infrule"><(st',m',b',os)></td>
   <td class="infrulenamecol" rowspan="3">
     (Spec_While) &nbsp;
   </td></tr>
@@ -909,13 +942,13 @@ This gives us a very high-level model of speculation that abstracts away
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st,ast,b,ds)> =[ while be do c end ]=> <(st',ast',b',os)></td>
+  <td class="infrule"><(st,m,b,ds)> =[ while be do c end ]=> <(st',m',b',os)></td>
   <td></td>
 </tr>
 </table></center>
 <div class="paragraph"> </div>
 
-<a id="lab91"></a><h2 class="section">If Rules of Speculative Semantics</h2>
+<a id="lab99"></a><h2 class="section">If Rules of Speculative Semantics</h2>
 
 <div class="paragraph"> </div>
 
@@ -925,7 +958,7 @@ This gives us a very high-level model of speculation that abstracts away
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st,ast,b,ds)> =[ c ]=> <(st',ast',b',os<sub>1</sub>)></td>
+  <td class="infrule"><(st,m,b,ds)> =[ c ]=> <(st',m',b',os<sub>1</sub>)></td>
   <td class="infrulenamecol" rowspan="3">
     (Spec_If) &nbsp;
   </td></tr>
@@ -933,11 +966,11 @@ This gives us a very high-level model of speculation that abstracts away
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st,ast,b, DStep::ds)> =[ if be then c<sub>1</sub> else c<sub>2</sub> end ]=></td>
+  <td class="infrule"><(st,m,b, DStep::ds)> =[ if be then c<sub>1</sub> else c<sub>2</sub> end ]=></td>
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st',ast',b', [OBranch (not_zero (eval st be))]++os<sub>1</sub>)></td>
+  <td class="infrule"><(st',m',b', [OBranch (not_zero (eval st be))]++os<sub>1</sub>)></td>
   <td></td>
 </tr>
 </table></center><center><table class="infrule">
@@ -946,7 +979,7 @@ This gives us a very high-level model of speculation that abstracts away
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st,ast,true,ds)> =[ c ]=> <(st',ast',b',os<sub>1</sub>)></td>
+  <td class="infrule"><(st,m,true,ds)> =[ c ]=> <(st',m',b',os<sub>1</sub>)></td>
   <td class="infrulenamecol" rowspan="3">
     (Spec_If_F) &nbsp;
   </td></tr>
@@ -954,23 +987,23 @@ This gives us a very high-level model of speculation that abstracts away
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st,ast,b, DForce::ds)> =[ if be then c<sub>1</sub> else c<sub>2</sub> end ]=></td>
+  <td class="infrule"><(st,m,b, DForce::ds)> =[ if be then c<sub>1</sub> else c<sub>2</sub> end ]=></td>
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st',ast',b', [OBranch (not_zero (eval st be))]++os<sub>1</sub>)></td>
+  <td class="infrule"><(st',m',b', [OBranch (not_zero (eval st be))]++os<sub>1</sub>)></td>
   <td></td>
 </tr>
 </table></center>
 <div class="paragraph"> </div>
 
-<a id="lab92"></a><h2 class="section">Load and Store Rules of Speculative Semantics</h2>
+<a id="lab100"></a><h2 class="section">Load and Store Rules of Speculative Semantics</h2>
 
 <div class="paragraph"> </div>
 
  <center><table class="infrule">
 <tr class="infruleassumption">
-  <td class="infrule">eval st ie = i&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i < length(ast a)</td>
+  <td class="infrule">eval st ie = i&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i < length(m a)</td>
   <td class="infrulenamecol" rowspan="3">
     (Spec_ALoad) &nbsp;
   </td></tr>
@@ -978,16 +1011,16 @@ This gives us a very high-level model of speculation that abstracts away
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st, ast, b, [DStep])> =[ x <- a[[ie]] ]=></td>
+  <td class="infrule"><(st, m, b, [DStep])> =[ x <- a[[ie]] ]=></td>
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(x !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> nth i (ast a) 0; st, ast, b, [OALoad a i])></td>
+  <td class="infrule"><(x !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> nth i (m a) 0; st, m, b, [OALoad a i])></td>
   <td></td>
 </tr>
 </table></center><center><table class="infrule">
 <tr class="infruleassumption">
-  <td class="infrule">eval st ie = i&nbsp;&nbsp;&nbsp;i >= length(ast a)&nbsp;&nbsp;&nbsp;i' < length(ast a')</td>
+  <td class="infrule">eval st ie = i&nbsp;&nbsp;&nbsp;i >= length(m a)&nbsp;&nbsp;&nbsp;i' < length(m a')</td>
   <td class="infrulenamecol" rowspan="3">
     (Spec_ALoad_U) &nbsp;
   </td></tr>
@@ -995,16 +1028,16 @@ This gives us a very high-level model of speculation that abstracts away
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st, ast, true, [DLoad a' i'])> =[ x <- a[[ie]] ]=></td>
+  <td class="infrule"><(st, m, true, [DLoad a' i'])> =[ x <- a[[ie]] ]=></td>
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(x !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> nth i' (ast a') 0; st, ast, true, [OALoad a i])></td>
+  <td class="infrule"><(x !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> nth i' (m a') 0; st, m, true, [OALoad a i])></td>
   <td></td>
 </tr>
 </table></center><center><table class="infrule">
 <tr class="infruleassumption">
-  <td class="infrule">eval st e = n&nbsp;&nbsp;&nbsp;&nbsp;eval st ie = i&nbsp;&nbsp;&nbsp;&nbsp;i < length(ast a)</td>
+  <td class="infrule">eval st e = n&nbsp;&nbsp;&nbsp;&nbsp;eval st ie = i&nbsp;&nbsp;&nbsp;&nbsp;i < length(m a)</td>
   <td class="infrulenamecol" rowspan="3">
     (Spec_AStore) &nbsp;
   </td></tr>
@@ -1012,11 +1045,11 @@ This gives us a very high-level model of speculation that abstracts away
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st, ast, b, [DStep])> =[ a[ie] <- e ]=></td>
+  <td class="infrule"><(st, m, b, [DStep])> =[ a[ie] <- e ]=></td>
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st, a !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> upd i (ast a) n; ast, b, [OAStore a i])></td>
+  <td class="infrule"><(st, a !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> upd i (m a) n; m, b, [OAStore a i])></td>
   <td></td>
 </tr>
 </table></center><center><table class="infrule">
@@ -1025,7 +1058,7 @@ This gives us a very high-level model of speculation that abstracts away
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule">i >= length(ast a)&nbsp;&nbsp;&nbsp;i' < length(ast a')</td>
+  <td class="infrule">i >= length(m a)&nbsp;&nbsp;&nbsp;i' < length(m a')</td>
   <td class="infrulenamecol" rowspan="3">
     (Spec_AStore_U) &nbsp;
   </td></tr>
@@ -1033,18 +1066,18 @@ This gives us a very high-level model of speculation that abstracts away
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st, ast, true, [DStore a' i'])> =[ a[ie] <- e ]=></td>
+  <td class="infrule"><(st, m, true, [DStore a' i'])> =[ a[ie] <- e ]=></td>
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st, a' !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> upd i' (ast a') n; ast, true, [OAStore a i])></td>
+  <td class="infrule"><(st, a' !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> upd i' (m a') n; m, true, [OAStore a i])></td>
   <td></td>
 </tr>
 </table></center>
 </div>
 
 <div class="doc">
-<a id="lab93"></a><h2 class="section">Speculative constant-time security definition</h2>
+<a id="lab101"></a><h2 class="section">Speculative constant-time security definition</h2>
 
 <div class="paragraph"> </div>
 
@@ -1055,16 +1088,16 @@ This gives us a very high-level model of speculation that abstracts away
 <div class="code">
 
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">spec_ct_secure</span> <span class="id" title="var">P</span> <span class="id" title="var">PA</span> <span class="id" title="var">c</span> :=<br/>
-&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">ast1</span> <span class="id" title="var">ast2</span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">ast1'</span> <span class="id" title="var">ast2'</span> <span class="id" title="var">b<sub>1</sub>'</span> <span class="id" title="var">b<sub>2</sub>'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span> <span class="id" title="var">ds</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">m<sub>1</sub></span> <span class="id" title="var">m<sub>2</sub></span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">m<sub>1</sub>'</span> <span class="id" title="var">m<sub>2</sub>'</span> <span class="id" title="var">b<sub>1</sub>'</span> <span class="id" title="var">b<sub>2</sub>'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span> <span class="id" title="var">ds</span>,<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">P</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">ast1</span> <span class="id" title="var">ast2</span> →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>1</sub></span>, <span class="id" title="var">ast1</span>, <span class="id" title="var">false</span>, <span class="id" title="var">ds</span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>1</sub>'</span>, <span class="id" title="var">ast1'</span>, <span class="id" title="var">b<sub>1</sub>'</span>, <span class="id" title="var">os<sub>1</sub></span>)&gt; →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>2</sub></span>, <span class="id" title="var">ast2</span>, <span class="id" title="var">false</span>, <span class="id" title="var">ds</span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>2</sub>'</span>, <span class="id" title="var">ast2'</span>, <span class="id" title="var">b<sub>2</sub>'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">m<sub>1</sub></span> <span class="id" title="var">m<sub>2</sub></span> →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>1</sub></span>, <span class="id" title="var">m<sub>1</sub></span>, <span class="id" title="var">false</span>, <span class="id" title="var">ds</span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>1</sub>'</span>, <span class="id" title="var">m<sub>1</sub>'</span>, <span class="id" title="var">b<sub>1</sub>'</span>, <span class="id" title="var">os<sub>1</sub></span>)&gt; →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>2</sub></span>, <span class="id" title="var">m<sub>2</sub></span>, <span class="id" title="var">false</span>, <span class="id" title="var">ds</span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>2</sub>'</span>, <span class="id" title="var">m<sub>2</sub>'</span>, <span class="id" title="var">b<sub>2</sub>'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; →<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">os<sub>1</sub></span> = <span class="id" title="var">os<sub>2</sub></span>.<br/>
 </div>
 
 <div class="doc">
-<a id="lab94"></a><h2 class="section"> </h2>
+<a id="lab102"></a><h2 class="section"> </h2>
 
 <div class="paragraph"> </div>
 
@@ -1094,18 +1127,18 @@ For this we build a counterexample where the attacker chooses an
 
 <span class="id" title="keyword">Example</span> <span class="id" title="var">spec_insecure_prog_is_spec_insecure</span> :<br/>
 &nbsp;&nbsp;~(<span class="id" title="var">spec_ct_secure</span> <span class="id" title="var">XYZpub</span> <span class="id" title="var">APpub</span> <span class="id" title="var">spec_insecure_prog</span>).<br/>
-<div class="togglescript" id="proofcontrol9" onclick="toggleDisplay('proof9');toggleDisplay('proofcontrol9')"><span class="show"></span></div>
-<div class="proofscript" id="proof9" onclick="toggleDisplay('proof9');toggleDisplay('proofcontrol9')">
+<div class="togglescript" id="proofcontrol10" onclick="toggleDisplay('proof10');toggleDisplay('proofcontrol10')"><span class="show"></span></div>
+<div class="proofscript" id="proof10" onclick="toggleDisplay('proof10');toggleDisplay('proofcontrol10')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">spec_insecure_prog</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">Hcs</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">Y</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> 3; <span class="id" title="var">_</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> 0) <span class="id" title="keyword">as</span> <span class="id" title="var">st</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">AP</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [0;1;2]; <span class="id" title="var">AS</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [4;1]; <span class="id" title="var">_</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> []) <span class="id" title="keyword">as</span> <span class="id" title="var">ast1</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">AP</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [0;1;2]; <span class="id" title="var">AS</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [7;1]; <span class="id" title="var">_</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> []) <span class="id" title="keyword">as</span> <span class="id" title="var">ast2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">AP</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [0;1;2]; <span class="id" title="var">AS</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [4;1]; <span class="id" title="var">_</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> []) <span class="id" title="keyword">as</span> <span class="id" title="var">m<sub>1</sub></span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">AP</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [0;1;2]; <span class="id" title="var">AS</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [7;1]; <span class="id" title="var">_</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> []) <span class="id" title="keyword">as</span> <span class="id" title="var">m<sub>2</sub></span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">DForce</span> :: ([<span class="id" title="var">DLoad</span> <span class="id" title="var">AS</span> 0] ++ [<span class="id" title="var">DStep</span>])) <span class="id" title="keyword">as</span> <span class="id" title="var">ds</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">remember</span> (([<span class="id" title="var">OBranch</span> <span class="id" title="var">false</span>] ++ ([<span class="id" title="var">OALoad</span> <span class="id" title="var">AP</span> 3]) ++ [<span class="id" title="var">OBranch</span> <span class="id" title="var">true</span>])) <span class="id" title="keyword">as</span> <span class="id" title="var">os<sub>1</sub></span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">remember</span> (([<span class="id" title="var">OBranch</span> <span class="id" title="var">false</span>] ++ ([<span class="id" title="var">OALoad</span> <span class="id" title="var">AP</span> 3])++ [<span class="id" title="var">OBranch</span> <span class="id" title="var">false</span>])) <span class="id" title="keyword">as</span> <span class="id" title="var">os<sub>2</sub></span>.<br/><hr class='doublespaceincode'/>
 &nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">Heval1</span>:<br/>
-&nbsp;&nbsp;&lt;(<span class="id" title="var">st</span>, <span class="id" title="var">ast1</span>, <span class="id" title="var">false</span>, <span class="id" title="var">ds</span> )&gt; =[ <span class="id" title="var">spec_insecure_prog</span> ]=&gt; &lt;( <span class="id" title="var">X</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> 5; <span class="id" title="var">X</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> 4; <span class="id" title="var">st</span>, <span class="id" title="var">ast1</span>, <span class="id" title="var">true</span>, <span class="id" title="var">os<sub>1</sub></span>)&gt;).<br/>
+&nbsp;&nbsp;&lt;(<span class="id" title="var">st</span>, <span class="id" title="var">m<sub>1</sub></span>, <span class="id" title="var">false</span>, <span class="id" title="var">ds</span> )&gt; =[ <span class="id" title="var">spec_insecure_prog</span> ]=&gt; &lt;( <span class="id" title="var">X</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> 5; <span class="id" title="var">X</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> 4; <span class="id" title="var">st</span>, <span class="id" title="var">m<sub>1</sub></span>, <span class="id" title="var">true</span>, <span class="id" title="var">os<sub>1</sub></span>)&gt;).<br/>
 &nbsp;&nbsp;{ <span class="id" title="tactic">unfold</span> <span class="id" title="var">spec_insecure_prog</span>; <span class="id" title="tactic">subst</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Spec_If_F</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">Spec_Seq</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">eapply</span> <span class="id" title="var">Spec_ALoad_U</span>; <span class="id" title="tactic">simpl</span>; <span class="id" title="tactic">eauto</span>.<br/>
@@ -1113,7 +1146,7 @@ For this we build a counterexample where the attacker chooses an
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Spec_If</span>; <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">Spec_Asgn</span>; <span class="id" title="tactic">eauto</span>. }<br/>
 <br/>
 &nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">Heval2</span>:<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st</span>, <span class="id" title="var">ast2</span>, <span class="id" title="var">false</span>, <span class="id" title="var">ds</span> )&gt; =[ <span class="id" title="var">spec_insecure_prog</span> ]=&gt; &lt;( <span class="id" title="var">X</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> 7; <span class="id" title="var">st</span>, <span class="id" title="var">ast2</span>, <span class="id" title="var">true</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt;).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">st</span>, <span class="id" title="var">m<sub>2</sub></span>, <span class="id" title="var">false</span>, <span class="id" title="var">ds</span> )&gt; =[ <span class="id" title="var">spec_insecure_prog</span> ]=&gt; &lt;( <span class="id" title="var">X</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> 7; <span class="id" title="var">st</span>, <span class="id" title="var">m<sub>2</sub></span>, <span class="id" title="var">true</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt;).<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;{ <span class="id" title="tactic">unfold</span> <span class="id" title="var">spec_insecure_prog</span>; <span class="id" title="tactic">subst</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Spec_If_F</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">Spec_Seq</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">eapply</span> <span class="id" title="var">Spec_ALoad_U</span>; <span class="id" title="tactic">simpl</span>; <span class="id" title="tactic">eauto</span>.<br/>
@@ -1131,7 +1164,7 @@ For this we build a counterexample where the attacker chooses an
 </div>
 
 <div class="doc">
-<a id="lab95"></a><h2 class="section">Selective SLH transformation</h2>
+<a id="lab103"></a><h2 class="section">Selective SLH transformation</h2>
 
 <div class="paragraph"> </div>
 
@@ -1160,7 +1193,7 @@ For this we build a counterexample where the attacker chooses an
     implement is anyway much more complicated. 
 <div class="paragraph"> </div>
 
-<a id="lab96"></a><h2 class="section">Selective SLH in Coq</h2>
+<a id="lab104"></a><h2 class="section">Selective SLH in Rocq</h2>
 
 </div>
 <div class="code">
@@ -1185,7 +1218,7 @@ For this we build a counterexample where the attacker chooses an
 </div>
 
 <div class="doc">
-<a id="lab97"></a><h2 class="section">Securing speculatively-insecure program using Selective SLH</h2>
+<a id="lab105"></a><h2 class="section">Securing speculatively-insecure program using Selective SLH</h2>
 
 </div>
 <div class="code">
@@ -1206,14 +1239,14 @@ For this we build a counterexample where the attacker chooses an
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">else</span> <span class="id" title="var">msf</span> := ((<span class="id" title="var">Y</span> &lt; 3) ? 1 : <span class="id" title="var">msf</span>); <span class="id" title="var">skip</span> <span class="id" title="keyword">end</span> <span style='letter-spacing:-.4em;'>}</span>}&gt;.<br/><hr class='doublespaceincode'/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">sel_slh_spec_insecure_prog_check</span>:<br/>
 &nbsp;&nbsp;<span class="id" title="var">sel_slh</span> <span class="id" title="var">XYZpub</span> <span class="id" title="var">spec_insecure_prog</span> = <span class="id" title="var">sel_slh_spec_insecure_prog</span>.<br/>
-<div class="togglescript" id="proofcontrol10" onclick="toggleDisplay('proof10');toggleDisplay('proofcontrol10')"><span class="show"></span></div>
-<div class="proofscript" id="proof10" onclick="toggleDisplay('proof10');toggleDisplay('proofcontrol10')">
+<div class="togglescript" id="proofcontrol11" onclick="toggleDisplay('proof11');toggleDisplay('proofcontrol11')"><span class="show"></span></div>
+<div class="proofscript" id="proof11" onclick="toggleDisplay('proof11');toggleDisplay('proofcontrol11')">
 <span class="id" title="keyword">Proof</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
 </div>
 </div>
 
 <div class="doc">
-<a id="lab98"></a><h2 class="section">Main proof idea: use compiler correctness wrt ideal semantics</h2>
+<a id="lab106"></a><h2 class="section">Main proof idea: use compiler correctness wrt ideal semantics</h2>
 
 <div class="paragraph"> </div>
 
@@ -1233,7 +1266,7 @@ For this we build a counterexample where the attacker chooses an
  
 <div class="paragraph"> </div>
 
-<a id="lab99"></a><h2 class="section"> </h2>
+<a id="lab107"></a><h2 class="section"> </h2>
 
 <div class="paragraph"> </div>
 
@@ -1243,11 +1276,11 @@ forall P PA c, P;;PA &#x22A2;ct- c <span class="nowrap"><span style='font-size:8
 </pre>
     where the conclusion looks as follows:
 <pre>
-forall st<sub>1</sub> st<sub>2</sub> ast1 ast2 st<sub>1</sub>' st<sub>2</sub>' ast1' ast2' b<sub>1</sub>' b<sub>2</sub>' os<sub>1</sub> os<sub>2</sub> ds,
+forall st<sub>1</sub> st<sub>2</sub> m<sub>1</sub> m<sub>2</sub> st<sub>1</sub>' st<sub>2</sub>' m<sub>1</sub>' m<sub>2</sub>' b<sub>1</sub>' b<sub>2</sub>' os<sub>1</sub> os<sub>2</sub> ds,
   pub_equiv P st<sub>1</sub> st<sub>2</sub> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>
-  pub_equiv PA ast1 ast2 <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>
-  &lt;(st<sub>1</sub>,ast1,false,ds)&gt; =[ sel_slh P c ]=&gt; &lt;(st<sub>1</sub>',ast1',b<sub>1</sub>',os<sub>1</sub>)&gt; <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>
-  &lt;(st<sub>2</sub>,ast2,false,ds)&gt; =[ sel_slh P c ]=&gt; &lt;(st<sub>2</sub>',ast2',b<sub>2</sub>',os<sub>2</sub>)&gt; <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>
+  pub_equiv PA m<sub>1</sub> m<sub>2</sub> <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>
+  &lt;(st<sub>1</sub>,m<sub>1</sub>,false,ds)&gt; =[ sel_slh P c ]=&gt; &lt;(st<sub>1</sub>',m<sub>1</sub>',b<sub>1</sub>',os<sub>1</sub>)&gt; <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>
+  &lt;(st<sub>2</sub>,m<sub>2</sub>,false,ds)&gt; =[ sel_slh P c ]=&gt; &lt;(st<sub>2</sub>',m<sub>2</sub>',b<sub>2</sub>',os<sub>2</sub>)&gt; <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>
   os<sub>1</sub> = os<sub>2</sub>
 </pre>
 
@@ -1256,8 +1289,8 @@ forall st<sub>1</sub> st<sub>2</sub> ast1 ast2 st<sub>1</sub>' st<sub>2</sub>' a
     Compiler correctness allows us to get rid of <span class="inlinecode"><span class="id" title="var">sel_slh</span></span> <span class="inlinecode"><span class="id" title="var">P</span></span> <span class="inlinecode"><span class="id" title="var">c</span></span> in the premises
     and instead get an execution in terms of the ideal semantics:
 <pre>
-  &lt;(st,ast,b,ds)&gt; =[ sel_slh P c ]=&gt; &lt;(st',ast',b',os)&gt; <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>
-    P &#x22A2;i &lt;(st,ast,b,ds)&gt; =[ c ]=&gt; &lt;(msf!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>st msf;st',ast',b',os)&gt;
+  &lt;(st,m,b,ds)&gt; =[ sel_slh P c ]=&gt; &lt;(st',m',b',os)&gt; <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>
+    P &#x22A2;i &lt;(st,m,b,ds)&gt; =[ c ]=&gt; &lt;(msf!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>st msf;st',m',b',os)&gt;
 </pre>
 
 <div class="paragraph"> </div>
@@ -1269,7 +1302,7 @@ forall st<sub>1</sub> st<sub>2</sub> ast1 ast2 st<sub>1</sub>' st<sub>2</sub>' a
     in our compiler correctness proof . 
 <div class="paragraph"> </div>
 
-<a id="lab100"></a><h2 class="section">Ideal semantics definition</h2>
+<a id="lab108"></a><h2 class="section">Ideal semantics definition</h2>
 
 <div class="paragraph"> </div>
 
@@ -1278,7 +1311,7 @@ forall st<sub>1</sub> st<sub>2</sub> ast1 ast2 st<sub>1</sub>' st<sub>2</sub>' a
     masking done by <span class="inlinecode"><span class="id" title="var">sel_slh</span></span> on top of the speculative semantics.
 <center><table class="infrule">
 <tr class="infruleassumption">
-  <td class="infrule">eval st ie = i&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i < length(ast a)</td>
+  <td class="infrule">eval st ie = i&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i < length(m a)</td>
   <td class="infrulenamecol" rowspan="3">
     (Ideal_ALoad) &nbsp;
   </td></tr>
@@ -1286,20 +1319,20 @@ forall st<sub>1</sub> st<sub>2</sub> ast1 ast2 st<sub>1</sub>' st<sub>2</sub>' a
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule">let v := if b && P x then 0 else nth i (ast a) 0 in</td>
+  <td class="infrule">let v := if b && P x then 0 else nth i (m a) 0 in</td>
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule">P &#x22A2;i <(st, ast, b, [DStep])> =[ x <- a[[ie]] ]=></td>
+  <td class="infrule">P &#x22A2;i <(st, m, b, [DStep])> =[ x <- a[[ie]] ]=></td>
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(x !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> v; st, ast, b, [OALoad a i])></td>
+  <td class="infrule"><(x !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> v; st, m, b, [OALoad a i])></td>
   <td></td>
 </tr>
 </table></center><center><table class="infrule">
 <tr class="infruleassumption">
-  <td class="infrule">eval st ie = i&nbsp;&nbsp;&nbsp;i >= length(ast a)&nbsp;&nbsp;&nbsp;i' < length(ast a')</td>
+  <td class="infrule">eval st ie = i&nbsp;&nbsp;&nbsp;i >= length(m a)&nbsp;&nbsp;&nbsp;i' < length(m a')</td>
   <td class="infrulenamecol" rowspan="3">
     (Ideal_ALoad_U) &nbsp;
   </td></tr>
@@ -1307,27 +1340,27 @@ forall st<sub>1</sub> st<sub>2</sub> ast1 ast2 st<sub>1</sub>' st<sub>2</sub>' a
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule">let v := if P x then 0 else nth i' (ast a') 0 in</td>
+  <td class="infrule">let v := if P x then 0 else nth i' (m a') 0 in</td>
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule">P &#x22A2;i <(st, ast, true, [DLoad a' i'])> =[ x <- a[[ie]] ]=></td>
+  <td class="infrule">P &#x22A2;i <(st, m, true, [DLoad a' i'])> =[ x <- a[[ie]] ]=></td>
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(x !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> v; st, ast, true, [OALoad a i])></td>
+  <td class="infrule"><(x !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> v; st, m, true, [OALoad a i])></td>
   <td></td>
 </tr>
 </table></center>
 </div>
 
 <div class="doc">
-<a id="lab101"></a><h2 class="section">Ideal semantics enforces speculative constant-time</h2>
+<a id="lab109"></a><h2 class="section">Ideal semantics enforces speculative constant-time</h2>
 
 <div class="paragraph"> </div>
 
  Let's now prove that the ideal semantics does enforce speculative
-    constant-time.  As in the proofs we did before for constant-time and pc
+    constant-time.  As in the proofs we did before for constant-time and CF
     security, we rely on a proof of noninterference. For our ideal semantics
     this noninterference proof requires interesting generalization of the
     induction hypothesis (see <span class="inlinecode"><span class="id" title="var">ct_well_typed_ideal_noninterferent_general</span></span>). 
@@ -1337,7 +1370,7 @@ forall st<sub>1</sub> st<sub>2</sub> ast1 ast2 st<sub>1</sub>' st<sub>2</sub>' a
     but in that case we cannot ensure that the array states are publicly
     equivalent, since our selective SLH does not mask misspeculated stores (for
     efficiency, since it's not needed for security). This requires to generalize
-    the <span class="inlinecode"><span class="id" title="var">pub_equiv</span></span> <span class="inlinecode"><span class="id" title="var">PA</span></span> <span class="inlinecode"><span class="id" title="var">ast1</span></span> <span class="inlinecode"><span class="id" title="var">ast2</span></span> premise of our statements too. 
+    the <span class="inlinecode"><span class="id" title="var">pub_equiv</span></span> <span class="inlinecode"><span class="id" title="var">PA</span></span> <span class="inlinecode"><span class="id" title="var">m<sub>1</sub></span></span> <span class="inlinecode"><span class="id" title="var">m<sub>2</sub></span></span> premise of our statements too. 
 <div class="paragraph"> </div>
 
  Generalization 2: To show that the two executions run in lock-step the proof
@@ -1348,36 +1381,36 @@ forall st<sub>1</sub> st<sub>2</sub> ast1 ast2 st<sub>1</sub>' st<sub>2</sub>' a
 <div class="code">
 <hr class='doublespaceincode'/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">ct_well_typed_ideal_noninterferent_general</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">P</span> <span class="id" title="var">PA</span> <span class="id" title="var">c</span>,<br/>
-&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">ast1</span> <span class="id" title="var">ast2</span> <span class="id" title="var">b</span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">ast1'</span> <span class="id" title="var">ast2'</span> <span class="id" title="var">b<sub>1</sub>'</span> <span class="id" title="var">b<sub>2</sub>'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span> <span class="id" title="var">ds<sub>1</sub></span> <span class="id" title="var">ds<sub>2</sub></span>,<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">m<sub>1</sub></span> <span class="id" title="var">m<sub>2</sub></span> <span class="id" title="var">b</span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">m<sub>1</sub>'</span> <span class="id" title="var">m<sub>2</sub>'</span> <span class="id" title="var">b<sub>1</sub>'</span> <span class="id" title="var">b<sub>2</sub>'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span> <span class="id" title="var">ds<sub>1</sub></span> <span class="id" title="var">ds<sub>2</sub></span>,<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">P</span> ;; <span class="id" title="var">PA</span> &#x22A2;<span class="id" title="var">ct</span>- <span class="id" title="var">c</span> →<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">P</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">b</span> = <span class="id" title="var">false</span> → <span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">ast1</span> <span class="id" title="var">ast2</span>) → <span class="comment">(*&nbsp;Generalization&nbsp;1&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">b</span> = <span class="id" title="var">false</span> → <span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">m<sub>1</sub></span> <span class="id" title="var">m<sub>2</sub></span>) → <span class="comment">(*&nbsp;Generalization&nbsp;1&nbsp;*)</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">prefix</span> <span class="id" title="var">ds<sub>1</sub></span> <span class="id" title="var">ds<sub>2</sub></span> ∨ <span class="id" title="var">prefix</span> <span class="id" title="var">ds<sub>2</sub></span> <span class="id" title="var">ds<sub>1</sub></span>) → <span class="comment">(*&nbsp;&lt;-&nbsp;Generalization&nbsp;2&nbsp;*)</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">P</span> &#x22A2;<span class="id" title="var">i</span> &lt;(<span class="id" title="var">st<sub>1</sub></span>, <span class="id" title="var">ast1</span>, <span class="id" title="var">b</span>, <span class="id" title="var">ds<sub>1</sub></span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>1</sub>'</span>, <span class="id" title="var">ast1'</span>, <span class="id" title="var">b<sub>1</sub>'</span>, <span class="id" title="var">os<sub>1</sub></span>)&gt; →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">P</span> &#x22A2;<span class="id" title="var">i</span> &lt;(<span class="id" title="var">st<sub>2</sub></span>, <span class="id" title="var">ast2</span>, <span class="id" title="var">b</span>, <span class="id" title="var">ds<sub>2</sub></span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>2</sub>'</span>, <span class="id" title="var">ast2'</span>, <span class="id" title="var">b<sub>2</sub>'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">P</span> &#x22A2;<span class="id" title="var">i</span> &lt;(<span class="id" title="var">st<sub>1</sub></span>, <span class="id" title="var">m<sub>1</sub></span>, <span class="id" title="var">b</span>, <span class="id" title="var">ds<sub>1</sub></span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>1</sub>'</span>, <span class="id" title="var">m<sub>1</sub>'</span>, <span class="id" title="var">b<sub>1</sub>'</span>, <span class="id" title="var">os<sub>1</sub></span>)&gt; →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">P</span> &#x22A2;<span class="id" title="var">i</span> &lt;(<span class="id" title="var">st<sub>2</sub></span>, <span class="id" title="var">m<sub>2</sub></span>, <span class="id" title="var">b</span>, <span class="id" title="var">ds<sub>2</sub></span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>2</sub>'</span>, <span class="id" title="var">m<sub>2</sub>'</span>, <span class="id" title="var">b<sub>2</sub>'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; →<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">P</span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> ∧ <span class="id" title="var">b<sub>1</sub>'</span> = <span class="id" title="var">b<sub>2</sub>'</span> ∧<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">b<sub>1</sub>'</span> = <span class="id" title="var">false</span> → <span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">ast1'</span> <span class="id" title="var">ast2'</span>) ∧ <span class="comment">(*&nbsp;&lt;-&nbsp;Generalization&nbsp;1&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">b<sub>1</sub>'</span> = <span class="id" title="var">false</span> → <span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">m<sub>1</sub>'</span> <span class="id" title="var">m<sub>2</sub>'</span>) ∧ <span class="comment">(*&nbsp;&lt;-&nbsp;Generalization&nbsp;1&nbsp;*)</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">ds<sub>1</sub></span> = <span class="id" title="var">ds<sub>2</sub></span>. <span class="comment">(*&nbsp;&lt;-&nbsp;Generalization&nbsp;2&nbsp;*)</span><br/>
 </div>
 
 <div class="doc">
-<a id="lab102"></a><h2 class="section"> </h2>
+<a id="lab110"></a><h2 class="section"> </h2>
 
 </div>
 <div class="code">
 
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">ideal_spec_ct_secure</span> :<br/>
-&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">P</span> <span class="id" title="var">PA</span> <span class="id" title="var">c</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">ast1</span> <span class="id" title="var">ast2</span> <span class="id" title="var">b</span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">ast1'</span> <span class="id" title="var">ast2'</span> <span class="id" title="var">b<sub>1</sub>'</span> <span class="id" title="var">b<sub>2</sub>'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span> <span class="id" title="var">ds</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">P</span> <span class="id" title="var">PA</span> <span class="id" title="var">c</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">m<sub>1</sub></span> <span class="id" title="var">m<sub>2</sub></span> <span class="id" title="var">b</span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">m<sub>1</sub>'</span> <span class="id" title="var">m<sub>2</sub>'</span> <span class="id" title="var">b<sub>1</sub>'</span> <span class="id" title="var">b<sub>2</sub>'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span> <span class="id" title="var">ds</span>,<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">P</span> ;; <span class="id" title="var">PA</span> &#x22A2;<span class="id" title="var">ct</span>- <span class="id" title="var">c</span> →<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">P</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">b</span> = <span class="id" title="var">false</span> → <span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">ast1</span> <span class="id" title="var">ast2</span>) →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">P</span> &#x22A2;<span class="id" title="var">i</span> &lt;(<span class="id" title="var">st<sub>1</sub></span>, <span class="id" title="var">ast1</span>, <span class="id" title="var">b</span>, <span class="id" title="var">ds</span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>1</sub>'</span>, <span class="id" title="var">ast1'</span>, <span class="id" title="var">b<sub>1</sub>'</span>, <span class="id" title="var">os<sub>1</sub></span>)&gt; →<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">P</span> &#x22A2;<span class="id" title="var">i</span> &lt;(<span class="id" title="var">st<sub>2</sub></span>, <span class="id" title="var">ast2</span>, <span class="id" title="var">b</span>, <span class="id" title="var">ds</span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>2</sub>'</span>, <span class="id" title="var">ast2'</span>, <span class="id" title="var">b<sub>2</sub>'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">b</span> = <span class="id" title="var">false</span> → <span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">m<sub>1</sub></span> <span class="id" title="var">m<sub>2</sub></span>) →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">P</span> &#x22A2;<span class="id" title="var">i</span> &lt;(<span class="id" title="var">st<sub>1</sub></span>, <span class="id" title="var">m<sub>1</sub></span>, <span class="id" title="var">b</span>, <span class="id" title="var">ds</span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>1</sub>'</span>, <span class="id" title="var">m<sub>1</sub>'</span>, <span class="id" title="var">b<sub>1</sub>'</span>, <span class="id" title="var">os<sub>1</sub></span>)&gt; →<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">P</span> &#x22A2;<span class="id" title="var">i</span> &lt;(<span class="id" title="var">st<sub>2</sub></span>, <span class="id" title="var">m<sub>2</sub></span>, <span class="id" title="var">b</span>, <span class="id" title="var">ds</span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>2</sub>'</span>, <span class="id" title="var">m<sub>2</sub>'</span>, <span class="id" title="var">b<sub>2</sub>'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; →<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">os<sub>1</sub></span> = <span class="id" title="var">os<sub>2</sub></span>.<br/>
 </div>
 
 <div class="doc">
-<a id="lab103"></a><h2 class="section">Correctness of sel_slh as a compiler from ideal to speculative semantics</h2>
+<a id="lab111"></a><h2 class="section">Correctness of sel_slh as a compiler from ideal to speculative semantics</h2>
 
 <div class="paragraph"> </div>
 
@@ -1386,8 +1419,8 @@ forall st<sub>1</sub> st<sub>2</sub> ast1 ast2 st<sub>1</sub>' st<sub>2</sub>' a
     phrase this as a backwards compiler correctness proof for <span class="inlinecode"><span class="id" title="var">sel_slh</span></span>,
     which intuitively looks as follows:
 <pre>
-    &lt;(st,ast,b,ds)&gt; =[[ sel_slh P c ]]=&gt; &lt;(st',ast',b',os)&gt; <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>
-    P &#x22A2;i &lt;(st,ast,b,ds)&gt; =[[ c ]]=&gt; &lt;(msf!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>st msf;st',ast',b',os)&gt;
+    &lt;(st,m,b,ds)&gt; =[[ sel_slh P c ]]=&gt; &lt;(st',m',b',os)&gt; <span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>
+    P &#x22A2;i &lt;(st,m,b,ds)&gt; =[[ c ]]=&gt; &lt;(msf!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span>st msf;st',m',b',os)&gt;
 </pre>
 
 <div class="paragraph"> </div>
@@ -1398,11 +1431,11 @@ forall st<sub>1</sub> st<sub>2</sub> ast1 ast2 st<sub>1</sub>' st<sub>2</sub>' a
     To see this we need to invert the premise of <span class="inlinecode"><span class="id" title="var">Spec_While</span></span> a few times:
 <center><table class="infrule">
 <tr class="infruleassumption">
-  <td class="infrule"><(st,ast,b,ds)> =[ if be then c; while be do c end ]=></td>
+  <td class="infrule"><(st,m,b,ds)> =[ if be then c; while be do c end ]=></td>
   <td></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st',ast',b',os)></td>
+  <td class="infrule"><(st',m',b',os)></td>
   <td class="infrulenamecol" rowspan="3">
     (Spec_While) &nbsp;
   </td></tr>
@@ -1410,7 +1443,7 @@ forall st<sub>1</sub> st<sub>2</sub> ast1 ast2 st<sub>1</sub>' st<sub>2</sub>' a
   <td class="infrule"><hr /></td>
 </tr>
 <tr class="infruleassumption">
-  <td class="infrule"><(st,ast,b,ds)> =[ while be do c end ]=> <(st',ast',b',os)></td>
+  <td class="infrule"><(st,m,b,ds)> =[ while be do c end ]=> <(st',m',b',os)></td>
   <td></td>
 </tr>
 </table></center>
@@ -1421,7 +1454,7 @@ forall st<sub>1</sub> st<sub>2</sub> ast1 ast2 st<sub>1</sub>' st<sub>2</sub>' a
 </div>
 
 <div class="doc">
-<a id="lab104"></a><h2 class="section"> </h2>
+<a id="lab112"></a><h2 class="section"> </h2>
 
 <div class="paragraph"> </div>
 
@@ -1442,18 +1475,18 @@ The backwards compiler correctness proof uses <span class="inlinecode"><span cla
 <div class="code">
 
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">sel_slh_compiler_correctness_prop</span> (<span class="id" title="var">c</span>:<span class="id" title="var">com</span>) (<span class="id" title="var">ds</span>:<span class="id" title="var">dirs</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
-&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">P</span> <span class="id" title="var">st</span> <span class="id" title="var">ast</span> (<span class="id" title="var">b</span>: <span class="id" title="var">bool</span>) <span class="id" title="var">st'</span> <span class="id" title="var">ast'</span> <span class="id" title="var">b'</span> <span class="id" title="var">os</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">P</span> <span class="id" title="var">st</span> <span class="id" title="var">m</span> (<span class="id" title="var">b</span>: <span class="id" title="var">bool</span>) <span class="id" title="var">st'</span> <span class="id" title="var">m'</span> <span class="id" title="var">b'</span> <span class="id" title="var">os</span>,<br/>
 &nbsp;&nbsp;<span class="id" title="var">unused</span> <span class="id" title="var">msf</span> <span class="id" title="var">c</span> →<br/>
 &nbsp;&nbsp;<span class="id" title="var">st</span> <span class="id" title="var">msf</span> = (<span class="id" title="keyword">if</span> <span class="id" title="var">b</span> <span class="id" title="keyword">then</span> 1 <span class="id" title="keyword">else</span> 0) →<br/>
-&nbsp;&nbsp;&lt;(<span class="id" title="var">st</span>, <span class="id" title="var">ast</span>, <span class="id" title="var">b</span>, <span class="id" title="var">ds</span>)&gt; =[ <span class="id" title="var">sel_slh</span> <span class="id" title="var">P</span> <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st'</span>, <span class="id" title="var">ast'</span>, <span class="id" title="var">b'</span>, <span class="id" title="var">os</span>)&gt; →<br/>
-&nbsp;&nbsp;<span class="id" title="var">P</span> &#x22A2;<span class="id" title="var">i</span> &lt;(<span class="id" title="var">st</span>, <span class="id" title="var">ast</span>, <span class="id" title="var">b</span>, <span class="id" title="var">ds</span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">msf</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">st</span> <span class="id" title="var">msf</span>; <span class="id" title="var">st'</span>, <span class="id" title="var">ast'</span>, <span class="id" title="var">b'</span>, <span class="id" title="var">os</span>)&gt;.<br/><hr class='doublespaceincode'/>
+&nbsp;&nbsp;&lt;(<span class="id" title="var">st</span>, <span class="id" title="var">m</span>, <span class="id" title="var">b</span>, <span class="id" title="var">ds</span>)&gt; =[ <span class="id" title="var">sel_slh</span> <span class="id" title="var">P</span> <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st'</span>, <span class="id" title="var">m'</span>, <span class="id" title="var">b'</span>, <span class="id" title="var">os</span>)&gt; →<br/>
+&nbsp;&nbsp;<span class="id" title="var">P</span> &#x22A2;<span class="id" title="var">i</span> &lt;(<span class="id" title="var">st</span>, <span class="id" title="var">m</span>, <span class="id" title="var">b</span>, <span class="id" title="var">ds</span>)&gt; =[ <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">msf</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">st</span> <span class="id" title="var">msf</span>; <span class="id" title="var">st'</span>, <span class="id" title="var">m'</span>, <span class="id" title="var">b'</span>, <span class="id" title="var">os</span>)&gt;.<br/><hr class='doublespaceincode'/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">sel_slh_compiler_correctness</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">c</span> <span class="id" title="var">ds</span>,<br/>
 &nbsp;&nbsp;<span class="id" title="var">sel_slh_compiler_correctness_prop</span> <span class="id" title="var">c</span> <span class="id" title="var">ds</span>.<br/>
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">size_ind</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">sel_slh_compiler_correctness_prop</span>.<br/>
-<div class="togglescript" id="proofcontrol11" onclick="toggleDisplay('proof11');toggleDisplay('proofcontrol11')"><span class="show"></span></div>
-<div class="proofscript" id="proof11" onclick="toggleDisplay('proof11');toggleDisplay('proofcontrol11')">
-&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">c</span> <span class="id" title="var">ds</span> <span class="id" title="var">IH</span> <span class="id" title="var">P</span> <span class="id" title="var">st</span> <span class="id" title="var">ast</span> <span class="id" title="var">b</span> <span class="id" title="var">st'</span> <span class="id" title="var">ast'</span> <span class="id" title="var">b'</span> <span class="id" title="var">os</span> <span class="id" title="var">Hunused</span> <span class="id" title="var">Hstb</span> <span class="id" title="var">Heval</span>.<br/>
+<div class="togglescript" id="proofcontrol12" onclick="toggleDisplay('proof12');toggleDisplay('proofcontrol12')"><span class="show"></span></div>
+<div class="proofscript" id="proof12" onclick="toggleDisplay('proof12');toggleDisplay('proofcontrol12')">
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">c</span> <span class="id" title="var">ds</span> <span class="id" title="var">IH</span> <span class="id" title="var">P</span> <span class="id" title="var">st</span> <span class="id" title="var">m</span> <span class="id" title="var">b</span> <span class="id" title="var">st'</span> <span class="id" title="var">m'</span> <span class="id" title="var">b'</span> <span class="id" title="var">os</span> <span class="id" title="var">Hunused</span> <span class="id" title="var">Hstb</span> <span class="id" title="var">Heval</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">c</span>; <span class="id" title="tactic">simpl</span> <span class="id" title="keyword">in</span> *; <span class="id" title="tactic">inversion</span> <span class="id" title="var">Heval</span>; <span class="id" title="tactic">subst</span>; <span class="id" title="tactic">clear</span> <span class="id" title="var">Heval</span>;<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">destruct</span> (<span class="id" title="var">P</span> <span class="id" title="var">x</span>); <span class="id" title="tactic">discriminate</span>).<br/>
 &nbsp;&nbsp;- <span class="comment">(*&nbsp;Skip&nbsp;*)</span><br/>
@@ -1515,8 +1548,8 @@ The backwards compiler correctness proof uses <span class="inlinecode"><span cla
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">inversion</span> <span class="id" title="var">H<sub>12</sub></span>; <span class="id" title="tactic">subst</span>; <span class="id" title="tactic">clear</span> <span class="id" title="var">H<sub>12</sub></span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H<sub>1</sub></span>; <span class="id" title="tactic">subst</span>; <span class="id" title="tactic">clear</span> <span class="id" title="var">H<sub>1</sub></span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H<sub>2</sub></span>; <span class="id" title="tactic">subst</span>; <span class="id" title="tactic">clear</span> <span class="id" title="var">H<sub>2</sub></span>; <span class="id" title="tactic">simpl</span> <span class="id" title="keyword">in</span> ×.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assert</span>(<span class="id" title="var">Hwhile</span>: &lt;(<span class="id" title="var">st'1</span>, <span class="id" title="var">ast'1</span>, <span class="id" title="var">b'1</span>, <span class="id" title="var">ds<sub>2</sub></span>)&gt;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=[ <span class="id" title="var">sel_slh</span> <span class="id" title="var">P</span> &lt;<span style='letter-spacing:-.4em;'>{</span>{<span class="id" title="var">while</span> <span class="id" title="var">be</span> <span class="id" title="tactic">do</span> <span class="id" title="var">c</span> <span class="id" title="keyword">end</span><span style='letter-spacing:-.4em;'>}</span>}&gt; ]=&gt; &lt;(<span class="id" title="var">st'</span>, <span class="id" title="var">ast'</span>, <span class="id" title="var">b'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; ).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assert</span>(<span class="id" title="var">Hwhile</span>: &lt;(<span class="id" title="var">st'1</span>, <span class="id" title="var">m'1</span>, <span class="id" title="var">b'1</span>, <span class="id" title="var">ds<sub>2</sub></span>)&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=[ <span class="id" title="var">sel_slh</span> <span class="id" title="var">P</span> &lt;<span style='letter-spacing:-.4em;'>{</span>{<span class="id" title="var">while</span> <span class="id" title="var">be</span> <span class="id" title="tactic">do</span> <span class="id" title="var">c</span> <span class="id" title="keyword">end</span><span style='letter-spacing:-.4em;'>}</span>}&gt; ]=&gt; &lt;(<span class="id" title="var">st'</span>, <span class="id" title="var">m'</span>, <span class="id" title="var">b'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; ).<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">replace</span> <span class="id" title="var">ds<sub>2</sub></span> <span class="id" title="keyword">with</span> (<span class="id" title="var">ds<sub>2</sub></span> ++ [])%<span class="id" title="var">list</span> <span class="id" title="tactic">by</span> (<span class="id" title="tactic">rewrite</span> <span class="id" title="var">app_nil_r</span>; <span class="id" title="tactic">reflexivity</span>).<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">replace</span> <span class="id" title="var">os<sub>2</sub></span> <span class="id" title="keyword">with</span> (<span class="id" title="var">os<sub>2</sub></span> ++ [])%<span class="id" title="var">list</span> <span class="id" title="tactic">by</span> (<span class="id" title="tactic">rewrite</span> <span class="id" title="var">app_nil_r</span>; <span class="id" title="tactic">reflexivity</span>).<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Spec_Seq</span>; <span class="id" title="var">eassumption</span>. }<br/>
@@ -1539,8 +1572,8 @@ The backwards compiler correctness proof uses <span class="inlinecode"><span cla
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;× <span class="id" title="tactic">inversion</span> <span class="id" title="var">H<sub>12</sub></span>; <span class="id" title="tactic">subst</span>; <span class="id" title="tactic">clear</span> <span class="id" title="var">H<sub>12</sub></span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H<sub>1</sub></span>; <span class="id" title="tactic">subst</span>; <span class="id" title="tactic">clear</span> <span class="id" title="var">H<sub>1</sub></span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H<sub>2</sub></span>; <span class="id" title="tactic">subst</span>; <span class="id" title="tactic">clear</span> <span class="id" title="var">H<sub>2</sub></span>; <span class="id" title="tactic">simpl</span> <span class="id" title="keyword">in</span> ×.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assert</span>(<span class="id" title="var">Hwhile</span>: &lt;(<span class="id" title="var">st'1</span>, <span class="id" title="var">ast'1</span>, <span class="id" title="var">b'1</span>, <span class="id" title="var">ds<sub>2</sub></span>)&gt;<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=[ <span class="id" title="var">sel_slh</span> <span class="id" title="var">P</span> &lt;<span style='letter-spacing:-.4em;'>{</span>{<span class="id" title="var">while</span> <span class="id" title="var">be</span> <span class="id" title="tactic">do</span> <span class="id" title="var">c</span> <span class="id" title="keyword">end</span><span style='letter-spacing:-.4em;'>}</span>}&gt; ]=&gt; &lt;(<span class="id" title="var">st'</span>, <span class="id" title="var">ast'</span>, <span class="id" title="var">b'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; ).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assert</span>(<span class="id" title="var">Hwhile</span>: &lt;(<span class="id" title="var">st'1</span>, <span class="id" title="var">m'1</span>, <span class="id" title="var">b'1</span>, <span class="id" title="var">ds<sub>2</sub></span>)&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=[ <span class="id" title="var">sel_slh</span> <span class="id" title="var">P</span> &lt;<span style='letter-spacing:-.4em;'>{</span>{<span class="id" title="var">while</span> <span class="id" title="var">be</span> <span class="id" title="tactic">do</span> <span class="id" title="var">c</span> <span class="id" title="keyword">end</span><span style='letter-spacing:-.4em;'>}</span>}&gt; ]=&gt; &lt;(<span class="id" title="var">st'</span>, <span class="id" title="var">m'</span>, <span class="id" title="var">b'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; ).<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">replace</span> <span class="id" title="var">ds<sub>2</sub></span> <span class="id" title="keyword">with</span> (<span class="id" title="var">ds<sub>2</sub></span> ++ [])%<span class="id" title="var">list</span> <span class="id" title="tactic">by</span> (<span class="id" title="tactic">rewrite</span> <span class="id" title="var">app_nil_r</span>; <span class="id" title="tactic">reflexivity</span>).<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">replace</span> <span class="id" title="var">os<sub>2</sub></span> <span class="id" title="keyword">with</span> (<span class="id" title="var">os<sub>2</sub></span> ++ [])%<span class="id" title="var">list</span> <span class="id" title="tactic">by</span> (<span class="id" title="tactic">rewrite</span> <span class="id" title="var">app_nil_r</span>; <span class="id" title="tactic">reflexivity</span>).<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Spec_Seq</span>; <span class="id" title="var">eassumption</span>. }<br/>
@@ -1575,28 +1608,28 @@ The backwards compiler correctness proof uses <span class="inlinecode"><span cla
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">t_update_eq</span>. <span class="id" title="tactic">simpl</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">Hstb</span> <span class="id" title="tactic">at</span> 1. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">t_update_same</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">not_zero</span> (<span class="id" title="var">bool_to_nat</span> (<span class="id" title="var">negb</span> (<span class="id" title="var">not_zero</span><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="keyword">if</span> ((<span class="id" title="keyword">if</span> <span class="id" title="var">b'</span> <span class="id" title="keyword">then</span> 1 <span class="id" title="keyword">else</span> 0) =? 0)%<span class="id" title="var">nat</span> <span class="id" title="keyword">then</span> 1 <span class="id" title="keyword">else</span> 0)) || <span class="id" title="var">not_zero</span> 0))) <span class="id" title="keyword">with</span> (<span class="id" title="var">b'</span> &amp;&amp; (<span class="id" title="var">P</span> <span class="id" title="var">x</span>))<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">bool_to_nat</span> ((<span class="id" title="keyword">if</span> <span class="id" title="var">b'</span> <span class="id" title="keyword">then</span> 1 <span class="id" title="keyword">else</span> 0) =? 0)%<span class="id" title="var">nat</span>)) || <span class="id" title="var">not_zero</span> 0))) <span class="id" title="keyword">with</span> (<span class="id" title="var">b'</span> &amp;&amp; (<span class="id" title="var">P</span> <span class="id" title="var">x</span>))<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> (<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Heq</span>; <span class="id" title="tactic">destruct</span> <span class="id" title="var">b'</span>; <span class="id" title="tactic">simpl</span>; <span class="id" title="tactic">reflexivity</span>).<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Ideal_ALoad</span>; <span class="id" title="tactic">eauto</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;× <span class="comment">(*&nbsp;Ideal_ALoad_U&nbsp;*)</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">t_update_neq</span>; [| <span class="id" title="tactic">tauto</span>]. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">Hstb</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">t_update_shadow</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">t_update_permute</span>; [| <span class="id" title="tactic">tauto</span>].<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">Hstb</span> <span class="id" title="tactic">at</span> 1. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">t_update_same</span>.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">x</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> 0; <span class="id" title="var">st</span>) <span class="id" title="keyword">with</span> (<span class="id" title="var">x</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="keyword">if</span> <span class="id" title="var">P</span> <span class="id" title="var">x</span> <span class="id" title="keyword">then</span> 0 <span class="id" title="keyword">else</span> <span class="id" title="var">nth</span> <span class="id" title="var">i'</span> (<span class="id" title="var">ast'</span> <span class="id" title="var">a'</span>) 0; <span class="id" title="var">st</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">x</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> 0; <span class="id" title="var">st</span>) <span class="id" title="keyword">with</span> (<span class="id" title="var">x</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="keyword">if</span> <span class="id" title="var">P</span> <span class="id" title="var">x</span> <span class="id" title="keyword">then</span> 0 <span class="id" title="keyword">else</span> <span class="id" title="var">nth</span> <span class="id" title="var">i'</span> (<span class="id" title="var">m'</span> <span class="id" title="var">a'</span>) 0; <span class="id" title="var">st</span>)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> (<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Heq</span>; <span class="id" title="tactic">reflexivity</span>).<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Ideal_ALoad_U</span>; <span class="id" title="tactic">eauto</span>.<br/>
 &nbsp;&nbsp;- <span class="comment">(*&nbsp;Spec_ALoad;&nbsp;secret*)</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">P</span> <span class="id" title="var">x</span>) <span class="id" title="var">eqn</span>:<span class="id" title="var">Heq</span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">discriminate</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">clear</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">subst</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">t_update_permute</span>; [| <span class="id" title="tactic">tauto</span>]. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">t_update_same</span>.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">x</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">nth</span> (<span class="id" title="tactic">eval</span> <span class="id" title="var">st</span> <span class="id" title="var">i</span>) (<span class="id" title="var">ast'</span> <span class="id" title="var">a</span>) 0; <span class="id" title="var">st</span>)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">with</span> (<span class="id" title="var">x</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="keyword">if</span> <span class="id" title="var">b'</span> &amp;&amp; <span class="id" title="var">P</span> <span class="id" title="var">x</span> <span class="id" title="keyword">then</span> 0 <span class="id" title="keyword">else</span> <span class="id" title="var">nth</span> (<span class="id" title="tactic">eval</span> <span class="id" title="var">st</span> <span class="id" title="var">i</span>) (<span class="id" title="var">ast'</span> <span class="id" title="var">a</span>) 0; <span class="id" title="var">st</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">x</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">nth</span> (<span class="id" title="tactic">eval</span> <span class="id" title="var">st</span> <span class="id" title="var">i</span>) (<span class="id" title="var">m'</span> <span class="id" title="var">a</span>) 0; <span class="id" title="var">st</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">with</span> (<span class="id" title="var">x</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="keyword">if</span> <span class="id" title="var">b'</span> &amp;&amp; <span class="id" title="var">P</span> <span class="id" title="var">x</span> <span class="id" title="keyword">then</span> 0 <span class="id" title="keyword">else</span> <span class="id" title="var">nth</span> (<span class="id" title="tactic">eval</span> <span class="id" title="var">st</span> <span class="id" title="var">i</span>) (<span class="id" title="var">m'</span> <span class="id" title="var">a</span>) 0; <span class="id" title="var">st</span>)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> (<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Heq</span>; <span class="id" title="tactic">destruct</span> <span class="id" title="var">b'</span>; <span class="id" title="tactic">reflexivity</span>).<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Ideal_ALoad</span>; <span class="id" title="tactic">eauto</span>.<br/>
 &nbsp;&nbsp;- <span class="comment">(*&nbsp;Spec_ALoad_U&nbsp;*)</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">P</span> <span class="id" title="var">x</span>) <span class="id" title="var">eqn</span>:<span class="id" title="var">Heq</span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">discriminate</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">clear</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">subst</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">t_update_permute</span>; [| <span class="id" title="tactic">tauto</span>]. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">t_update_same</span>.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">x</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">nth</span> <span class="id" title="var">i'</span> (<span class="id" title="var">ast'</span> <span class="id" title="var">a'</span>) 0; <span class="id" title="var">st</span>)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">with</span> (<span class="id" title="var">x</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="keyword">if</span> <span class="id" title="var">P</span> <span class="id" title="var">x</span> <span class="id" title="keyword">then</span> 0 <span class="id" title="keyword">else</span> <span class="id" title="var">nth</span> <span class="id" title="var">i'</span> (<span class="id" title="var">ast'</span> <span class="id" title="var">a'</span>) 0; <span class="id" title="var">st</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">x</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">nth</span> <span class="id" title="var">i'</span> (<span class="id" title="var">m'</span> <span class="id" title="var">a'</span>) 0; <span class="id" title="var">st</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">with</span> (<span class="id" title="var">x</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="keyword">if</span> <span class="id" title="var">P</span> <span class="id" title="var">x</span> <span class="id" title="keyword">then</span> 0 <span class="id" title="keyword">else</span> <span class="id" title="var">nth</span> <span class="id" title="var">i'</span> (<span class="id" title="var">m'</span> <span class="id" title="var">a'</span>) 0; <span class="id" title="var">st</span>)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">by</span> (<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Heq</span>; <span class="id" title="tactic">reflexivity</span>).<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Ideal_ALoad_U</span>; <span class="id" title="tactic">eauto</span>.<br/>
 &nbsp;&nbsp;<span class="comment">(*&nbsp;AStore&nbsp;*)</span><br/>
@@ -1609,7 +1642,7 @@ The backwards compiler correctness proof uses <span class="inlinecode"><span cla
 </div>
 
 <div class="doc">
-<a id="lab105"></a><h2 class="section">Speculative constant-time security for Selective SLH</h2>
+<a id="lab113"></a><h2 class="section">Speculative constant-time security for Selective SLH</h2>
 
 <div class="paragraph"> </div>
 
@@ -1619,20 +1652,20 @@ The backwards compiler correctness proof uses <span class="inlinecode"><span cla
 <div class="code">
 
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">sel_slh_spec_ct_secure</span> :<br/>
-&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">P</span> <span class="id" title="var">PA</span> <span class="id" title="var">c</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">ast1</span> <span class="id" title="var">ast2</span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">ast1'</span> <span class="id" title="var">ast2'</span> <span class="id" title="var">b<sub>1</sub>'</span> <span class="id" title="var">b<sub>2</sub>'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span> <span class="id" title="var">ds</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">P</span> <span class="id" title="var">PA</span> <span class="id" title="var">c</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">m<sub>1</sub></span> <span class="id" title="var">m<sub>2</sub></span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">m<sub>1</sub>'</span> <span class="id" title="var">m<sub>2</sub>'</span> <span class="id" title="var">b<sub>1</sub>'</span> <span class="id" title="var">b<sub>2</sub>'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span> <span class="id" title="var">ds</span>,<br/>
 &nbsp;&nbsp;<span class="id" title="var">P</span> ;; <span class="id" title="var">PA</span> &#x22A2;<span class="id" title="var">ct</span>- <span class="id" title="var">c</span> →<br/>
 &nbsp;&nbsp;<span class="id" title="var">unused</span> <span class="id" title="var">msf</span> <span class="id" title="var">c</span> →<br/>
 &nbsp;&nbsp;<span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">msf</span> = 0 →<br/>
 &nbsp;&nbsp;<span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">msf</span> = 0 →<br/>
 &nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">P</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> →<br/>
-&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">ast1</span> <span class="id" title="var">ast2</span> →<br/>
-&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>1</sub></span>, <span class="id" title="var">ast1</span>, <span class="id" title="var">false</span>, <span class="id" title="var">ds</span>)&gt; =[ <span class="id" title="var">sel_slh</span> <span class="id" title="var">P</span> <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>1</sub>'</span>, <span class="id" title="var">ast1'</span>, <span class="id" title="var">b<sub>1</sub>'</span>, <span class="id" title="var">os<sub>1</sub></span>)&gt; →<br/>
-&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>2</sub></span>, <span class="id" title="var">ast2</span>, <span class="id" title="var">false</span>, <span class="id" title="var">ds</span>)&gt; =[ <span class="id" title="var">sel_slh</span> <span class="id" title="var">P</span> <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>2</sub>'</span>, <span class="id" title="var">ast2'</span>, <span class="id" title="var">b<sub>2</sub>'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; →<br/>
+&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">PA</span> <span class="id" title="var">m<sub>1</sub></span> <span class="id" title="var">m<sub>2</sub></span> →<br/>
+&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>1</sub></span>, <span class="id" title="var">m<sub>1</sub></span>, <span class="id" title="var">false</span>, <span class="id" title="var">ds</span>)&gt; =[ <span class="id" title="var">sel_slh</span> <span class="id" title="var">P</span> <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>1</sub>'</span>, <span class="id" title="var">m<sub>1</sub>'</span>, <span class="id" title="var">b<sub>1</sub>'</span>, <span class="id" title="var">os<sub>1</sub></span>)&gt; →<br/>
+&nbsp;&nbsp;&lt;(<span class="id" title="var">st<sub>2</sub></span>, <span class="id" title="var">m<sub>2</sub></span>, <span class="id" title="var">false</span>, <span class="id" title="var">ds</span>)&gt; =[ <span class="id" title="var">sel_slh</span> <span class="id" title="var">P</span> <span class="id" title="var">c</span> ]=&gt; &lt;(<span class="id" title="var">st<sub>2</sub>'</span>, <span class="id" title="var">m<sub>2</sub>'</span>, <span class="id" title="var">b<sub>2</sub>'</span>, <span class="id" title="var">os<sub>2</sub></span>)&gt; →<br/>
 &nbsp;&nbsp;<span class="id" title="var">os<sub>1</sub></span> = <span class="id" title="var">os<sub>2</sub></span>.<br/>
-<div class="togglescript" id="proofcontrol12" onclick="toggleDisplay('proof12');toggleDisplay('proofcontrol12')"><span class="show"></span></div>
-<div class="proofscript" id="proof12" onclick="toggleDisplay('proof12');toggleDisplay('proofcontrol12')">
+<div class="togglescript" id="proofcontrol13" onclick="toggleDisplay('proof13');toggleDisplay('proofcontrol13')"><span class="show"></span></div>
+<div class="proofscript" id="proof13" onclick="toggleDisplay('proof13');toggleDisplay('proofcontrol13')">
 <span class="id" title="keyword">Proof</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">PA</span> <span class="id" title="var">c</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">ast1</span> <span class="id" title="var">ast2</span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">ast1'</span> <span class="id" title="var">ast2'</span> <span class="id" title="var">b<sub>1</sub>'</span> <span class="id" title="var">b<sub>2</sub>'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span> <span class="id" title="var">ds</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">P</span> <span class="id" title="var">PA</span> <span class="id" title="var">c</span> <span class="id" title="var">st<sub>1</sub></span> <span class="id" title="var">st<sub>2</sub></span> <span class="id" title="var">m<sub>1</sub></span> <span class="id" title="var">m<sub>2</sub></span> <span class="id" title="var">st<sub>1</sub>'</span> <span class="id" title="var">st<sub>2</sub>'</span> <span class="id" title="var">m<sub>1</sub>'</span> <span class="id" title="var">m<sub>2</sub>'</span> <span class="id" title="var">b<sub>1</sub>'</span> <span class="id" title="var">b<sub>2</sub>'</span> <span class="id" title="var">os<sub>1</sub></span> <span class="id" title="var">os<sub>2</sub></span> <span class="id" title="var">ds</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Hwt</span> <span class="id" title="var">Hunused</span> <span class="id" title="var">Hs1b</span> <span class="id" title="var">Hs2b</span> <span class="id" title="var">Hequiv</span> <span class="id" title="var">Haequiv</span> <span class="id" title="var">Heval1</span> <span class="id" title="var">Heval2</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">sel_slh_compiler_correctness</span> <span class="id" title="keyword">in</span> <span class="id" title="var">Heval1</span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">assumption</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">sel_slh_compiler_correctness</span> <span class="id" title="keyword">in</span> <span class="id" title="var">Heval2</span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">assumption</span>.<br/>

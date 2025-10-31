@@ -25,6 +25,7 @@
 <ul id='menu'>
    <li class='section_name'><a href='toc.html'>Table of Contents</a></li>
    <li class='section_name'><a href='coqindex.html'>Index</a></li>
+   <li class='section_name'><a href='deps.html'>Roadmap</a></li>
 </ul>
 </div>
 
@@ -43,16 +44,16 @@ Programmers have to be very careful about how information flows in
     network in clear. 
 <div class="paragraph"> </div>
 
- Information flow control tries to prevent leaking secret
+ Information-flow control tries to prevent leaking secret
     information.  But how does one formalize that a program doesn't
     leak any information about the secret inputs to public outputs? 
 <div class="paragraph"> </div>
 
-<a id="lab1"></a><h3 class="section"> </h3>
+<a id="lab7"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
- We first investigate this question in the very simple setting of Coq
+ We first investigate this question in the very simple setting of Rocq
     functions taking two arguments, one we call the public input and the other
     one we call the secret input. Our functions return a pair where the first
     element is the public output and the second one the secret output. 
@@ -73,7 +74,7 @@ This function seems intuitively secure, since the first output <span class="inli
     second output to be secret. 
 <div class="paragraph"> </div>
 
-<a id="lab2"></a><h3 class="section"> </h3>
+<a id="lab8"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -98,7 +99,7 @@ In the last two cases the value of the public output is equal to the value
 </div>
 
 <div class="doc">
-<a id="lab3"></a><h1 class="section">Naive attempt at defining secrecy</h1>
+<a id="lab9"></a><h1 class="section">Naive attempt at defining secrecy</h1>
 
 <div class="paragraph"> </div>
 
@@ -122,7 +123,7 @@ As discussed above, this definition would reject our secure
 </div>
 
 <div class="doc">
-<a id="lab4"></a><h3 class="section"> </h3>
+<a id="lab10"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -161,14 +162,14 @@ This attempt at defining secure information flow by looking at how
 </div>
 
 <div class="doc">
-<a id="lab5"></a><h1 class="section">Noninterference for pure functions</h1>
+<a id="lab11"></a><h1 class="section">Noninterference for pure functions</h1>
 
 <div class="paragraph"> </div>
 
  The simplest correct way to define secure information flow is a
-    property called <i>noninterference</i>, which in its most standard form
-    looks at <i>two</i> program executions: for two different secret inputs
-    the public outputs should not change: 
+    property called <i>noninterference</i> <a href="Bib.html#Sabelfeld-and Myers 2003"><span class="inlineref">[Sabelfeld and Myers 2003]</span></a>,
+    which in its most standard form looks at <i>two</i> program executions:
+    for two different secret inputs the public outputs should not change: 
 </div>
 <div class="code">
 
@@ -383,7 +384,7 @@ Branching on a secret can, however, be dangerous, since one can
 </div>
 
 <div class="doc">
-<a id="lab6"></a><h1 class="section">A too strong secrecy definition</h1>
+<a id="lab12"></a><h1 class="section">A too strong secrecy definition</h1>
 
 <div class="paragraph"> </div>
 
@@ -416,7 +417,7 @@ This basically says that the public output of <span class="inlinecode"><span cla
 </div>
 
 <div class="doc">
-<a id="lab7"></a><h1 class="section">Noninterferent implies splittable</h1>
+<a id="lab13"></a><h1 class="section">Noninterferent implies splittable</h1>
 
 <div class="paragraph"> </div>
 
@@ -452,15 +453,16 @@ This basically says that the public output of <span class="inlinecode"><span cla
 </div>
 
 <div class="doc">
-<a id="lab8"></a><h1 class="section">Secure Multi-Execution (SME)</h1>
+<a id="lab14"></a><h1 class="section">Secure Multi-Execution (SME)</h1>
 
 <div class="paragraph"> </div>
 
- The previous proof also captures the key idea behind Secure Multi-Execution
-    (SME), an enforcement mechanism that can make <i>any</i> function
-    noninterferent. To achieve this SME runs the function twice, once passing a
-    dummy secret as input to obtain the public output, and once using the real
-    secret input to obtain the secret output. 
+ The previous proof also captures the key idea behind Secure
+    Multi-Execution (SME) <a href="Bib.html#Devriese-and Piessens 2010"><span class="inlineref">[Devriese and Piessens 2010]</span></a>, an
+    enforcement mechanism that can make <i>any</i> function
+    noninterferent. To achieve this SME runs the function twice, once
+    passing a dummy secret as input to obtain the public output, and
+    once using the real secret input to obtain the secret output. 
 </div>
 <div class="code">
 
@@ -482,7 +484,7 @@ Functions protected by <span class="inlinecode"><span class="id" title="var">sme
 </div>
 
 <div class="doc">
-<a id="lab9"></a><h3 class="section"> </h3>
+<a id="lab15"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -507,7 +509,7 @@ Functions protected by <span class="inlinecode"><span class="id" title="var">sme
 </div>
 
 <div class="doc">
-<a id="lab10"></a><h3 class="section"> </h3>
+<a id="lab16"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -525,7 +527,7 @@ Functions protected by <span class="inlinecode"><span class="id" title="var">sme
 </div>
 
 <div class="doc">
-<a id="lab11"></a><h3 class="section"> </h3>
+<a id="lab17"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -558,7 +560,7 @@ This is a secure behavior, but it is different from that of the
 </div>
 
 <div class="doc">
-<a id="lab12"></a><h3 class="section"> </h3>
+<a id="lab18"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -570,7 +572,7 @@ This is a secure behavior, but it is different from that of the
 
 <div class="paragraph"> </div>
 
-    Other information flow control mechanisms overcome this downside,
+    Other information-flow control mechanisms overcome this downside,
     but have other downsides of their own, for instance:
 <ul class="doclist">
 <li> by requiring nontrivial manual proofs for each individual
@@ -584,7 +586,7 @@ This is a secure behavior, but it is different from that of the
 <li> by using dynamic overapproximations that unnecessarily
           change program behavior, for instance forcefully terminating
           even some secure programs to prevent leaks, in which case
-          they are not transparent (dynamic information flow control;
+          they are not transparent (dynamic information-flow control;
           an extension of dynamic taint tracking to also handle
           implicit flows).
 
@@ -597,11 +599,11 @@ This is a secure behavior, but it is different from that of the
 </div>
 
 <div class="doc">
-<a id="lab13"></a><h1 class="section">Noninterference for state transformers</h1>
+<a id="lab19"></a><h1 class="section">Noninterference for state transformers</h1>
 
 <div class="paragraph"> </div>
 
- The development above is quite easy to adapt to Coq functions that
+ The development above is quite easy to adapt to Rocq functions that
     transform states (<span class="inlinecode"><span class="id" title="var">state</span>→<span class="id" title="var">state</span></span>), where we label each variable as
     either public or secret using a map of type <span class="inlinecode"><span class="id" title="var">pub_vars</span></span>. 
 </div>
@@ -633,7 +635,7 @@ This makes the definition more symmetric, since we can use
 </div>
 
 <div class="doc">
-<a id="lab14"></a><h2 class="section"> </h2>
+<a id="lab20"></a><h2 class="section"> </h2>
 
 <div class="paragraph"> </div>
 
@@ -686,7 +688,7 @@ Now we can finally state our theorem about the equivalence between
 </div>
 
 <div class="doc">
-<a id="lab15"></a><h1 class="section">SME for state transformers</h1>
+<a id="lab21"></a><h1 class="section">SME for state transformers</h1>
 
 <div class="paragraph"> </div>
 
@@ -744,7 +746,7 @@ We will see examples of this in an upcoming section, but for now
 </div>
 
 <div class="doc">
-<a id="lab16"></a><h1 class="section">Noninterference for Imp programs without loops</h1>
+<a id="lab22"></a><h1 class="section">Noninterference for Imp programs without loops</h1>
 
 <div class="paragraph"> </div>
 
@@ -798,7 +800,7 @@ A command <span class="inlinecode"><span class="id" title="var">c</span></span> 
 </div>
 
 <div class="doc">
-<a id="lab17"></a><h4 class="section">Exercise: 2 stars, standard (noninterferent_secure_ex<sub>1</sub>)</h4>
+<a id="lab23"></a><h4 class="section">Exercise: 2 stars, standard (noninterferent_secure_ex<sub>1</sub>)</h4>
 
 </div>
 <div class="code">
@@ -815,7 +817,7 @@ A command <span class="inlinecode"><span class="id" title="var">c</span></span> 
 <div class="doc"> 
 <div class="paragraph"> </div>
 
-<a id="lab18"></a><h4 class="section">Exercise: 3 stars, standard, optional (noninterferent_secure_ex<sub>2</sub>)</h4>
+<a id="lab24"></a><h4 class="section">Exercise: 3 stars, standard, optional (noninterferent_secure_ex<sub>2</sub>)</h4>
 
 </div>
 <div class="code">
@@ -835,7 +837,7 @@ A command <span class="inlinecode"><span class="id" title="var">c</span></span> 
 <div class="doc"> 
 <div class="paragraph"> </div>
 
-<a id="lab19"></a><h3 class="section"> </h3>
+<a id="lab25"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -888,7 +890,7 @@ As we saw above, the <span class="inlinecode"><span class="id" title="tactic">se
     counterexamples where one needs to work with specific values. 
 <div class="paragraph"> </div>
 
-<a id="lab20"></a><h4 class="section">Exercise: 2 stars, standard (interferent_insecure_com_explicit)</h4>
+<a id="lab26"></a><h4 class="section">Exercise: 2 stars, standard (interferent_insecure_com_explicit)</h4>
 
 </div>
 <div class="code">
@@ -905,7 +907,7 @@ As we saw above, the <span class="inlinecode"><span class="id" title="tactic">se
 <div class="doc"> 
 <div class="paragraph"> </div>
 
-<a id="lab21"></a><h3 class="section"> </h3>
+<a id="lab27"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -957,7 +959,7 @@ Here the expression <span class="inlinecode"><span class="id" title="var">X</spa
 </div>
 
 <div class="doc">
-<a id="lab22"></a><h4 class="section">Exercise: 3 stars, standard (interferent_insecure_com_implicit)</h4>
+<a id="lab28"></a><h4 class="section">Exercise: 3 stars, standard (interferent_insecure_com_implicit)</h4>
 
 </div>
 <div class="code">
@@ -981,7 +983,7 @@ Here the expression <span class="inlinecode"><span class="id" title="var">X</spa
 </div>
 
 <div class="doc">
-<a id="lab23"></a><h1 class="section">SME for Imp programs without loops</h1>
+<a id="lab29"></a><h1 class="section">SME for Imp programs without loops</h1>
 
 <div class="paragraph"> </div>
 
@@ -1263,7 +1265,7 @@ Self-composition and the more general concept of a <i>product program</i>
 </div>
 
 <div class="doc">
-<a id="lab24"></a><h1 class="section">Noninterference for Imp programs with loops</h1>
+<a id="lab30"></a><h1 class="section">Noninterference for Imp programs with loops</h1>
 
 <div class="paragraph"> </div>
 
@@ -1359,7 +1361,7 @@ The advantage of the new definition is that it also says something
 </div>
 
 <div class="doc">
-<a id="lab25"></a><h1 class="section">SME for Imp programs with loops</h1>
+<a id="lab31"></a><h1 class="section">SME for Imp programs with loops</h1>
 
 <div class="paragraph"> </div>
 
@@ -1376,7 +1378,7 @@ The advantage of the new definition is that it also says something
 </div>
 
 <div class="doc">
-<a id="lab26"></a><h3 class="section"> </h3>
+<a id="lab32"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -1409,7 +1411,7 @@ The advantage of the new definition is that it also says something
 </div>
 
 <div class="doc">
-<a id="lab27"></a><h3 class="section"> </h3>
+<a id="lab33"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -1447,7 +1449,7 @@ But we cannot prove the reverse implication, since a command
     would be needed for proving <span class="inlinecode"><span class="id" title="var">sme_while</span></span>. 
 <div class="paragraph"> </div>
 
-<a id="lab28"></a><h3 class="section"> </h3>
+<a id="lab34"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -1470,7 +1472,7 @@ But we cannot prove the reverse implication, since a command
     since it doesn't consider nontermination to be observable to an attacker. 
 <div class="paragraph"> </div>
 
-<a id="lab29"></a><h3 class="section"> </h3>
+<a id="lab35"></a><h3 class="section"> </h3>
  In particular, the following program is <i>secure</i> wrt TINI: 
 </div>
 <div class="code">
@@ -1504,7 +1506,7 @@ But we cannot prove the reverse implication, since a command
 </div>
 
 <div class="doc">
-<a id="lab30"></a><h1 class="section">Termination-Sensitive Noninterference</h1>
+<a id="lab36"></a><h1 class="section">Termination-Sensitive Noninterference</h1>
 
 <div class="paragraph"> </div>
 
@@ -1555,7 +1557,7 @@ We can prove that <span class="inlinecode"><span class="id" title="var">terminat
 </div>
 
 <div class="doc">
-<a id="lab31"></a><h3 class="section"> </h3>
+<a id="lab37"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -1607,7 +1609,7 @@ The reverse direction of the implication only works for programs that
 </div>
 
 <div class="doc">
-<a id="lab32"></a><h3 class="section"> </h3>
+<a id="lab38"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -1644,7 +1646,7 @@ The reverse direction of the implication only works for programs that
 </div>
 
 <div class="doc">
-<a id="lab33"></a><h3 class="section"> </h3>
+<a id="lab39"></a><h3 class="section"> </h3>
 
 <div class="paragraph"> </div>
 
@@ -1654,8 +1656,10 @@ The reverse direction of the implication only works for programs that
     secret inputs into a single final state. Instead, SME is commonly
     defined in a setting with interactive IO, in which public outputs
     and secret outputs can be performed independently, during the
-    execution. In that setting, it does transparently enforce a
-    version of TSNI. 
+    execution <a href="Bib.html#Devriese-and Piessens 2010"><span class="inlineref">[Devriese and Piessens 2010]</span></a>. In that setting, it
+    does transparently enforce a termination-insensitive version of
+    noninterference later research has called Indirect TSNI
+    <a href="Bib.html#Ngo-et al 2018"><span class="inlineref">[Ngo et al 2018]</span></a>. 
 </div>
 </div>
 
