@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link href="common/css/sf.css" rel="stylesheet" type="text/css" />
-<title>StaticIFC: Information-Flow Control Type Systems</title>
+<title>StaticIFC: Information-Flow-Control Type Systems</title>
 <link href="common/jquery-ui/jquery-ui.css" rel="stylesheet">
 <script src="common/jquery-ui/external/jquery/jquery.js"></script>
 <script src="common/jquery-ui/jquery-ui.js"></script>
@@ -31,7 +31,7 @@
 
 <div id="main">
 
-<h1 class="libtitle">StaticIFC<span class="subtitle">Information-Flow Control Type Systems</span></h1>
+<h1 class="libtitle">StaticIFC<span class="subtitle">Information-Flow-Control Type Systems</span></h1>
 
 
 
@@ -130,7 +130,7 @@ If we assume that variable <span class="inlinecode"><span class="id" title="var"
 </div>
 <div class="code">
 
-<span class="id" title="keyword">Definition</span> <span class="id" title="var">xpub</span> : <span class="id" title="var">pub_vars</span> := (<span class="id" title="var">X</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">public</span>; <span class="id" title="var">_</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">secret</span>).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">xpub</span> : <span class="id" title="var">pub_vars</span> := (<span class="id" title="var">X</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">public</span>; <span class="id" title="var">__</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">secret</span>).<br/><hr class='doublespaceincode'/>
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">noninterferent_secure_com</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="var">noninterferent</span> <span class="id" title="var">xpub</span> <span class="id" title="var">secure_com</span>.<br/>
 </div>
@@ -140,7 +140,7 @@ We have already proved that <span class="inlinecode"><span class="id" title="var
     both directly using the semantics (in <a href="Noninterference.html"><span class="inlineref">Noninterference</span></a>).
     This proof was manual though, while in this chapter we will show
     how this proof can be done more syntactically and automatically
-    using several <i>information-flow control</i> (IFC) type systems that
+    using several <i>information-flow-control</i> (IFC) type systems that
     enforce noninterference for all well-typed programs
     <a href="Bib.html#Sabelfeld-and Myers 2003"><span class="inlineref">[Sabelfeld and Myers 2003]</span></a>. 
 <div class="paragraph"> </div>

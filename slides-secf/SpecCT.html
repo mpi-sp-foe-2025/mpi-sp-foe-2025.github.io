@@ -78,12 +78,12 @@ This chapter looks at security against side-channel attacks:
 
 <div class="paragraph"> </div>
 
-    We, however, do not want to explicitly model execution time or caches,
+    We, however, do not want to explicitly model execution time or caches, since
 <ul class="doclist">
-<li> since that would be very hard to do right and
+<li> it would be very hard to do right, and
 
 </li>
-<li> that would bring in too many extremely low-level details of the concrete compiler
+<li> it would bring in too many extremely low-level details of the concrete compiler
       (Clang/LLVM 20.1.6) and hardware microarchitecture (Intel Core i<sub>7</sub>-8650U). 
 </li>
 </ul>
@@ -121,7 +121,8 @@ This chapter looks at security against side-channel attacks:
 </li>
 <li> <i>the operands influencing timing of variable-time operations are leaked</i>;
 <ul class="doclist">
-<li> as an exercise we will add a division operation that leaks both operands. 
+<li> as an exercise we will add a division operation that leaks both operands.
+
 </li>
 </ul>
 
@@ -168,7 +169,7 @@ This chapter looks at security against side-channel attacks:
 </li>
 <li> <i>the operands leaked by variable-time operations do not depend on secrets</i>.
 <ul class="doclist">
-<li> this prevents leaking information about secrets e.g. via division:
+<li> this prevents leaking information about secrets e.g., via division:
 <br/>
 <span class="inlinecode">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Usecret</span> := <span class="id" title="var">div</span> <span class="id" title="var">Vsecret</span> <span class="id" title="var">Wsecret</span>
 </span>
@@ -264,7 +265,8 @@ This chapter looks at security against side-channel attacks:
 <div class="paragraph"> </div>
 
  In addition to the boolean branches, which are observable in the CF security
-    model, for CCT security also the index of array loads and stores are observable: 
+    model, for CCT security also the index of array loads and stores are
+    observable: 
 </div>
 <div class="code">
 
@@ -639,7 +641,8 @@ As an easy exercise you can build a type-checker for this and prove
 
  To prove the security of our type system, we first show a noninterference
     lemma, which is not that hard, given that our very restrictive type system
-    ensures the two executions run in lock-step, since it disallows branching on secrets. 
+    ensures the two executions run in lock-step, since it disallows branching
+    on secrets. 
 </div>
 <div class="code">
 
@@ -757,10 +760,10 @@ Most cases of this proof are similar to the security proof for
 
 <div class="paragraph"> </div>
 
- This second part of the chapter is based on the Spectre Declassified paper
-    <a href="Bib.html#Shivakumar-et al 2023"><span class="inlineref">[Shivakumar et al 2023]</span></a>, just in simplified form (e.g. without
-    declassification). Like in this paper, we only look at a class of
-    speculative execution attacks called Spectre v<sub>1</sub>. 
+ This second part of the chapter is based on the Spectre
+    Declassified paper <a href="Bib.html#Shivakumar-et al 2023"><span class="inlineref">[Shivakumar et al 2023]</span></a> in simplified form
+    (e.g., without declassification). Like in this paper, we only look
+    at a class of speculative execution attacks called Spectre v<sub>1</sub>. 
 <div class="paragraph"> </div>
 
 <a id="lab95"></a><h2 class="section">CCT programs can be insecure under speculative execution</h2>
@@ -773,12 +776,12 @@ Most cases of this proof are similar to the security proof for
 <div class="paragraph"> </div>
 
  The size of public array <span class="inlinecode"><span class="id" title="var">AP</span></span> is <span class="inlinecode">3</span> and we check we're in bounds, yet this
-    check can mispeculate! 
+    check can misspeculate! 
 </div>
 <div class="code">
 
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">spec_insecure_prog</span> :=<br/>
-&nbsp;&nbsp;&lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="keyword">if</span> <span class="id" title="var">Y</span> &lt; 3 <span class="id" title="keyword">then</span> <span class="comment">(*&nbsp;&lt;-&nbsp;this&nbsp;check&nbsp;can&nbsp;mispeculate&nbsp;for&nbsp;Y&nbsp;&gt;=&nbsp;3!&nbsp;*)</span><br/>
+&nbsp;&nbsp;&lt;<span style='letter-spacing:-.4em;'>{</span>{ <span class="id" title="keyword">if</span> <span class="id" title="var">Y</span> &lt; 3 <span class="id" title="keyword">then</span> <span class="comment">(*&nbsp;&lt;-&nbsp;this&nbsp;check&nbsp;can&nbsp;misspeculate&nbsp;for&nbsp;Y&nbsp;&gt;=&nbsp;3!&nbsp;*)</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">X</span> &lt;- <span class="id" title="var">AP</span>[[<span class="id" title="var">Y</span>]]; <span class="comment">(*&nbsp;&lt;-&nbsp;speculative&nbsp;out&nbsp;of&nbsp;bounds&nbsp;access<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;loads&nbsp;_a&nbsp;secret_&nbsp;to&nbsp;public&nbsp;variable&nbsp;X&nbsp;*)</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">if</span> <span class="id" title="var">X</span> ≤ 5 <span class="id" title="keyword">then</span> <span class="id" title="var">X</span> := 5 <span class="id" title="keyword">else</span> <span class="id" title="var">skip</span> <span class="id" title="keyword">end</span> <span class="comment">(*&nbsp;&lt;-&nbsp;speculatively&nbsp;leak&nbsp;X&nbsp;*)</span><br/>
@@ -882,7 +885,7 @@ This gives us a very high-level model of speculation that abstracts away
 
  Compared to the CCT semantics with observations as output, we now add the
     directions as input to the evaluation judgement and we also track a
-    mispeculation bit <span class="inlinecode"><span class="id" title="var">b</span></span>. 
+    misspeculation bit <span class="inlinecode"><span class="id" title="var">b</span></span>. 
 <div class="paragraph"> </div>
 
  <center><table class="infrule">
@@ -1082,7 +1085,7 @@ This gives us a very high-level model of speculation that abstracts away
 <div class="paragraph"> </div>
 
  The definition of speculative constant-time security is very similar to CCT
-    security, just applied to the speculative semantics. The two executions
+    security, but applied to the speculative semantics. The two executions
     receive the same directions <span class="inlinecode"><span class="id" title="var">ds</span></span>: 
 </div>
 <div class="code">
@@ -1131,9 +1134,9 @@ For this we build a counterexample where the attacker chooses an
 <div class="proofscript" id="proof10" onclick="toggleDisplay('proof10');toggleDisplay('proofcontrol10')">
 <span class="id" title="keyword">Proof</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">spec_insecure_prog</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">Hcs</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">Y</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> 3; <span class="id" title="var">_</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> 0) <span class="id" title="keyword">as</span> <span class="id" title="var">st</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">AP</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [0;1;2]; <span class="id" title="var">AS</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [4;1]; <span class="id" title="var">_</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> []) <span class="id" title="keyword">as</span> <span class="id" title="var">m<sub>1</sub></span>.<br/>
-&nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">AP</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [0;1;2]; <span class="id" title="var">AS</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [7;1]; <span class="id" title="var">_</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> []) <span class="id" title="keyword">as</span> <span class="id" title="var">m<sub>2</sub></span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">Y</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> 3; <span class="id" title="var">__</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> 0) <span class="id" title="keyword">as</span> <span class="id" title="var">st</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">AP</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [0;1;2]; <span class="id" title="var">AS</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [4;1]; <span class="id" title="var">__</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> []) <span class="id" title="keyword">as</span> <span class="id" title="var">m<sub>1</sub></span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">AP</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [0;1;2]; <span class="id" title="var">AS</span>!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> [7;1]; <span class="id" title="var">__</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> []) <span class="id" title="keyword">as</span> <span class="id" title="var">m<sub>2</sub></span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">DForce</span> :: ([<span class="id" title="var">DLoad</span> <span class="id" title="var">AS</span> 0] ++ [<span class="id" title="var">DStep</span>])) <span class="id" title="keyword">as</span> <span class="id" title="var">ds</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">remember</span> (([<span class="id" title="var">OBranch</span> <span class="id" title="var">false</span>] ++ ([<span class="id" title="var">OALoad</span> <span class="id" title="var">AP</span> 3]) ++ [<span class="id" title="var">OBranch</span> <span class="id" title="var">true</span>])) <span class="id" title="keyword">as</span> <span class="id" title="var">os<sub>1</sub></span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">remember</span> (([<span class="id" title="var">OBranch</span> <span class="id" title="var">false</span>] ++ ([<span class="id" title="var">OALoad</span> <span class="id" title="var">AP</span> 3])++ [<span class="id" title="var">OBranch</span> <span class="id" title="var">false</span>])) <span class="id" title="keyword">as</span> <span class="id" title="var">os<sub>2</sub></span>.<br/><hr class='doublespaceincode'/>
@@ -1296,9 +1299,9 @@ forall st<sub>1</sub> st<sub>2</sub> m<sub>1</sub> m<sub>2</sub> st<sub>1</sub>'
 <div class="paragraph"> </div>
 
  One thing to note is that the ideal semantics doesn't track misspeculation
-    in the <span class="inlinecode"><span class="id" title="var">msf</span></span> variable, but instead directly uses the mispeculation bit in
+    in the <span class="inlinecode"><span class="id" title="var">msf</span></span> variable, but instead directly uses the misspeculation bit in
     the speculative semantics for masking. This allows us to keep the ideal
-    semantics simple, and then we show that <span class="inlinecode"><span class="id" title="var">msf</span></span> correctly tracks mispeculation
+    semantics simple, and then we show that <span class="inlinecode"><span class="id" title="var">msf</span></span> correctly tracks misspeculation
     in our compiler correctness proof . 
 <div class="paragraph"> </div>
 

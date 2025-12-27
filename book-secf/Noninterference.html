@@ -36,10 +36,10 @@
 <div class="doc">
 Programmers have to be very careful about how information flows in
     the software they develop to prevent leaking secret data. For
-    instance in Moodle students shouldn't be able to obtain
-    information about other student's grades. Or in crypto protocols
-    the crypto keys should be kept secret and not sent over the
-    network in clear. 
+    instance, in course management systems students shouldn't be able
+    to obtain information about other student's grades. In crypto
+    protocols the keys should be kept secret and not sent over the
+    network in the clear. 
 <div class="paragraph"> </div>
 
  Information-flow control tries to prevent leaking secret
@@ -400,14 +400,14 @@ Is the <span class="inlinecode"><span class="id" title="var">less_obvious_f<sub>
 <div class="doc"> 
 <div class="paragraph"> </div>
 
-<a id="lab16"></a><h1 class="section">A too strong secrecy definition</h1>
+<a id="lab16"></a><h1 class="section">A too-strong secrecy definition</h1>
 
 <div class="paragraph"> </div>
 
  In the definition of noninterference above we pass the same public
     inputs to the two executions and this allows public outputs to
     depend on public inputs. To convince ourselves of this, let's look
-    at the following too strong definition of security: 
+    at the following overly strong definition of security: 
 </div>
 <div class="code">
 
@@ -437,7 +437,7 @@ This basically says that the public output of <span class="inlinecode"><span cla
 
 <div class="paragraph"> </div>
 
- Noninterference is still a very strong property though. In
+ Noninterference is still a very strong property, though. In
     particular, <span class="inlinecode"><span class="id" title="var">f</span></span> being noninterferent is equivalent to <span class="inlinecode"><span class="id" title="var">f</span></span> being
     splittable into two different functions, one of which doesn't get
     the secret at all. 
@@ -613,7 +613,7 @@ This is a secure behavior, but it is different from that of the
     but have other downsides of their own, for instance:
 <ul class="doclist">
 <li> by requiring nontrivial manual proofs for each individual
-          program (e.g. Relational Hoare Logic), or
+          program (e.g., Relational Hoare Logic), or
 
 </li>
 <li> by using static overapproximations that reject some secure
@@ -977,7 +977,7 @@ A command <span class="inlinecode"><span class="id" title="var">c</span></span> 
 </div>
 <div class="code">
 
-<span class="id" title="keyword">Definition</span> <a id="xpub" class="idref" href="#xpub"><span class="id" title="definition">xpub</span></a> : <a class="idref" href="Noninterference.html#pub_vars"><span class="id" title="definition">pub_vars</span></a> := (<span class="id" title="definition">X</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">true</span><span class="id" title="notation">;</span> <span class="id" title="notation">_</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">false</span>).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Definition</span> <a id="xpub" class="idref" href="#xpub"><span class="id" title="definition">xpub</span></a> : <a class="idref" href="Noninterference.html#pub_vars"><span class="id" title="definition">pub_vars</span></a> := (<span class="id" title="definition">X</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">true</span><span class="id" title="notation">;</span> <span class="id" title="notation">__</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">false</span>).<br/><hr class='doublespaceincode'/>
 <span class="id" title="keyword">Definition</span> <a id="secure_com" class="idref" href="#secure_com"><span class="id" title="definition">secure_com</span></a> : <span class="id" title="inductive">com</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="notation">&lt;{</span> <span class="id" title="definition">X</span> <span class="id" title="notation">:=</span> <span class="id" title="definition">X</span><span class="id" title="notation">+</span>1<span class="id" title="notation">;</span><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="definition">Y</span> <span class="id" title="notation">:=</span> <span class="id" title="notation">(</span><span class="id" title="definition">X</span><span class="id" title="notation">-</span>1<span class="id" title="notation">)</span><span class="id" title="notation">+</span><span class="id" title="definition">Y</span><span class="id" title="notation">×</span>2 <span class="id" title="notation">}&gt;</span>.<br/>
@@ -1373,7 +1373,7 @@ Because in our simple Imp language we have no way to restore the
 </div>
 <div class="code">
 
-<span class="id" title="keyword">Definition</span> <a id="psecret" class="idref" href="#psecret"><span class="id" title="definition">psecret</span></a> := (<a class="idref" href="Noninterference.html#pX"><span class="id" title="definition">pX</span></a> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">false</span><span class="id" title="notation">;</span> <a class="idref" href="Noninterference.html#pY"><span class="id" title="definition">pY</span></a> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">false</span><span class="id" title="notation">;</span> <span class="id" title="notation">_</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">true</span>).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Definition</span> <a id="psecret" class="idref" href="#psecret"><span class="id" title="definition">psecret</span></a> := (<a class="idref" href="Noninterference.html#pX"><span class="id" title="definition">pX</span></a> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">false</span><span class="id" title="notation">;</span> <a class="idref" href="Noninterference.html#pY"><span class="id" title="definition">pY</span></a> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">false</span><span class="id" title="notation">;</span> <span class="id" title="notation">__</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">true</span>).<br/><hr class='doublespaceincode'/>
 <span class="id" title="keyword">Lemma</span> <a id="sme_insecure_com2" class="idref" href="#sme_insecure_com2"><span class="id" title="lemma">sme_insecure_com2</span></a> : <span class="id" title="keyword">∀</span> <a id="st:193" class="idref" href="#st:193"><span class="id" title="binder">st</span></a>,<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<a class="idref" href="Noninterference.html#pub_equiv"><span class="id" title="definition">pub_equiv</span></a> <a class="idref" href="Noninterference.html#psecret"><span class="id" title="definition">psecret</span></a> (<a class="idref" href="Noninterference.html#sme_cmd"><span class="id" title="definition">sme_cmd</span></a> <a class="idref" href="Noninterference.html#insecure_com2"><span class="id" title="definition">insecure_com2</span></a> <a class="idref" href="Noninterference.html#xpub"><span class="id" title="definition">xpub</span></a> <a class="idref" href="Noninterference.html#st:193"><span class="id" title="variable">st</span></a>)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<a class="idref" href="Noninterference.html#cinterp"><span class="id" title="definition">cinterp</span></a> <a class="idref" href="Noninterference.html#secure_com2"><span class="id" title="definition">secure_com2</span></a> <a class="idref" href="Noninterference.html#st:193"><span class="id" title="variable">st</span></a>).<br/>
@@ -1483,7 +1483,7 @@ By optimizing the self-composition program above quite a bit we
 
 <div class="doc">
 Self-composition and the more general concept of a <i>product program</i>
-    are generally useful techniques of their own (e.g. for reducing
+    are generally useful techniques of their own (e.g., for reducing
     relational properties proved by Relational Hoare Logic to regular
     properties proved by standard Hoare Logic), but we will not
     discuss them here any further. 
@@ -2035,7 +2035,7 @@ Unfortunately <span class="inlinecode"><span class="id" title="var">sme_while</s
 &nbsp;&nbsp;- <span class="id" title="tactic">assert</span> (<span class="id" title="var">Hsplit</span>: <a class="idref" href="Noninterference.html#split_state"><span class="id" title="definition">split_state</span></a> <a class="idref" href="Noninterference.html#s<sub>1</sub>"><span class="id" title="definition">s<sub>1</sub></span></a> <a class="idref" href="Noninterference.html#xpub"><span class="id" title="definition">xpub</span></a> <span class="id" title="notation">true</span> <a class="idref" href="https://rocq-prover.org/doc/V9.0.0/corelib//Corelib.Init.Logic.html#6cd0f7b28b6092304087c7049437bb1a"><span class="id" title="notation">=</span></a> <a class="idref" href="Noninterference.html#s<sub>1</sub>"><span class="id" title="definition">s<sub>1</sub></span></a>).<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;{ <span class="id" title="tactic">unfold</span> <a class="idref" href="Noninterference.html#split_state"><span class="id" title="definition">split_state</span></a>, <a class="idref" href="Noninterference.html#s<sub>1</sub>"><span class="id" title="definition">s<sub>1</sub></span></a>, <a class="idref" href="Noninterference.html#xpub"><span class="id" title="definition">xpub</span></a>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <a class="idref" href="https://rocq-prover.org/doc/V9.0.0/stdlib//Stdlib.Logic.FunctionalExtensionality.html#functional_extensionality"><span class="id" title="lemma">functional_extensionality</span></a>. <span class="id" title="tactic">intros</span> <span class="id" title="var">x</span>.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<a class="idref" href="https://rocq-prover.org/doc/V9.0.0/stdlib//Stdlib.Bool.Bool.html#eqb"><span class="id" title="definition">Bool.eqb</span></a> (<span class="id" title="notation">(</span><span class="id" title="definition">X</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">true</span><span class="id" title="notation">;</span> <span class="id" title="notation">_</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">false</span><span class="id" title="notation">)</span> <span class="id" title="notation">x</span>) <span class="id" title="notation">true</span>) <span class="id" title="var">eqn</span>: <span class="id" title="var">B</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<a class="idref" href="https://rocq-prover.org/doc/V9.0.0/stdlib//Stdlib.Bool.Bool.html#eqb"><span class="id" title="definition">Bool.eqb</span></a> (<span class="id" title="notation">(</span><span class="id" title="definition">X</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">true</span><span class="id" title="notation">;</span> <span class="id" title="notation">__</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">false</span><span class="id" title="notation">)</span> <span class="id" title="notation">x</span>) <span class="id" title="notation">true</span>) <span class="id" title="var">eqn</span>: <span class="id" title="var">B</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">reflexivity</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">destruct</span> (<a class="idref" href="https://rocq-prover.org/doc/V9.0.0/stdlib//Stdlib.Strings.String.html#eqb"><span class="id" title="definition">eqb</span></a> <span class="id" title="var">x</span> <span class="id" title="definition">Y</span>) <span class="id" title="var">eqn</span>:<span class="id" title="var">HY</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">rewrite</span> <a class="idref" href="https://rocq-prover.org/doc/V9.0.0/stdlib//Stdlib.Strings.String.html#eqb_eq"><span class="id" title="lemma">eqb_eq</span></a> <span class="id" title="keyword">in</span> <span class="id" title="var">HY</span>. <span class="id" title="tactic">subst</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="axiom">t_update_neq</span>.<br/>
@@ -2052,7 +2052,7 @@ Unfortunately <span class="inlinecode"><span class="id" title="var">sme_while</s
 &nbsp;&nbsp;- <span class="id" title="tactic">eapply</span> <a class="idref" href="Noninterference.html#counter_s1_terminates_s<sub>1</sub>'"><span class="id" title="lemma">counter_s1_terminates_s<sub>1</sub>'</span></a>.<br/>
 &nbsp;&nbsp;- <span class="id" title="tactic">eapply</span> <a class="idref" href="https://rocq-prover.org/doc/V9.0.0/stdlib//Stdlib.Logic.FunctionalExtensionality.html#functional_extensionality"><span class="id" title="lemma">functional_extensionality</span></a>. <span class="id" title="tactic">intros</span> <span class="id" title="var">x</span>.<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <a class="idref" href="Noninterference.html#merge_states"><span class="id" title="definition">merge_states</span></a>, <a class="idref" href="Noninterference.html#xpub"><span class="id" title="definition">xpub</span></a>.<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="notation">(</span><span class="id" title="definition">X</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">true</span><span class="id" title="notation">;</span> <span class="id" title="notation">_</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">false</span><span class="id" title="notation">)</span> <span class="id" title="notation">x</span>); <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="notation">(</span><span class="id" title="definition">X</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">true</span><span class="id" title="notation">;</span> <span class="id" title="notation">__</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <span class="id" title="notation">false</span><span class="id" title="notation">)</span> <span class="id" title="notation">x</span>); <span class="id" title="tactic">reflexivity</span>.<br/>
 <span class="id" title="keyword">Qed</span>.<br/>
 </div>
 
@@ -2083,7 +2083,7 @@ Unfortunately <span class="inlinecode"><span class="id" title="var">sme_while</s
 
 <br/>
 <span class="id" title="keyword">End</span> <a class="idref" href="Noninterference.html#TSNICOUNTER"><span class="id" title="section">TSNICOUNTER</span></a>.<br/><hr class='doublespaceincode'/>
-<span class="comment">(*&nbsp;2025-10-09&nbsp;20:52&nbsp;*)</span><br/>
+<span class="comment">(*&nbsp;2025-12-27&nbsp;21:58&nbsp;*)</span><br/>
 </div>
 </div>
 

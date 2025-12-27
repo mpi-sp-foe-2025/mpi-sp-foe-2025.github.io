@@ -38,10 +38,10 @@
 <div class="doc">
 Programmers have to be very careful about how information flows in
     the software they develop to prevent leaking secret data. For
-    instance in Moodle students shouldn't be able to obtain
-    information about other student's grades. Or in crypto protocols
-    the crypto keys should be kept secret and not sent over the
-    network in clear. 
+    instance, in course management systems students shouldn't be able
+    to obtain information about other student's grades. In crypto
+    protocols the keys should be kept secret and not sent over the
+    network in the clear. 
 <div class="paragraph"> </div>
 
  Information-flow control tries to prevent leaking secret
@@ -384,14 +384,14 @@ Branching on a secret can, however, be dangerous, since one can
 </div>
 
 <div class="doc">
-<a id="lab12"></a><h1 class="section">A too strong secrecy definition</h1>
+<a id="lab12"></a><h1 class="section">A too-strong secrecy definition</h1>
 
 <div class="paragraph"> </div>
 
  In the definition of noninterference above we pass the same public
     inputs to the two executions and this allows public outputs to
     depend on public inputs. To convince ourselves of this, let's look
-    at the following too strong definition of security: 
+    at the following overly strong definition of security: 
 </div>
 <div class="code">
 
@@ -421,7 +421,7 @@ This basically says that the public output of <span class="inlinecode"><span cla
 
 <div class="paragraph"> </div>
 
- Noninterference is still a very strong property though. In
+ Noninterference is still a very strong property, though. In
     particular, <span class="inlinecode"><span class="id" title="var">f</span></span> being noninterferent is equivalent to <span class="inlinecode"><span class="id" title="var">f</span></span> being
     splittable into two different functions, one of which doesn't get
     the secret at all. 
@@ -576,7 +576,7 @@ This is a secure behavior, but it is different from that of the
     but have other downsides of their own, for instance:
 <ul class="doclist">
 <li> by requiring nontrivial manual proofs for each individual
-          program (e.g. Relational Hoare Logic), or
+          program (e.g., Relational Hoare Logic), or
 
 </li>
 <li> by using static overapproximations that reject some secure
@@ -775,7 +775,7 @@ A command <span class="inlinecode"><span class="id" title="var">c</span></span> 
 </div>
 <div class="code">
 
-<span class="id" title="keyword">Definition</span> <span class="id" title="var">xpub</span> : <span class="id" title="var">pub_vars</span> := (<span class="id" title="var">X</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">true</span>; <span class="id" title="var">_</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">false</span>).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">xpub</span> : <span class="id" title="var">pub_vars</span> := (<span class="id" title="var">X</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">true</span>; <span class="id" title="var">__</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">false</span>).<br/><hr class='doublespaceincode'/>
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">secure_com</span> : <span class="id" title="var">com</span> :=<br/>
 &nbsp;&nbsp;&lt;{ <span class="id" title="var">X</span> := <span class="id" title="var">X</span>+1;<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Y</span> := (<span class="id" title="var">X</span>-1)+<span class="id" title="var">Y</span>*2 }&gt;.<br/><hr class='doublespaceincode'/>
@@ -1148,7 +1148,7 @@ Because in our simple Imp language we have no way to restore the
 </div>
 <div class="code">
 
-<span class="id" title="keyword">Definition</span> <span class="id" title="var">psecret</span> := (<span class="id" title="var">pX</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">false</span>; <span class="id" title="var">pY</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">false</span>; <span class="id" title="var">_</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">true</span>).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">psecret</span> := (<span class="id" title="var">pX</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">false</span>; <span class="id" title="var">pY</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">false</span>; <span class="id" title="var">__</span> !<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span> <span class="id" title="var">true</span>).<br/><hr class='doublespaceincode'/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">sme_insecure_com2</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">st</span>,<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">pub_equiv</span> <span class="id" title="var">psecret</span> (<span class="id" title="var">sme_cmd</span> <span class="id" title="var">insecure_com2</span> <span class="id" title="var">xpub</span> <span class="id" title="var">st</span>)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">cinterp</span> <span class="id" title="var">secure_com2</span> <span class="id" title="var">st</span>).<br/>
@@ -1258,7 +1258,7 @@ By optimizing the self-composition program above quite a bit we
 
 <div class="doc">
 Self-composition and the more general concept of a <i>product program</i>
-    are generally useful techniques of their own (e.g. for reducing
+    are generally useful techniques of their own (e.g., for reducing
     relational properties proved by Relational Hoare Logic to regular
     properties proved by standard Hoare Logic), but we will not
     discuss them here any further. 

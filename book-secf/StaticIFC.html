@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link href="common/css/sf.css" rel="stylesheet" type="text/css" />
-<title>StaticIFC: Information-Flow Control Type Systems</title>
+<title>StaticIFC: Information-Flow-Control Type Systems</title>
 <link href="common/jquery-ui/jquery-ui.css" rel="stylesheet">
 <script src="common/jquery-ui/external/jquery/jquery.js"></script>
 <script src="common/jquery-ui/jquery-ui.js"></script>
@@ -29,7 +29,7 @@
 
 <div id="main">
 
-<h1 class="libtitle">StaticIFC<span class="subtitle">Information-Flow Control Type Systems</span></h1>
+<h1 class="libtitle">StaticIFC<span class="subtitle">Information-Flow-Control Type Systems</span></h1>
 
 
 <div class="code">
@@ -146,7 +146,7 @@ If we assume that variable <span class="inlinecode"><span class="id" title="var"
 </div>
 <div class="code">
 
-<span class="id" title="keyword">Definition</span> <a id="xpub" class="idref" href="#xpub"><span class="id" title="definition">xpub</span></a> : <a class="idref" href="StaticIFC.html#pub_vars"><span class="id" title="definition">pub_vars</span></a> := (<span class="id" title="definition">X</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <a class="idref" href="StaticIFC.html#public"><span class="id" title="definition">public</span></a><span class="id" title="notation">;</span> <span class="id" title="notation">_</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <a class="idref" href="StaticIFC.html#secret"><span class="id" title="definition">secret</span></a>).<br/><hr class='doublespaceincode'/>
+<span class="id" title="keyword">Definition</span> <a id="xpub" class="idref" href="#xpub"><span class="id" title="definition">xpub</span></a> : <a class="idref" href="StaticIFC.html#pub_vars"><span class="id" title="definition">pub_vars</span></a> := (<span class="id" title="definition">X</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <a class="idref" href="StaticIFC.html#public"><span class="id" title="definition">public</span></a><span class="id" title="notation">;</span> <span class="id" title="notation">__</span> <span class="id" title="notation">!<span class="nowrap"><span style='font-size:85%;'><span style='vertical-align:5%;'><span style='letter-spacing:-.2em;'>-</span></span>&gt;</span></span></span> <a class="idref" href="StaticIFC.html#secret"><span class="id" title="definition">secret</span></a>).<br/><hr class='doublespaceincode'/>
 <span class="id" title="keyword">Definition</span> <a id="noninterferent_secure_com" class="idref" href="#noninterferent_secure_com"><span class="id" title="definition">noninterferent_secure_com</span></a> :=<br/>
 &nbsp;&nbsp;<a class="idref" href="StaticIFC.html#noninterferent"><span class="id" title="definition">noninterferent</span></a> <a class="idref" href="StaticIFC.html#xpub"><span class="id" title="definition">xpub</span></a> <a class="idref" href="StaticIFC.html#secure_com"><span class="id" title="definition">secure_com</span></a>.<br/>
 </div>
@@ -156,7 +156,7 @@ We have already proved that <span class="inlinecode"><span class="id" title="var
     both directly using the semantics (in <a href="Noninterference.html"><span class="inlineref">Noninterference</span></a>).
     This proof was manual though, while in this chapter we will show
     how this proof can be done more syntactically and automatically
-    using several <i>information-flow control</i> (IFC) type systems that
+    using several <i>information-flow-control</i> (IFC) type systems that
     enforce noninterference for all well-typed programs
     <a href="Bib.html#Sabelfeld-and Myers 2003"><span class="inlineref">[Sabelfeld and Myers 2003]</span></a>. 
 <div class="paragraph"> </div>
@@ -2447,7 +2447,7 @@ To prove <span class="inlinecode"><span class="id" title="var">output_secure</sp
 <div class="code">
 
 <span class="id" title="keyword">End</span> <a class="idref" href="StaticIFC.html#OUTPUT"><span class="id" title="module">OUTPUT</span></a>.<br/><hr class='doublespaceincode'/>
-<span class="comment">(*&nbsp;2025-10-09&nbsp;20:52&nbsp;*)</span><br/>
+<span class="comment">(*&nbsp;2025-12-27&nbsp;21:58&nbsp;*)</span><br/>
 </div>
 </div>
 
